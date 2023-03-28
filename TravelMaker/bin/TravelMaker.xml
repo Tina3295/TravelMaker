@@ -506,6 +506,16 @@
                 按下分享取得行程景點
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.TourController.TourDuplicate(TravelMaker.Models.DuplicateTourView)">
+            <summary>
+                用戶複製行程
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.TourController.TourModify(TravelMaker.Models.TourModifyView)">
+            <summary>
+                用戶修改原本行程按儲存-覆蓋
+            </summary>
+        </member>
         <member name="M:TravelMaker.Controllers.TourController.Testgeo">
             <summary>
                 地理資料測試
@@ -945,6 +955,31 @@
         <member name="P:TravelMaker.Models.TourView.Attractions">
             <summary>
                 行程景點
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.DuplicateTourView">
+            <summary>
+                複製行程
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.DuplicateTourView.TourId">
+            <summary>
+                行程Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.DuplicateTourView.TourName">
+            <summary>
+                行程名稱
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.TourModifyView">
+            <summary>
+                取得我的收藏行程
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourModifyView.TourId">
+            <summary>
+                行程Id
             </summary>
         </member>
         <member name="T:TravelMaker.Security.JwtAuthFilter">
