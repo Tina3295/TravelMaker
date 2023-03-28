@@ -8,9 +8,9 @@ using System.Web;
 namespace TravelMaker.Models
 {
     /// <summary>
-    ///     行程
+    ///     用戶按喜歡的行程愛心(熱門依據)
     /// </summary>
-    public class Tour
+    public class TourLike
     {
         /// <summary>
         ///     編號
@@ -18,41 +18,37 @@ namespace TravelMaker.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Display(Name = "編號")]
+        public int TourLikeId { get; set; }
+
+
+
+
+        /// <summary>
+        ///     對應行程
+        /// </summary>
+        [Display(Name = "對應行程")]
         public int TourId { get; set; }
 
-
-        /// <summary>
-        ///     行程名稱
-        /// </summary>
-        [MaxLength(30)]
-        [Display(Name = "行程名稱")]
-        public string TourName { get; set; }
-
+        [ForeignKey("TourId")]
+        public virtual Tour Tour { get; set; }
 
 
 
         /// <summary>
-        ///     對應用戶
+        ///     按愛心的用戶id
         /// </summary>
-        [Display(Name = "對應用戶")]
+        [Required(ErrorMessage = "{0}必填")]
+        [Display(Name = "用戶Id")]
         public int UserId { get; set; }
 
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; }
-
 
 
         /// <summary>
-        ///     行程建立日期
+        ///     按愛心日期
         /// </summary>
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]  //只顯示年月日
         [DataType(DataType.DateTime)]
-        [Display(Name = "行程建立日期")]
-        public DateTime InitDate { get; set; }
-
-
-
-        public virtual ICollection<TourAttraction> TourAttractions { get; set; }
-        public virtual ICollection<TourLike> TourLike { get; set; }
+        [Display(Name = "建立日期")]
+        public DateTime? InitDate { get; set; }
     }
 }

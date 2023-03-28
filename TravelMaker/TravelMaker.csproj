@@ -301,6 +301,10 @@
     <Compile Include="Migrations\202303270517131_correctOrderNum.Designer.cs">
       <DependentUpon>202303270517131_correctOrderNum.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202303281024432_addTourLikeTable.cs" />
+    <Compile Include="Migrations\202303281024432_addTourLikeTable.Designer.cs">
+      <DependentUpon>202303281024432_addTourLikeTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\Category.cs" />
@@ -310,6 +314,7 @@
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\Tour.cs" />
     <Compile Include="Models\TourAttraction.cs" />
+    <Compile Include="Models\TourLike.cs" />
     <Compile Include="Models\TravelMakerDbContext.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\ViewModel.cs" />
@@ -466,6 +471,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202303270517131_correctOrderNum.resx">
       <DependentUpon>202303270517131_correctOrderNum.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303281024432_addTourLikeTable.resx">
+      <DependentUpon>202303281024432_addTourLikeTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

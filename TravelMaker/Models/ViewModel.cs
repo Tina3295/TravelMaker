@@ -191,6 +191,21 @@ namespace TravelMaker.Models
         [Display(Name = "行程名稱")]
         public string TourName { get; set; }
 
+
+        /// <summary>
+        ///     景點數量
+        /// </summary>
+        [Display(Name = "景點數量")]
+        public int AttrCounts { get; set; }
+
+
+        /// <summary>
+        ///     愛心數
+        /// </summary>
+        [Display(Name = "愛心數")]
+        public int Likes { get; set; }
+
+
         /// <summary>
         ///     景點圖片路徑
         /// </summary>
@@ -221,6 +236,13 @@ namespace TravelMaker.Models
         /// </summary>
         [Display(Name = "行程名稱")]
         public string TourName { get; set; }
+
+        /// <summary>
+        ///     行程擁有者
+        /// </summary>
+        [Display(Name = "行程擁有者")]
+        public string UserGuid { get; set; }
+
         /// <summary>
         ///     行程景點
         /// </summary>

@@ -777,6 +777,31 @@
                 順序
             </summary>
         </member>
+        <member name="T:TravelMaker.Models.TourLike">
+            <summary>
+                用戶按喜歡的行程愛心(熱門依據)
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourLike.TourLikeId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourLike.TourId">
+            <summary>
+                對應行程
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourLike.UserId">
+            <summary>
+                按愛心的用戶id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourLike.InitDate">
+            <summary>
+                按愛心日期
+            </summary>
+        </member>
         <member name="T:TravelMaker.Models.User">
             <summary>
                 用戶
@@ -932,6 +957,11 @@
                 行程名稱
             </summary>
         </member>
+        <member name="P:TravelMaker.Models.FavoriteTour.AttrCounts">
+            <summary>
+                景點數量
+            </summary>
+        </member>
         <member name="P:TravelMaker.Models.FavoriteTour.ImageUrl">
             <summary>
                 景點圖片路徑
@@ -950,6 +980,11 @@
         <member name="P:TravelMaker.Models.TourView.TourName">
             <summary>
                 行程名稱
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourView.UserGuid">
+            <summary>
+                行程擁有者
             </summary>
         </member>
         <member name="P:TravelMaker.Models.TourView.Attractions">

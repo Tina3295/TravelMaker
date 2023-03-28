@@ -28,6 +28,7 @@ namespace TravelMaker.Models
         public virtual DbSet<Image> Images { get; set; }
         public virtual DbSet<Tour> Tours { get; set; }
         public virtual DbSet<TourAttraction> TourAttractions { get; set; }
+        public virtual DbSet<TourLike> TourLikes { get; set; }
     }
 
     //public class MyEntity

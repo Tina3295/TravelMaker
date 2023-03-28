@@ -62,7 +62,7 @@ namespace TravelMaker.Controllers
                         Message = "登入成功",
                         Account = user.Account,
                         UserName = user.UserName,
-                        UserId = user.UserGuid,
+                        UserGuid = user.UserGuid,
                         ProfilePicture = profilePicture
                     };
 
@@ -261,6 +261,9 @@ namespace TravelMaker.Controllers
                 FavoriteTour favoriteTour = new FavoriteTour();
                 favoriteTour.TourId = tour.TourId;
                 favoriteTour.TourName = tour.TourName;
+                favoriteTour.AttrCounts= _db.TourAttractions.Where(t => t.TourId == tour.TourId).Count();
+                favoriteTour.Likes=_db.TourLikes.Where(t => t.TourId == tour.TourId).Count();
+
                 favoriteTour.ImageUrl = new List<string>();
 
                 var attractionIds = _db.TourAttractions.Where(t => t.TourId == tour.TourId)

@@ -163,3 +163,4 @@ C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SqlServerTypes\x64\msvcr
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SqlServerTypes\x64\SqlServerSpatial110.dll
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SqlServerTypes\x86\msvcr100.dll
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SqlServerTypes\x86\SqlServerSpatial110.dll
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addTourLikeTable.resources

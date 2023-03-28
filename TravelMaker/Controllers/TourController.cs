@@ -795,6 +795,8 @@ namespace TravelMaker.Controllers
 
                 result.TourId = tourId;
                 result.TourName = tour.TourName;
+                result.UserGuid = _db.Users.Where(u => u.UserId == tour.UserId).Select(u => u.UserGuid).FirstOrDefault();//用戶識別碼
+                    
 
                 var attractions = _db.TourAttractions.Where(a => a.TourId == tourId).OrderBy(a => a.OrderNum).ToList();
                 result.Attractions = new List<object>();
@@ -975,11 +977,13 @@ namespace TravelMaker.Controllers
                     _db.SaveChanges();
                 }
 
-                //愛心數要歸零!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
+                //愛心數歸零
+                var likes = _db.TourLikes.Where(l => l.TourId == tourView.TourId).ToList();
+                foreach(var like in likes)
+                {
+                    _db.TourLikes.Remove(like);
+                    _db.SaveChanges();
+                }
 
                 return Ok("行程修改成功");
             }
@@ -989,6 +993,27 @@ namespace TravelMaker.Controllers
             }
 
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1007,9 +1032,5 @@ namespace TravelMaker.Controllers
             double result = (double)A.Distance(B);
             return Ok(result);
         }
-
-
-
-
     }
 }
