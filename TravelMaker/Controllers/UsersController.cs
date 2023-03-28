@@ -105,7 +105,7 @@ namespace TravelMaker.Controllers
                 user.Account = signUp.Account.ToLower();
                 user.Password = BitConverter.ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(signUp.Password))).Replace("-", null);
                 user.UserName = signUp.UserName;
-                user.UserGuid= Guid.NewGuid().ToString().Trim() + DateTime.Now.ToString("ff");
+                user.UserGuid = Guid.NewGuid().ToString().Trim() + DateTime.Now.ToString("ff");
                 user.InitDate = DateTime.Now;
 
                 _db.Users.Add(user);
@@ -176,7 +176,7 @@ namespace TravelMaker.Controllers
             }
             else
             {
-                return BadRequest("此帳號未註冊"); 
+                return BadRequest("此帳號未註冊");
             }
         }
 
@@ -192,7 +192,7 @@ namespace TravelMaker.Controllers
         [Route("resetPassword")]
         public IHttpActionResult ResetPassword(ResetPasswordView resetPwd)
         {
-            var userToken =  JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string account = userToken["Account"].ToString();
             var user = _db.Users.Where(u => u.Account == account).FirstOrDefault();
 
@@ -243,8 +243,8 @@ namespace TravelMaker.Controllers
 
             //依照頁數取得我的行程
             List<object> result = new List<object>();
-            string imgPath = HttpContext.Current.Server.MapPath(@"~/Upload/AttractionImage/");
-            int pagSize = 10;
+            string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
+            int pagSize = 20;
 
             var tours = _db.Tours.Where(t => t.User.UserId == userId)
                          .Select(t => new
@@ -254,7 +254,7 @@ namespace TravelMaker.Controllers
                          }).OrderBy(t => t.TourId)
                          .Skip(pagSize * (Convert.ToInt32(page) - 1)).Take(pagSize).ToList();
 
-            
+
             //每個景點一張圖片，最多三張
             foreach (var tour in tours)
             {
@@ -278,7 +278,7 @@ namespace TravelMaker.Controllers
 
 
 
-            if (tours.Count!=0)
+            if (tours.Count != 0)
             {
                 return Ok(result);
             }
@@ -287,14 +287,6 @@ namespace TravelMaker.Controllers
                 return Ok("已無我的行程");
             }
         }
-
-
-
-
-
-
-
-
 
 
 

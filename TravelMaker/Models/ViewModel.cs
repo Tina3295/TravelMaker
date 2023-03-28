@@ -155,7 +155,9 @@ namespace TravelMaker.Models
     }
 
 
-
+    /// <summary>
+    ///     用戶修改原本行程按儲存-新建
+    /// </summary>
     public class TourAddView
     {
         /// <summary>
@@ -172,6 +174,9 @@ namespace TravelMaker.Models
     }
 
 
+    /// <summary>
+    ///     取得我的收藏行程
+    /// </summary>
     public class FavoriteTour
     {
         /// <summary>
@@ -191,6 +196,33 @@ namespace TravelMaker.Models
         /// </summary>
         [Display(Name = "景點圖片路徑")]
         public List<string> ImageUrl { get; set; } 
-        
+    }
+
+
+
+
+
+    /// <summary>
+    ///     取得單一用戶收藏行程頁面
+    /// </summary>
+    public class TourView
+    {
+        /// <summary>
+        ///     行程Id
+        /// </summary>
+        [Display(Name = "行程Id")]
+        public int TourId { get; set; }
+
+        /// <summary>
+        ///     行程名稱
+        /// </summary>
+        [Display(Name = "行程名稱")]
+        public string TourName { get; set; }
+
+        /// <summary>
+        ///     行程景點
+        /// </summary>
+        [Display(Name = "行程景點")]
+        public List<object> Attractions { get; set; }
     }
 }

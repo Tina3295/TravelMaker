@@ -689,7 +689,7 @@ namespace TravelMaker.Controllers
 
 
 
-            string imgPath = HttpContext.Current.Server.MapPath(@"~/Upload/AttractionImage/");
+            string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
             if (returnAttractionId.Count == attractionCount)
             {
                 List<object> results = new List<object>();
@@ -773,6 +773,115 @@ namespace TravelMaker.Controllers
 
             return Ok("新增行程成功");
         }
+
+
+
+
+
+
+
+        /// <summary>
+        ///     取得單一用戶收藏行程頁面
+        /// </summary>
+        [HttpGet]
+        [Route("{tourId}")]
+        public IHttpActionResult TourContent([FromUri] int tourId)
+        {
+            var tour= _db.Tours.Where(a => a.TourId == tourId).FirstOrDefault();
+
+            if (tour!=null)
+            {
+                TourView result = new TourView();
+
+                result.TourId = tourId;
+                result.TourName = tour.TourName;
+
+                var attractions = _db.TourAttractions.Where(a => a.TourId == tourId).OrderBy(a => a.OrderNum).ToList();
+                result.Attractions = new List<object>();
+                string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
+
+                foreach (var attraction in attractions)
+                {
+                    var temp = _db.Images.Where(a => a.Attraction.AttractionId == attraction.AttractionId)
+                                 .Select(a => new
+                                 {
+                                     AttractionId = attraction.AttractionId,
+                                     AttractionName = a.Attraction.AttractionName,
+                                     Elong = a.Attraction.Elong,
+                                     Nlat = a.Attraction.Nlat,
+                                     ImageUrl = imgPath + a.ImageName
+                                 }).FirstOrDefault();
+
+                    result.Attractions.Add(temp);
+                }
+
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("查無行程");
+            }
+        }
+
+
+
+
+
+
+
+
+        /// <summary>
+        ///     按下分享取得行程景點
+        /// </summary>
+        [HttpGet]
+        [Route("share")]
+        public IHttpActionResult ShareTour([FromUri] List<int> id)
+        {
+            var result = new List<object>();
+            string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
+
+            //防止景點id亂打
+            bool ok = true;
+
+            foreach (int attractionId in id)
+            {
+                var attraction = _db.Attractions.Where(a => a.AttractionId == attractionId).FirstOrDefault();
+                if (attraction != null)
+                {
+                    var temp = new
+                    {
+                        attraction.AttractionId,
+                        attraction.AttractionName,
+                        attraction.Elong,
+                        attraction.Nlat,
+                        ImageURL = imgPath + _db.Images.Where(i => i.AttractionId == attractionId).Select(i => i.ImageName).FirstOrDefault()
+                    };
+
+                    result.Add(temp);
+                }
+                else
+                {
+                    ok = false;
+                    break;
+                }
+            }
+
+            if(ok)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("景點id有誤");
+            }
+        }
+
+
+
+
+
+
+
 
 
 

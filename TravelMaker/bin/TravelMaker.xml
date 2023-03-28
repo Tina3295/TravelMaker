@@ -496,6 +496,16 @@
                 用戶修改原本行程按儲存-新建
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.TourController.TourContent(System.Int32)">
+            <summary>
+                取得單一用戶收藏行程頁面
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.TourController.ShareTour(System.Collections.Generic.List{System.Int32})">
+            <summary>
+                按下分享取得行程景點
+            </summary>
+        </member>
         <member name="M:TravelMaker.Controllers.TourController.Testgeo">
             <summary>
                 地理資料測試
@@ -882,6 +892,11 @@
                 符合篩選器的景點清單
             </summary>
         </member>
+        <member name="T:TravelMaker.Models.TourAddView">
+            <summary>
+                用戶修改原本行程按儲存-新建
+            </summary>
+        </member>
         <member name="P:TravelMaker.Models.TourAddView.TourName">
             <summary>
                 行程名稱
@@ -890,6 +905,11 @@
         <member name="P:TravelMaker.Models.TourAddView.AttractionId">
             <summary>
                 行程景點
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.FavoriteTour">
+            <summary>
+                取得我的收藏行程
             </summary>
         </member>
         <member name="P:TravelMaker.Models.FavoriteTour.TourId">
@@ -905,6 +925,26 @@
         <member name="P:TravelMaker.Models.FavoriteTour.ImageUrl">
             <summary>
                 景點圖片路徑
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.TourView">
+            <summary>
+                取得單一用戶收藏行程頁面
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourView.TourId">
+            <summary>
+                行程Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourView.TourName">
+            <summary>
+                行程名稱
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourView.Attractions">
+            <summary>
+                行程景點
             </summary>
         </member>
         <member name="T:TravelMaker.Security.JwtAuthFilter">
