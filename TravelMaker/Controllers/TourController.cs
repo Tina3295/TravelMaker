@@ -1003,7 +1003,45 @@ namespace TravelMaker.Controllers
 
 
 
+        /// <summary>
+        ///     刪除自己的行程
+        /// </summary>
+        [HttpDelete]
+        [JwtAuthFilter]
+        [Route("{tourId}")]
+        public IHttpActionResult TourDelete([FromUri]int tourId)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
+            //是否為該行程擁有者
+            var tour = _db.Tours.Where(t => t.TourId == tourId).FirstOrDefault();
+            if (tour.UserId==userId)
+            {
+                //刪除行程景點
+                var attractions = _db.TourAttractions.Where(a => a.TourId == tourId).ToList();
+                foreach(var attraction in attractions)
+                {
+                    _db.TourAttractions.Remove(attraction);
+                }
+                //刪除愛心記錄
+                var likes = _db.TourLikes.Where(a => a.TourId == tourId).ToList();
+                foreach (var like in likes)
+                {
+                    _db.TourLikes.Remove(like);
+                }
+                //刪除行程
+                _db.Tours.Remove(tour);
+                _db.SaveChanges();
+
+                return Ok("刪除成功");
+            }
+            else
+            {
+                return BadRequest("非該行程擁有者");
+            }
+        }
 
 
 

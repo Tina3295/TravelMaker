@@ -516,6 +516,11 @@
                 用戶修改原本行程按儲存-覆蓋
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.TourController.TourDelete(System.Int32)">
+            <summary>
+                刪除自己的行程
+            </summary>
+        </member>
         <member name="M:TravelMaker.Controllers.TourController.Testgeo">
             <summary>
                 地理資料測試
@@ -960,6 +965,11 @@
         <member name="P:TravelMaker.Models.FavoriteTour.AttrCounts">
             <summary>
                 景點數量
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.FavoriteTour.Likes">
+            <summary>
+                愛心數
             </summary>
         </member>
         <member name="P:TravelMaker.Models.FavoriteTour.ImageUrl">
