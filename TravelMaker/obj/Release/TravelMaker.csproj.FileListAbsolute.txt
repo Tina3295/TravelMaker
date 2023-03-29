@@ -147,7 +147,6 @@ C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.pdb
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\Microsoft.SqlServer.Types.dll
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addCityDistrictAttractionTable.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addCategoryCategoryAttractionTable.resources
-C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SqlServerSpatial160.dll
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addUserGuid.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addImageTable.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.correctTelLength.resources
@@ -163,3 +162,8 @@ C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SqlServerTypes\x64\msvcr
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SqlServerTypes\x64\SqlServerSpatial110.dll
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SqlServerTypes\x86\msvcr100.dll
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SqlServerTypes\x86\SqlServerSpatial110.dll
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addTourLikeTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addRoomRoomMemberTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addRoomGuid.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addRoomAttractionTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.correctOrderToAttrOrder.resources

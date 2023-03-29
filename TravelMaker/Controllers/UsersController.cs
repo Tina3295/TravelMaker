@@ -29,7 +29,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpPost]
         [Route("login")]
-        public HttpResponseMessage Login(LoginView login)
+        public IHttpActionResult Login(LoginView login)
         {
             User user = _db.Users.Where(c => c.Account == login.Account).FirstOrDefault();
 
@@ -45,15 +45,12 @@ namespace TravelMaker.Controllers
                     JwtAuthUtil jwtAuthUtil = new JwtAuthUtil();
                     string jwtToken = jwtAuthUtil.GenerateToken(user.UserGuid, login.Account, user.UserName, user.ProfilePicture);
 
-                    //token放在response headers
-                    var response = new HttpResponseMessage(HttpStatusCode.OK);
-                    response.Headers.Add("Authorization", $"Bearer {jwtToken}");
 
                     //頭貼
                     string profilePicture = "";
                     if (user.ProfilePicture != null)
                     {
-                        profilePicture = "" + user.ProfilePicture;
+                        profilePicture = "https://" + Request.RequestUri.Host + "/upload/profilePicture/" + user.ProfilePicture;
                     }
 
 
@@ -63,23 +60,20 @@ namespace TravelMaker.Controllers
                         Account = user.Account,
                         UserName = user.UserName,
                         UserGuid = user.UserGuid,
+                        JwtToken= jwtToken,
                         ProfilePicture = profilePicture
                     };
 
-
-                    var content = new ObjectContent(typeof(object), result, new JsonMediaTypeFormatter());
-                    response.Content = content;
-
-                    return response;
+                    return Ok(result);
                 }
                 else
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "帳號或密碼有誤");
+                    return BadRequest("帳號或密碼有誤");
                 }
             }
             else
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "此帳號未註冊");
+                return BadRequest("此帳號未註冊");
             }
         }
 

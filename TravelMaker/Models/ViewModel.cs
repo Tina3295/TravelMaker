@@ -81,7 +81,7 @@ namespace TravelMaker.Models
 
 
 
-
+    //-------------------行程View-------------------
 
     /// <summary>
     ///     產生隨機行程
@@ -290,4 +290,85 @@ namespace TravelMaker.Models
         [Display(Name = "行程Id")]
         public int TourId { get; set; }
     }
+
+
+
+
+    //-------------------房間View-------------------
+
+    /// <summary>
+    ///     新增房間
+    /// </summary>
+    public class RoomAddView
+    {
+        /// <summary>
+        ///     房間名稱
+        /// </summary>
+        [Display(Name = "房間名稱")]
+        public string RoomName { get; set; }
+
+
+        /// <summary>
+        ///     景點Id
+        /// </summary>
+        [Display(Name = "景點Id")]
+        public int[] Attractions { get; set; }
+    }
+
+
+    /// <summary>
+    ///     房間資訊
+    /// </summary>
+    public class RoomContentView
+    {
+        /// <summary>
+        ///     房間Guid
+        /// </summary>
+        [Display(Name = "房間Guid")]
+        public string RoomGuid { get; set; }
+
+
+        /// <summary>
+        ///     房間名稱
+        /// </summary>
+        [Display(Name = "房間名稱")]
+        public string RoomName { get; set; }
+
+        /// <summary>
+        ///     房主Guid
+        /// </summary>
+        [Display(Name = "房主Guid")]
+        public string CreaterGuid { get; set; }
+
+        /// <summary>
+        ///     房客
+        /// </summary>
+        [Display(Name = "房客")]
+        public List<object> Users { get; set; }
+
+
+        /// <summary>
+        ///     投票日期
+        /// </summary>
+        [Display(Name = "投票日期")]
+        public List<object> VoteDates { get; set; }
+
+
+
+        /// <summary>
+        ///     房間景點
+        /// </summary>
+        [Display(Name = "房間景點")]
+        public List<object> AttrationsData { get; set; }
+
+
+
+
+    }
+
+
+
+
+
+
 }

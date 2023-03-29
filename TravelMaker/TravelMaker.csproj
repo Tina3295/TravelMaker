@@ -235,6 +235,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\RoomController.cs" />
     <Compile Include="Controllers\TourController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
@@ -305,6 +306,22 @@
     <Compile Include="Migrations\202303281024432_addTourLikeTable.Designer.cs">
       <DependentUpon>202303281024432_addTourLikeTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202303281737108_addRoomRoomMemberTable.cs" />
+    <Compile Include="Migrations\202303281737108_addRoomRoomMemberTable.Designer.cs">
+      <DependentUpon>202303281737108_addRoomRoomMemberTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202303281810016_addRoomGuid.cs" />
+    <Compile Include="Migrations\202303281810016_addRoomGuid.Designer.cs">
+      <DependentUpon>202303281810016_addRoomGuid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202303290306510_addRoomAttractionTable.cs" />
+    <Compile Include="Migrations\202303290306510_addRoomAttractionTable.Designer.cs">
+      <DependentUpon>202303290306510_addRoomAttractionTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202303290316503_correctOrderToAttrOrder.cs" />
+    <Compile Include="Migrations\202303290316503_correctOrderToAttrOrder.Designer.cs">
+      <DependentUpon>202303290316503_correctOrderToAttrOrder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\Category.cs" />
@@ -312,6 +329,9 @@
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\District.cs" />
     <Compile Include="Models\Image.cs" />
+    <Compile Include="Models\Room.cs" />
+    <Compile Include="Models\RoomAttraction.cs" />
+    <Compile Include="Models\RoomMember.cs" />
     <Compile Include="Models\Tour.cs" />
     <Compile Include="Models\TourAttraction.cs" />
     <Compile Include="Models\TourLike.cs" />
@@ -474,6 +494,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202303281024432_addTourLikeTable.resx">
       <DependentUpon>202303281024432_addTourLikeTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303281737108_addRoomRoomMemberTable.resx">
+      <DependentUpon>202303281737108_addRoomRoomMemberTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303281810016_addRoomGuid.resx">
+      <DependentUpon>202303281810016_addRoomGuid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303290306510_addRoomAttractionTable.resx">
+      <DependentUpon>202303290306510_addRoomAttractionTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303290316503_correctOrderToAttrOrder.resx">
+      <DependentUpon>202303290316503_correctOrderToAttrOrder.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

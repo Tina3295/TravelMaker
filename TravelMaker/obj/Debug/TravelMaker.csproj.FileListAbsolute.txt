@@ -164,3 +164,7 @@ C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SqlServerTypes\x64\SqlSe
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SqlServerTypes\x86\msvcr100.dll
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SqlServerTypes\x86\SqlServerSpatial110.dll
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addTourLikeTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addRoomRoomMemberTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addRoomGuid.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addRoomAttractionTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.correctOrderToAttrOrder.resources

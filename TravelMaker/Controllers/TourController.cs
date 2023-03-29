@@ -800,7 +800,7 @@ namespace TravelMaker.Controllers
 
                 var attractions = _db.TourAttractions.Where(a => a.TourId == tourId).OrderBy(a => a.OrderNum).ToList();
                 result.Attractions = new List<object>();
-                string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
+                string imgPath = "https://" + Request.RequestUri.Host + "/upload/attractionImage/";
 
                 foreach (var attraction in attractions)
                 {
