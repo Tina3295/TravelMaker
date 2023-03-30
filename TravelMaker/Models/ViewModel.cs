@@ -360,15 +360,58 @@ namespace TravelMaker.Models
         /// </summary>
         [Display(Name = "房間景點")]
         public List<object> AttrationsData { get; set; }
-
-
-
-
+    }
+    public class AttrationsData
+    {
+        public int AttractionId { get; set; }
+        public string UserGuid { get; set; }
+        public string AttractionName { get; set; }
+        public decimal Elong { get; set; }
+        public decimal Nlat { get; set; }
+        public string ImageUrl { get; set; }
+        public int Order { get; set; }
     }
 
 
 
+    //-------------------房間View-------------------
+
+    /// <summary>
+    ///     取得我的房間
+    /// </summary>
+    public class MyRoom
+    {
+        /// <summary>
+        ///     房間Guid
+        /// </summary>
+        [Display(Name = "房間Guid")]
+        public string RoomGuid { get; set; }
+
+        /// <summary>
+        ///     房間名稱
+        /// </summary>
+        [Display(Name = "房間名稱")]
+        public string RoomName { get; set; }
 
 
+        /// <summary>
+        ///     景點數量
+        /// </summary>
+        [Display(Name = "景點數量")]
+        public int AttrCounts { get; set; }
 
+
+        /// <summary>
+        ///     房主名字
+        /// </summary>
+        [Display(Name = "房主名字")]
+        public string CreaterName { get; set; }
+
+
+        /// <summary>
+        ///     景點圖片路徑
+        /// </summary>
+        [Display(Name = "景點圖片路徑")]
+        public List<string> ImageUrl { get; set; }
+    }
 }

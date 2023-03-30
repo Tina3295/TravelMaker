@@ -245,7 +245,7 @@ namespace TravelMaker.Controllers
                          {
                              t.TourId,
                              t.TourName
-                         }).OrderBy(t => t.TourId)
+                         }).OrderByDescending(t => t.TourId)
                          .Skip(pagSize * (Convert.ToInt32(page) - 1)).Take(pagSize).ToList();
 
 
@@ -281,7 +281,7 @@ namespace TravelMaker.Controllers
             }
             else
             {
-                return Ok("已無我的行程");
+                return BadRequest("已無我的行程");
             }
         }
 
@@ -289,6 +289,68 @@ namespace TravelMaker.Controllers
 
 
 
+        /// <summary>
+        ///     取得我的收藏房間
+        /// </summary>
+        [HttpGet]
+        [Route("room/{page}")]
+        [JwtAuthFilter]
+        public IHttpActionResult MyRoom([FromUri] string page)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
 
+            //依照頁數取得我的行程
+            List<object> result = new List<object>();
+            string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
+            int pagSize = 20;
+
+            var rooms = _db.RoomMembers.Where(r => r.UserId == userId)
+                         .Select(r => new
+                         {
+                             r.Room.RoomGuid,
+                             r.Room.RoomName,
+                             r.Room.RoomId
+                         }).OrderByDescending(r => r.RoomId)
+                         .Skip(pagSize * (Convert.ToInt32(page) - 1)).Take(pagSize).ToList();
+
+
+
+            foreach (var room in rooms)
+            {
+                MyRoom myRoom = new MyRoom();
+                myRoom.RoomGuid = room.RoomGuid;
+                myRoom.RoomName = room.RoomName;
+                myRoom.CreaterName = _db.RoomMembers.Where(r => r.RoomId == room.RoomId && r.Permission == 1).Select(r => r.User.UserName).FirstOrDefault();
+                myRoom.AttrCounts = _db.RoomAttractions.Where(r => r.RoomId == room.RoomId).Count();
+
+                myRoom.ImageUrl = new List<string>();
+
+                //每個景點一張圖片，最多三張
+                var attractionIds = _db.RoomAttractions.Where(r=>r.RoomId==room.RoomId)
+                                                       .Select(t => t.AttractionId).ToList();
+
+                for (int i = 0; i < Math.Min(attractionIds.Count, 3); i++)
+                {
+                    int attractionId = attractionIds[i];
+                    string img = _db.Images.Where(a => a.AttractionId == attractionId).Select(a => a.ImageName).FirstOrDefault();
+
+                    myRoom.ImageUrl.Add(imgPath + img);
+                }
+                result.Add(myRoom);
+            }
+
+
+
+            if (rooms.Count != 0)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("已無我的房間");
+            }
+        }
     }
 }
