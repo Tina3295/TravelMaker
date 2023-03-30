@@ -352,5 +352,7 @@ namespace TravelMaker.Controllers
                 return BadRequest("已無我的房間");
             }
         }
+
+
     }
 }

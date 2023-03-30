@@ -98,6 +98,7 @@ namespace TravelMaker.Controllers
                         var user = _db.Users.Where(u => u.UserId == userId).Select(u => new
                         {
                             UserGuid = u.UserGuid,
+                            UserName=u.UserName,
                             ProfilePicture = u.ProfilePicture == null ? "" : savePath + u.ProfilePicture
                         });
 
@@ -181,5 +182,124 @@ namespace TravelMaker.Controllers
                 return BadRequest("非該房間成員");
             }
         }
+
+
+
+
+
+
+
+
+
+
+        /// <summary>
+        ///     房客編輯(儲存)房間-房間資訊(行程)
+        /// </summary>
+        [HttpPost]
+        [JwtAuthFilter]
+        [Route("modify")]
+        public IHttpActionResult RoomModify(RoomModifyView roomModify)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            //int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+
+            //是否為該房間房客
+            int roomId = _db.Rooms.Where(r => r.RoomGuid == roomModify.RoomGuid).Select(r=>r.RoomId).FirstOrDefault();
+            var inRoom = _db.RoomMembers.Where(r => r.RoomId==roomId && r.User.UserGuid == userGuid).FirstOrDefault();
+
+            if (inRoom!=null)
+            {
+                //原本正式景點數
+                int originCount = _db.RoomAttractions.Where(r => r.RoomId==roomId).Select(r => r.AttrOrder).Max();
+                int x=-1;
+
+                //先刪掉原本的備用景點
+                var originAtts = _db.RoomAttractions.Where(r => r.RoomId == roomId && r.AttrOrder == 0);
+                foreach (var originAtt in originAtts)
+                {
+                    _db.RoomAttractions.Remove(originAtt);
+                }
+                _db.SaveChanges();
+
+                //一一更改正式景點
+                foreach (var newAttraction in roomModify.AttrationsData)
+                {
+                    if (newAttraction.Order != 0) //正式景點
+                    {
+                        var originAttraction = _db.RoomAttractions.Where(r => r.RoomId==roomId && r.AttrOrder == newAttraction.Order).FirstOrDefault();
+
+                        if(originAttraction!=null) //原本有此次序-修改
+                        {
+                            originAttraction.AttractionId = newAttraction.AttractionId;
+                            originAttraction.UserId = _db.Users.Where(u => u.UserGuid == newAttraction.UserGuid).Select(u => u.UserId).FirstOrDefault();
+                        }
+                        else //原本無此次序-新增
+                        {
+                            RoomAttraction roomAttraction = new RoomAttraction();
+                            roomAttraction.RoomId = roomId;
+                            roomAttraction.AttractionId = newAttraction.AttractionId;
+                            roomAttraction.UserId = _db.Users.Where(u => u.UserGuid == newAttraction.UserGuid).Select(u => u.UserId).FirstOrDefault();
+                            roomAttraction.AttrOrder = newAttraction.Order;
+                            _db.RoomAttractions.Add(roomAttraction);
+                        }
+                        _db.SaveChanges();
+
+
+                        //記錄正式景點數 後是否<前
+                        if (newAttraction.Order>x)
+                        {
+                            x = newAttraction.Order;
+                        }
+                    }
+                    else //加入備用景點
+                    {
+                        RoomAttraction roomAttraction = new RoomAttraction();
+                        roomAttraction.RoomId = roomId;
+                        roomAttraction.AttractionId = newAttraction.AttractionId;
+                        roomAttraction.UserId = _db.Users.Where(u => u.UserGuid == newAttraction.UserGuid).Select(u => u.UserId).FirstOrDefault();
+                        roomAttraction.AttrOrder = 0;
+                        _db.RoomAttractions.Add(roomAttraction);
+
+                        _db.SaveChanges();
+                    } 
+                }
+
+
+
+                //正式景點數前>後 需刪除!
+                if (originCount>x)
+                {
+                    for(int i=x+1;i<=originCount ;i++)
+                    {
+                        var deleteAtt = _db.RoomAttractions.Where(r => r.Room.RoomGuid == roomModify.RoomGuid && r.AttrOrder == i).FirstOrDefault();
+
+                        _db.RoomAttractions.Remove(deleteAtt);
+                    }
+                }
+                _db.SaveChanges();
+
+                return Ok("房間景點修改成功");
+            }
+            else
+            {
+                return BadRequest("非該房間房客");
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

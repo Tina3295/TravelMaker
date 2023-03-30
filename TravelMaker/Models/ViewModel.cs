@@ -374,8 +374,6 @@ namespace TravelMaker.Models
 
 
 
-    //-------------------房間View-------------------
-
     /// <summary>
     ///     取得我的房間
     /// </summary>
@@ -413,5 +411,33 @@ namespace TravelMaker.Models
         /// </summary>
         [Display(Name = "景點圖片路徑")]
         public List<string> ImageUrl { get; set; }
+    }
+
+
+
+
+    /// <summary>
+    ///     取得我的收藏行程
+    /// </summary>
+    public class RoomModifyView 
+    {
+        /// <summary>
+        ///     房間Guid
+        /// </summary>
+        [Display(Name = "房間Guid")]
+        public string RoomGuid { get; set; }
+
+
+        /// <summary>
+        ///     房間景點
+        /// </summary>
+        [Display(Name = "房間景點")]
+        public List<RoomModifyData> AttrationsData { get; set; }
+    }
+    public class RoomModifyData
+    {
+        public int AttractionId { get; set; }
+        public string UserGuid { get; set; }
+        public int Order { get; set; }
     }
 }
