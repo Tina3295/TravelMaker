@@ -301,12 +301,12 @@ namespace TravelMaker.Controllers
             string userGuuid = (string)userToken["UserGuid"];
             int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
 
-            //依照頁數取得我的行程
+            //依照頁數取得我的房間
             List<object> result = new List<object>();
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
             int pagSize = 20;
 
-            var rooms = _db.RoomMembers.Where(r => r.UserId == userId)
+            var rooms = _db.RoomMembers.Where(r => r.UserId == userId && r.Room.Status == true)
                          .Select(r => new
                          {
                              r.Room.RoomGuid,

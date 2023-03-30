@@ -509,9 +509,9 @@
                 房客編輯(儲存)房間-房間資訊(行程)
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomController.DateAdd(TravelMaker.Models.DateView)">
+        <member name="M:TravelMaker.Controllers.RoomController.VoteDateAdd(TravelMaker.Models.DateView)">
             <summary>
-                房客編輯(儲存)房間-房間資訊(行程)
+                主揪,被揪新增日期選項
             </summary>
         </member>
         <member name="T:TravelMaker.Controllers.TourController">
@@ -1263,6 +1263,26 @@
         <member name="P:TravelMaker.Models.DateView.Date">
             <summary>
                 投票日期(格式:2023-05-03)
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.Vote">
+            <summary>
+                投票記錄
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Vote.VoteId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Vote.UserId">
+            <summary>
+                投票用戶Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Vote.VoteDateId">
+            <summary>
+                對應投票日期
             </summary>
         </member>
         <member name="T:TravelMaker.Models.VoteDate">

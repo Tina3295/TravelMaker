@@ -371,6 +371,13 @@ namespace TravelMaker.Models
         public string ImageUrl { get; set; }
         public int Order { get; set; }
     }
+    public class VoteDatesData
+    {
+        public int VoteDateId { get; set; }
+        public string Date { get; set; }
+        public int Count { get; set; }
+        public bool IsVoted { get; set; }
+    }
 
 
 

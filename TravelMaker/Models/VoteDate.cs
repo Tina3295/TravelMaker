@@ -53,5 +53,9 @@ namespace TravelMaker.Models
 
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
+
+
+
+        public virtual ICollection<Vote> Votes { get; set; }
     }
 }
