@@ -491,7 +491,7 @@
                 主揪新增房間
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomController.RoomContent(System.String)">
+        <member name="M:TravelMaker.Controllers.RoomController.RoomInfo(System.String)">
             <summary>
                 取得單一房間所有資訊
             </summary>
@@ -512,6 +512,11 @@
         <member name="M:TravelMaker.Controllers.RoomController.VoteDateAdd(TravelMaker.Models.DateView)">
             <summary>
                 主揪,被揪新增日期選項
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.RoomController.VoteDateDelete(System.Int32)">
+            <summary>
+                主揪,被揪刪除日期選項
             </summary>
         </member>
         <member name="T:TravelMaker.Controllers.TourController">

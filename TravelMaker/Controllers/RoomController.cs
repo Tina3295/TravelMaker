@@ -128,7 +128,7 @@ namespace TravelMaker.Controllers
                     }
 
 
-                    //投票日期!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    //投票日期
                     int myUserId = 0;
                     if (Request.Headers.Authorization != null)
                     {
@@ -209,7 +209,7 @@ namespace TravelMaker.Controllers
 
 
         /// <summary>
-        ///     房客編輯(儲存)房間-房間資訊(行程)
+        ///     主揪,被揪編輯(儲存)房間-房間資訊(行程)
         /// </summary>
         [HttpPost]
         [JwtAuthFilter]
@@ -219,7 +219,7 @@ namespace TravelMaker.Controllers
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
             
-            //是否為該房間房客
+            //是否為該房間成員
             int roomId = _db.Rooms.Where(r => r.RoomGuid == roomModify.RoomGuid).Select(r=>r.RoomId).FirstOrDefault();
             var inRoom = _db.RoomMembers.Where(r => r.RoomId==roomId && r.User.UserGuid == userGuid).FirstOrDefault();
 
@@ -320,7 +320,7 @@ namespace TravelMaker.Controllers
             string userGuid = (string)userToken["UserGuid"];
             int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
-            //是房客才可以新增
+            //是房間成員才可以新增
             var inRoom = _db.RoomMembers.Where(r => r.Room.RoomGuid==dateView.RoomGuid && r.UserId==userId).FirstOrDefault();
 
             if (inRoom != null)
@@ -357,46 +357,47 @@ namespace TravelMaker.Controllers
         /// <summary>
         ///     主揪,被揪刪除日期選項
         /// </summary>
-        //[HttpDelete]
-        //[JwtAuthFilter]
-        //[Route("date")]
-        //public IHttpActionResult VoteDateDelete(DateView dateView)
-        //{
-        //    var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-        //    string userGuid = (string)userToken["UserGuid"];
-        //    int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+        [HttpDelete]
+        [JwtAuthFilter]
+        [Route("date/{voteDateId}")]
+        public IHttpActionResult VoteDateDelete([FromUri]int voteDateId)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
-        //    //是房客才可以新增
-        //    var inRoom = _db.RoomMembers.Where(r => r.Room.RoomGuid == dateView.RoomGuid && r.UserId == userId).FirstOrDefault();
+            var voteDateDetail = _db.VoteDates.Where(v => v.VoteDateId == voteDateId).FirstOrDefault();
+            var inRoom = _db.RoomMembers.Where(r => r.RoomId==voteDateDetail.RoomId && r.UserId == userId).FirstOrDefault();
 
-        //    if (inRoom != null)
-        //    {
-        //        //處理日期傳入格式為字串ex.2023-5-3
-        //        string[] tempDate = dateView.Date.Split('-');
-        //        DateTime date = new DateTime(Convert.ToInt32(tempDate[0]), Convert.ToInt32(tempDate[1]), Convert.ToInt32(tempDate[2]));
-        //        var hadVoteDate = _db.VoteDates.Where(r => r.Room.RoomGuid == dateView.RoomGuid && r.Date == date).FirstOrDefault();
+            //是房間成員，且主揪或提出該日期的被揪可以刪除
+            if (inRoom != null)
+            {
+                if(inRoom.Permission == 1 || voteDateDetail.UserId == userId)
+                {
+                    //先刪投票的人，再刪日期
+                    var votes = _db.Votes.Where(v => v.VoteDateId == voteDateId).ToList();
 
-        //        if (inRoom.Permission==1 || hadVoteDate.UserId == userId) //房主或提出該日期的房客可以刪除
-        //        {
-        //            //先刪投票的人!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    foreach (var vote in votes)
+                    {
+                        _db.Votes.Remove(vote);
+                    }
 
+                    _db.VoteDates.Remove(voteDateDetail);
+                    _db.SaveChanges();
 
+                    return Ok("刪除成功");
+                }
+                else
+                {
+                    return BadRequest("非房主或提出日期的房客");
+                }
+            }
+            else
+            {
+                return BadRequest("非該房間成員");
+            }
 
-
-
-
-        //            _db.VoteDates.Remove(hadVoteDate);
-        //            _db.SaveChanges();
-
-        //            return Ok("刪除成功");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return BadRequest("非該房間成員");
-        //    }
-            
-        //}
+        }
 
 
 
