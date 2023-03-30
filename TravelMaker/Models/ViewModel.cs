@@ -417,7 +417,7 @@ namespace TravelMaker.Models
 
 
     /// <summary>
-    ///     取得我的收藏行程
+    ///     取得我的房間
     /// </summary>
     public class RoomModifyView 
     {
@@ -439,5 +439,32 @@ namespace TravelMaker.Models
         public int AttractionId { get; set; }
         public string UserGuid { get; set; }
         public int Order { get; set; }
+    }
+
+
+
+
+
+
+
+
+
+    /// <summary>
+    ///     日期相關
+    /// </summary>
+    public class DateView
+    {
+        /// <summary>
+        ///     房間Guid
+        /// </summary>
+        [Display(Name = "房間Guid")]
+        public string RoomGuid { get; set; }
+
+
+        /// <summary>
+        ///     投票日期(格式:2023-05-03)
+        /// </summary>
+        [Display(Name = "投票日期")]
+        public string Date { get; set; }
     }
 }

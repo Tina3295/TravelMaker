@@ -202,8 +202,7 @@ namespace TravelMaker.Controllers
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
-            //int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
-
+            
             //是否為該房間房客
             int roomId = _db.Rooms.Where(r => r.RoomGuid == roomModify.RoomGuid).Select(r=>r.RoomId).FirstOrDefault();
             var inRoom = _db.RoomMembers.Where(r => r.RoomId==roomId && r.User.UserGuid == userGuid).FirstOrDefault();
@@ -283,7 +282,7 @@ namespace TravelMaker.Controllers
             }
             else
             {
-                return BadRequest("非該房間房客");
+                return BadRequest("非該房間成員");
             }
         }
 
@@ -293,7 +292,50 @@ namespace TravelMaker.Controllers
 
 
 
+        /// <summary>
+        ///     主揪,被揪新增日期選項
+        /// </summary>
+        [HttpPost]
+        [JwtAuthFilter]
+        [Route("date")]
+        public IHttpActionResult DateAdd(DateView dateView)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
+            //是房客才可以新增
+            var inRoom = _db.RoomMembers.Where(r => r.Room.RoomGuid==dateView.RoomGuid && r.UserId==userId).FirstOrDefault();
+
+            if (inRoom != null)
+            {
+                //處理日期傳入格式為字串2023-05-03
+                string[] tempDate = dateView.Date.Split('-');
+                DateTime date = new DateTime(Convert.ToInt32(tempDate[0]), Convert.ToInt32(tempDate[1]), Convert.ToInt32(tempDate[2]));
+
+                //日期有無重複
+                var hadDate = _db.VoteDates.Where(d => d.Room.RoomGuid == dateView.RoomGuid && d.Date == date).FirstOrDefault();
+                if(hadDate==null)
+                {
+                    VoteDate voteDate = new VoteDate();
+                    voteDate.RoomId = _db.Rooms.Where(r => r.RoomGuid == dateView.RoomGuid).Select(r => r.RoomId).FirstOrDefault();
+                    voteDate.Date = date;
+                    voteDate.UserId = userId;
+                    _db.VoteDates.Add(voteDate);
+                    _db.SaveChanges();
+
+                    return Ok("日期新增成功");
+                }
+                else
+                {
+                    return BadRequest("投票日期已存在");
+                }
+            }
+            else
+            {
+                return BadRequest("非該房間成員");
+            }
+        }
 
 
 

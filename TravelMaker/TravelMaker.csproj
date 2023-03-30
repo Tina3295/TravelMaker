@@ -322,6 +322,10 @@
     <Compile Include="Migrations\202303290316503_correctOrderToAttrOrder.Designer.cs">
       <DependentUpon>202303290316503_correctOrderToAttrOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202303300844481_addVoteDateTable.cs" />
+    <Compile Include="Migrations\202303300844481_addVoteDateTable.Designer.cs">
+      <DependentUpon>202303300844481_addVoteDateTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\Category.cs" />
@@ -338,6 +342,7 @@
     <Compile Include="Models\TravelMakerDbContext.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\ViewModel.cs" />
+    <Compile Include="Models\VoteDate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\JwtAuthFilter.cs" />
     <Compile Include="Security\JwtAuthUtil.cs" />
@@ -506,6 +511,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202303290316503_correctOrderToAttrOrder.resx">
       <DependentUpon>202303290316503_correctOrderToAttrOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303300844481_addVoteDateTable.resx">
+      <DependentUpon>202303300844481_addVoteDateTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -32,6 +32,7 @@ namespace TravelMaker.Models
         public virtual DbSet<RoomMember> RoomMembers { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<RoomAttraction> RoomAttractions { get; set; }
+        public virtual DbSet<VoteDate> VoteDates { get; set; }
     }
 
     //public class MyEntity

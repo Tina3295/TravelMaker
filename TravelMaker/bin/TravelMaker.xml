@@ -509,6 +509,11 @@
                 房客編輯(儲存)房間-房間資訊(行程)
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.RoomController.DateAdd(TravelMaker.Models.DateView)">
+            <summary>
+                房客編輯(儲存)房間-房間資訊(行程)
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.TourController">
             <summary>
                 行程相關
@@ -1232,7 +1237,7 @@
         </member>
         <member name="T:TravelMaker.Models.RoomModifyView">
             <summary>
-                取得我的收藏行程
+                取得我的房間
             </summary>
         </member>
         <member name="P:TravelMaker.Models.RoomModifyView.RoomGuid">
@@ -1243,6 +1248,46 @@
         <member name="P:TravelMaker.Models.RoomModifyView.AttrationsData">
             <summary>
                 房間景點
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.DateView">
+            <summary>
+                日期相關
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.DateView.RoomGuid">
+            <summary>
+                房間Guid
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.DateView.Date">
+            <summary>
+                投票日期(格式:2023-05-03)
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.VoteDate">
+            <summary>
+                投票日期
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.VoteDate.VoteDateId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.VoteDate.RoomId">
+            <summary>
+                對應房間
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.VoteDate.Date">
+            <summary>
+                投票日期
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.VoteDate.UserId">
+            <summary>
+                提出用戶Id
             </summary>
         </member>
         <member name="T:TravelMaker.Security.JwtAuthFilter">
