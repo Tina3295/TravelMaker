@@ -506,7 +506,7 @@
         </member>
         <member name="M:TravelMaker.Controllers.RoomController.RoomModify(TravelMaker.Models.RoomModifyView)">
             <summary>
-                房客編輯(儲存)房間-房間資訊(行程)
+                主揪,被揪編輯(儲存)房間-房間資訊(行程)
             </summary>
         </member>
         <member name="M:TravelMaker.Controllers.RoomController.VoteDateAdd(TravelMaker.Models.DateView)">
@@ -517,6 +517,16 @@
         <member name="M:TravelMaker.Controllers.RoomController.VoteDateDelete(System.Int32)">
             <summary>
                 主揪,被揪刪除日期選項
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.RoomController.VoteAdd(System.Int32)">
+            <summary>
+                主揪.被揪投票
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.RoomController.VoteDelete(System.Int32)">
+            <summary>
+                主揪.被揪取消投票
             </summary>
         </member>
         <member name="T:TravelMaker.Controllers.TourController">

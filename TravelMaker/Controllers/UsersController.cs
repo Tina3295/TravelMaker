@@ -115,8 +115,8 @@ namespace TravelMaker.Controllers
             }
             else
             {
-                var modelErrorMessage = ModelState.Values.Select(e => e.Errors).ToList();
-                return BadRequest(modelErrorMessage.ToString()); //格式錯誤
+                var errorMessages = string.Join(";", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return BadRequest(errorMessages);
             }
         }
 
@@ -205,7 +205,7 @@ namespace TravelMaker.Controllers
                     user.Password = newHashPwd;
                     _db.SaveChanges();
 
-                    return Ok("密碼修改完成");
+                    return Ok(new { Message = "密碼修改完成" });
                 }
                 else
                 {

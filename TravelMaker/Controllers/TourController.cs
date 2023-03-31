@@ -771,7 +771,7 @@ namespace TravelMaker.Controllers
                 _db.SaveChanges();
             }
 
-            return Ok("新增行程成功");
+            return Ok(new { Message = "新增行程成功" });
         }
 
 
@@ -928,7 +928,7 @@ namespace TravelMaker.Controllers
                 _db.SaveChanges();
             }
 
-            return Ok("複製行程成功");
+            return Ok(new { Message = "複製行程成功" });
         }
 
 
@@ -985,7 +985,7 @@ namespace TravelMaker.Controllers
                     _db.SaveChanges();
                 }
 
-                return Ok("行程修改成功");
+                return Ok(new { Message = "行程修改成功" });
             }
             else
             {
@@ -1035,7 +1035,7 @@ namespace TravelMaker.Controllers
                 _db.Tours.Remove(tour);
                 _db.SaveChanges();
 
-                return Ok("刪除成功");
+                return Ok(new { Message = "刪除成功" });
             }
             else
             {

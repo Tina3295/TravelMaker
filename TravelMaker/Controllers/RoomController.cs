@@ -138,7 +138,7 @@ namespace TravelMaker.Controllers
                     }
 
                     roomContent.VoteDates = new List<object>();
-                    var voteDates = _db.VoteDates.Where(v => v.RoomId == hadRoom.RoomId).ToList();
+                    var voteDates = _db.VoteDates.Where(d => d.RoomId == hadRoom.RoomId).OrderBy(d=>d.Date).ToList();
 
                     foreach (var voteDate in voteDates)
                     {
@@ -191,7 +191,7 @@ namespace TravelMaker.Controllers
                 room.RoomName = RoomName;
                 _db.SaveChanges();
 
-                return Ok("修改成功");
+                return Ok(new { Message = "修改成功" });
             }
             else
             {
@@ -294,7 +294,7 @@ namespace TravelMaker.Controllers
                 }
                 _db.SaveChanges();
 
-                return Ok("房間景點修改成功");
+                return Ok(new { Message = "房間景點修改成功" });
             }
             else
             {
@@ -340,7 +340,7 @@ namespace TravelMaker.Controllers
                     _db.VoteDates.Add(voteDate);
                     _db.SaveChanges();
 
-                    return Ok("日期新增成功");
+                    return Ok(new { Message = "日期新增成功" });
                 }
                 else
                 {
@@ -385,7 +385,7 @@ namespace TravelMaker.Controllers
                     _db.VoteDates.Remove(voteDateDetail);
                     _db.SaveChanges();
 
-                    return Ok("刪除成功");
+                    return Ok(new { Message = "刪除成功" });
                 }
                 else
                 {
@@ -396,11 +396,72 @@ namespace TravelMaker.Controllers
             {
                 return BadRequest("非該房間成員");
             }
+        }
 
+
+
+        /// <summary>
+        ///     主揪.被揪投票
+        /// </summary>
+        [HttpPost]
+        [JwtAuthFilter]
+        [Route("vote/{voteDateId}")]
+        public IHttpActionResult VoteAdd([FromUri] int voteDateId)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+
+            var voteDateDetail = _db.VoteDates.Where(v => v.VoteDateId == voteDateId).FirstOrDefault();
+            var inRoom = _db.RoomMembers.Where(r => r.RoomId == voteDateDetail.RoomId && r.UserId == userId).FirstOrDefault();
+
+            if(inRoom!=null)
+            {
+                Vote vote = new Vote();
+                vote.UserId = userId;
+                vote.VoteDateId = voteDateId;
+                _db.Votes.Add(vote);
+                _db.SaveChanges();
+
+                return Ok(new { Message = "投票成功" });
+            }
+            else
+            {
+                return BadRequest("非該房間成員");
+            }
         }
 
 
 
 
+        /// <summary>
+        ///     主揪.被揪取消投票
+        /// </summary>
+        [HttpDelete]
+        [JwtAuthFilter]
+        [Route("vote/{voteDateId}")]
+        public IHttpActionResult VoteDelete([FromUri] int voteDateId)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+
+            var voteDateDetail = _db.VoteDates.Where(v => v.VoteDateId == voteDateId).FirstOrDefault();
+            var inRoom = _db.RoomMembers.Where(r => r.RoomId == voteDateDetail.RoomId && r.UserId == userId).FirstOrDefault();
+
+            if (inRoom != null)
+            {
+                var vote = _db.Votes.Where(v => v.VoteDateId == voteDateId && v.UserId == userId).FirstOrDefault();
+                
+                _db.Votes.Remove(vote);
+                _db.SaveChanges();
+
+                return Ok(new { Message = "已取消投票" });
+            }
+            else
+            {
+                return BadRequest("非該房間成員");
+            }
+        }
     }
 }
