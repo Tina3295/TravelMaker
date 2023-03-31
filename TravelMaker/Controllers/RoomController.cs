@@ -90,17 +90,17 @@ namespace TravelMaker.Controllers
 
                     //房間用戶
                     string savePath= "https://" + Request.RequestUri.Host + "/upload/profilePicture/";
-                    var userIds = _db.RoomMembers.Where(r => r.RoomId == hadRoom.RoomId).Select(r => r.UserId);
+                    var userIds = _db.RoomMembers.Where(r => r.RoomId == hadRoom.RoomId).Select(r => r.UserId).ToList();
 
                     roomContent.Users = new List<object>();
                     foreach (var userId in userIds)
                     {
-                        var user = _db.Users.Where(u => u.UserId == userId).Select(u => new
-                        {
-                            UserGuid = u.UserGuid,
-                            UserName=u.UserName,
-                            ProfilePicture = u.ProfilePicture == null ? "" : savePath + u.ProfilePicture
-                        });
+                        var userTemp = _db.Users.Where(u => u.UserId == userId).FirstOrDefault();
+
+                        UsersData user = new UsersData();
+                        user.UserGuid = userTemp.UserGuid;
+                        user.UserName = userTemp.UserName;
+                        user.ProfilePicture = userTemp.ProfilePicture == null ? "" : savePath + userTemp.ProfilePicture;
 
                         roomContent.Users.Add(user);
                     }

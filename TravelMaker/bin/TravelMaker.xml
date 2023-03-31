@@ -1274,7 +1274,7 @@
         </member>
         <member name="T:TravelMaker.Models.RoomModifyView">
             <summary>
-                取得我的房間
+                主揪,被揪編輯(儲存)房間-房間資訊(行程)
             </summary>
         </member>
         <member name="P:TravelMaker.Models.RoomModifyView.RoomGuid">
