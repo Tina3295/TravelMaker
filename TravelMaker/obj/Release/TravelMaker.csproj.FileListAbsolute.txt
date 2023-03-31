@@ -167,3 +167,5 @@ C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migr
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addRoomGuid.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addRoomAttractionTable.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.correctOrderToAttrOrder.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addVoteDateTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addVoteTable.resources

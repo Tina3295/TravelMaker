@@ -460,7 +460,7 @@ namespace TravelMaker.Models
 
 
     /// <summary>
-    ///     日期相關
+    ///     投票日期相關
     /// </summary>
     public class DateView
     {
@@ -476,5 +476,50 @@ namespace TravelMaker.Models
         /// </summary>
         [Display(Name = "投票日期")]
         public string Date { get; set; }
+    }
+
+
+
+
+    /// <summary>
+    ///     主揪新增被揪
+    /// </summary>
+    public class RoomMemberAddView
+    {
+        /// <summary>
+        ///     房間Guid
+        /// </summary>
+        [Display(Name = "房間Guid")]
+        public string RoomGuid { get; set; }
+
+        /// <summary>
+        ///     被揪Emil
+        /// </summary>
+        [Required(ErrorMessage = "{0}必填")]
+        [EmailAddress(ErrorMessage = "Email格式不符")]
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "被揪Emil")]
+        public string UserEmail { get; set; }
+    }
+
+
+
+
+    /// <summary>
+    ///     主揪刪除被揪
+    /// </summary>
+    public class RoomMemberDelView
+    {
+        /// <summary>
+        ///     房間Guid
+        /// </summary>
+        [Display(Name = "房間Guid")]
+        public string RoomGuid { get; set; }
+
+        /// <summary>
+        ///     被揪Guid
+        /// </summary>
+        [Display(Name = "被揪Guid")]
+        public string UserGuid { get; set; }
     }
 }
