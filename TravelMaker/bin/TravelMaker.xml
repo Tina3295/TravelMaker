@@ -596,7 +596,12 @@
         </member>
         <member name="M:TravelMaker.Controllers.UsersController.ResetPassword(TravelMaker.Models.ResetPasswordView)">
             <summary>
-                重設密碼
+                重設密碼(透過寄信)
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.UsersController.ChangePassword(TravelMaker.Models.ChangePasswordView)">
+            <summary>
+                修改密碼(會員中心)
             </summary>
         </member>
         <member name="M:TravelMaker.Controllers.UsersController.FavoriteTour(System.String)">
@@ -1017,17 +1022,22 @@
         </member>
         <member name="T:TravelMaker.Models.ResetPasswordView">
             <summary>
-                重設密碼
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.ResetPasswordView.OriginalPassword">
-            <summary>
-                原密碼
+                重設密碼(透過寄信)
             </summary>
         </member>
         <member name="P:TravelMaker.Models.ResetPasswordView.NewPassword">
             <summary>
                 新密碼
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.ChangePasswordView">
+            <summary>
+                修改密碼(會員中心)
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.ChangePasswordView.OriginalPassword">
+            <summary>
+                原密碼
             </summary>
         </member>
         <member name="T:TravelMaker.Models.GetJourneysView">

@@ -51,20 +51,10 @@ namespace TravelMaker.Models
 
 
     /// <summary>
-    ///     重設密碼
+    ///     重設密碼(透過寄信)
     /// </summary>
     public class ResetPasswordView
     {
-        /// <summary>
-        ///     原密碼
-        /// </summary>
-        [Required(ErrorMessage = "{0}必填")]
-        [StringLength(30, ErrorMessage = "{0}長度至少必須為{2}個字元。", MinimumLength = 6)]
-        [Display(Name = "原密碼")]
-        [DataType(DataType.Password)]
-        public string OriginalPassword { get; set; }
-
-
         /// <summary>
         ///     新密碼
         /// </summary>
@@ -75,7 +65,20 @@ namespace TravelMaker.Models
         public string NewPassword { get; set; }
     }
 
-
+    /// <summary>
+    ///     修改密碼(會員中心)
+    /// </summary>
+    public class ChangePasswordView:ResetPasswordView
+    {
+        /// <summary>
+        ///     原密碼
+        /// </summary>
+        [Required(ErrorMessage = "{0}必填")]
+        [StringLength(30, ErrorMessage = "{0}長度至少必須為{2}個字元。", MinimumLength = 6)]
+        [Display(Name = "原密碼")]
+        [DataType(DataType.Password)]
+        public string OriginalPassword { get; set; }
+    }
 
 
 

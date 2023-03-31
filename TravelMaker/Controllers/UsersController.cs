@@ -126,11 +126,8 @@ namespace TravelMaker.Controllers
 
 
 
-
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!重設密碼網址尚無
         /// <summary>
-        ///     忘記密碼、寄信
+        ///     忘記密碼-寄信
         /// </summary>
         [HttpPost]
         [Route("forgotPassword")]
@@ -147,7 +144,7 @@ namespace TravelMaker.Controllers
                                 + "<br>此封信件為您在TravelMaker點選「忘記密碼」時所發送之信件，"
                                 + "<br>若您沒有發出此請求，請忽略此電子郵件。"
                                 + "<br>若您確實要重設密碼，請點選下列連結進入頁面重設密碼。<br><br>" +
-                                  "※提醒您，此連結有效期為10分鐘，若連結失效請再次點選「忘記密碼」按鈕重新寄送連結，感謝您。<br><br>前端給的網址?token=";
+                                  "※提醒您，此連結有效期為10分鐘，若連結失效請再次點選「忘記密碼」按鈕重新寄送連結，感謝您。<br><br>https://travel-maker.vercel.app/reset-password?token=";
                 string mailBodyEnd = "<br><br>-----此為系統發出信件，請勿直接回覆，感謝您的配合。-----";
 
                 Dictionary<string, object> account = new Dictionary<string, object>();
@@ -176,11 +173,8 @@ namespace TravelMaker.Controllers
 
 
 
-
-
-
         /// <summary>
-        ///     重設密碼
+        ///     忘記密碼-重設
         /// </summary>
         [HttpPut]
         [Route("resetPassword")]
@@ -192,15 +186,44 @@ namespace TravelMaker.Controllers
 
             if (user != null)
             {
-                string hashPwd = BitConverter
-                                    .ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(resetPwd.OriginalPassword)))
-                                    .Replace("-", null);
+                string newHashPwd = BitConverter.ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(resetPwd.NewPassword))).Replace("-", null);
+
+                user.Password = newHashPwd;
+                _db.SaveChanges();
+
+                return Ok(new { Message = "密碼修改完成" });
+            }
+            else
+            {
+                return BadRequest("無此帳號");
+            }
+        }
+
+
+
+
+
+
+
+        /// <summary>
+        ///     修改密碼(會員中心)
+        /// </summary>
+        [HttpPut]
+        [JwtAuthFilter]
+        [Route("changePassword")]
+        public IHttpActionResult ChangePassword(ChangePasswordView resetPwd)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            var user = _db.Users.Where(u => u.UserGuid == userGuid).FirstOrDefault();
+
+            if (user != null) 
+            {
+                string hashPwd = BitConverter.ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(resetPwd.OriginalPassword))).Replace("-", null);
 
                 if (hashPwd == user.Password)
                 {
-                    string newHashPwd = BitConverter
-                            .ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(resetPwd.NewPassword)))
-                            .Replace("-", null);
+                    string newHashPwd = BitConverter.ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(resetPwd.NewPassword))).Replace("-", null);
 
                     user.Password = newHashPwd;
                     _db.SaveChanges();
@@ -209,7 +232,7 @@ namespace TravelMaker.Controllers
                 }
                 else
                 {
-                    return BadRequest("不符原先密碼");
+                    return BadRequest("與原先密碼不符");
                 }
             }
             else
