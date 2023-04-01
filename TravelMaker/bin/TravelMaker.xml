@@ -1172,21 +1172,6 @@
                 行程景點
             </summary>
         </member>
-        <member name="T:TravelMaker.Models.DuplicateTourView">
-            <summary>
-                複製行程
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.DuplicateTourView.TourId">
-            <summary>
-                行程Id
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.DuplicateTourView.TourName">
-            <summary>
-                行程名稱
-            </summary>
-        </member>
         <member name="T:TravelMaker.Models.RoomAddView">
             <summary>
                 新增房間

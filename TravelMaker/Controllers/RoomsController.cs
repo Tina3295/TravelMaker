@@ -313,7 +313,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpPost]
         [JwtAuthFilter]
-        [Route("date")]
+        [Route("dates")]
         public IHttpActionResult VoteDateAdd(DateView dateView)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
@@ -359,7 +359,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpDelete]
         [JwtAuthFilter]
-        [Route("date/{voteDateId}")]
+        [Route("dates/{voteDateId}")]
         public IHttpActionResult VoteDateDelete([FromUri]int voteDateId)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
@@ -405,7 +405,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpPost]
         [JwtAuthFilter]
-        [Route("vote/{voteDateId}")]
+        [Route("votes/{voteDateId}")]
         public IHttpActionResult VoteAdd([FromUri] int voteDateId)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
@@ -439,7 +439,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpDelete]
         [JwtAuthFilter]
-        [Route("vote/{voteDateId}")]
+        [Route("votes/{voteDateId}")]
         public IHttpActionResult VoteDelete([FromUri] int voteDateId)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
@@ -472,7 +472,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpPost]
         [JwtAuthFilter]
-        [Route("member")]
+        [Route("members")]
         public IHttpActionResult RoomMemberAdd(RoomMemberAddView memberView)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
@@ -532,7 +532,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpDelete]
         [JwtAuthFilter]
-        [Route("member")]
+        [Route("members")]
         public IHttpActionResult RoomMemberDelete(RoomMemberDelView memberView)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
