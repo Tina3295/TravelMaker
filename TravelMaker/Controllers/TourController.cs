@@ -1058,17 +1058,6 @@ namespace TravelMaker.Controllers
 
 
 
-        /// <summary>
-        ///     地理資料測試
-        /// </summary>
-        [HttpGet]
-        [Route("test")]
-        public IHttpActionResult Testgeo()
-        {
-            DbGeography A = _db.Attractions.Where(a => a.AttractionId == 33).Select(a => a.Location).FirstOrDefault();
-            DbGeography B = _db.Attractions.Where(a => a.AttractionId == 34).Select(a => a.Location).FirstOrDefault();
-            double result = (double)A.Distance(B);
-            return Ok(result);
-        }
+       
     }
 }

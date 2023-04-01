@@ -534,6 +534,11 @@
                 主揪新增被揪
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.RoomController.RoomMemberDelete(TravelMaker.Models.RoomMemberDelView)">
+            <summary>
+                主揪刪除被揪、被揪刪除自己
+            </summary>
+        </member>
         <member name="M:TravelMaker.Controllers.RoomController.RoomName(System.String)">
             <summary>
                 主揪刪除房間
@@ -581,11 +586,6 @@
                 刪除自己的行程
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.TourController.Testgeo">
-            <summary>
-                地理資料測試
-            </summary>
-        </member>
         <member name="T:TravelMaker.Controllers.UsersController">
             <summary>
                 用戶服務
@@ -631,6 +631,11 @@
             跨域測試用
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:TravelMaker.Controllers.ValuesController.Testgeo">
+            <summary>
+                地理資料測試
+            </summary>
         </member>
         <member name="T:TravelMaker.Models.Attraction">
             <summary>

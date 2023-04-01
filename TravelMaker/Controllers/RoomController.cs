@@ -487,22 +487,32 @@ namespace TravelMaker.Controllers
                 var memberAdd = _db.Users.Where(u => u.Account == memberView.UserEmail).FirstOrDefault();
                 if (memberAdd != null)
                 {
-                    RoomMember roomMember = new RoomMember();
-                    roomMember.UserId = memberAdd.UserId;
-                    roomMember.RoomId = _db.Rooms.Where(r => r.RoomGuid == memberView.RoomGuid).Select(r => r.RoomId).FirstOrDefault();
-                    roomMember.Permission = 2;
-
-                    _db.RoomMembers.Add(roomMember);
-                    _db.SaveChanges();
-
-                    var result = new
+                    //被揪是否已在房間內
+                    var inRoom = _db.RoomMembers.Where(r => r.Room.RoomGuid == memberView.RoomGuid && r.UserId == memberAdd.UserId).FirstOrDefault();
+                    if(inRoom==null)
                     {
-                        UserGuid = memberAdd.UserGuid,
-                        UserName = memberAdd.UserName,
-                        ProfilePicture = memberAdd.ProfilePicture == null ? "" : "https://" + Request.RequestUri.Host + "/upload/profilePicture/" + memberAdd.ProfilePicture
-                    };
+                        RoomMember roomMember = new RoomMember();
+                        roomMember.UserId = memberAdd.UserId;
+                        roomMember.RoomId = _db.Rooms.Where(r => r.RoomGuid == memberView.RoomGuid).Select(r => r.RoomId).FirstOrDefault();
+                        roomMember.Permission = 2;
+                        roomMember.InitDate = DateTime.Now;
 
-                    return Ok(result);
+                        _db.RoomMembers.Add(roomMember);
+                        _db.SaveChanges();
+
+                        var result = new
+                        {
+                            UserGuid = memberAdd.UserGuid,
+                            UserName = memberAdd.UserName,
+                            ProfilePicture = memberAdd.ProfilePicture == null ? "" : "https://" + Request.RequestUri.Host + "/upload/profilePicture/" + memberAdd.ProfilePicture
+                        };
+
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return BadRequest("被揪已在房間內");
+                    }
                 }
                 else
                 {
@@ -520,36 +530,45 @@ namespace TravelMaker.Controllers
         /// <summary>
         ///     主揪刪除被揪、被揪刪除自己
         /// </summary>
-        //[HttpDelete]
-        //[JwtAuthFilter]
-        //[Route("member")]
-        //public IHttpActionResult RoomMemberDelete(RoomMemberDelView memberView)
-        //{
-        //    var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-        //    string userGuid = (string)userToken["UserGuid"];
+        [HttpDelete]
+        [JwtAuthFilter]
+        [Route("member")]
+        public IHttpActionResult RoomMemberDelete(RoomMemberDelView memberView)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
 
-        //    //房主或被揪自己才有權限刪除
-        //    var inRoom = _db.RoomMembers.Where(r => r.User.UserGuid == userGuid && r.Room.RoomGuid == memberView.RoomGuid).FirstOrDefault();
+            //房主或被揪自己才有權限刪除
+            var inRoom = _db.RoomMembers.Where(r => r.User.UserGuid == userGuid && r.Room.RoomGuid == memberView.RoomGuid).FirstOrDefault();
 
-        //    if (inRoom != null)
-        //    {
-        //        var memberDel = _db.RoomMembers.Where(r => r.User.UserGuid == memberView.UserGuid && r.Room.RoomGuid == memberView.RoomGuid).FirstOrDefault();
+            if (inRoom != null)
+            {
+                var memberDel = _db.RoomMembers.Where(r => r.User.UserGuid == memberView.UserGuid && r.Room.RoomGuid == memberView.RoomGuid).FirstOrDefault();
 
-        //        if (inRoom.Permission == 1) //房主
-        //        {
-        //            _db
+                if (memberDel != null && (inRoom.Permission == 1 || inRoom.UserId == memberDel.UserId))
+                {
+                    //刪投票紀錄
+                    var votes = _db.Votes.Where(v => v.VoteDate.Room.RoomGuid == memberView.RoomGuid && v.UserId == memberDel.UserId).ToList();
+                    foreach(var vote in votes)
+                    {
+                        _db.Votes.Remove(vote);
+                    }
+                    //刪被揪
+                    _db.RoomMembers.Remove(memberDel);
+                    _db.SaveChanges();
 
-        //                //刪景點 刪投票 刪日期
-        //        }
-
-        //    }
-        //    else
-        //    {
-        //        return BadRequest("非該房間成員");
-        //    }
-
-
-        //}
+                    return Ok(new { message = "刪除成功" });
+                }
+                else
+                {
+                    return BadRequest("權限不足");
+                }
+            }
+            else
+            {
+                return BadRequest("非該房間成員");
+            }
+        }
 
 
 
