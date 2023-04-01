@@ -159,7 +159,7 @@ namespace TravelMaker.Models
 
 
     /// <summary>
-    ///     用戶修改原本行程按儲存-新建
+    ///     用戶修改原本行程按儲存-新建、覆蓋
     /// </summary>
     public class TourAddView
     {
@@ -253,46 +253,6 @@ namespace TravelMaker.Models
         public List<object> Attractions { get; set; }
     }
 
-
-
-
-
-
-
-
-    /// <summary>
-    ///     複製行程
-    /// </summary>
-    public class DuplicateTourView
-    {
-        /// <summary>
-        ///     行程Id
-        /// </summary>
-        [Display(Name = "行程Id")]
-        public int TourId { get; set; }
-
-        /// <summary>
-        ///     行程名稱
-        /// </summary>
-        [Display(Name = "行程名稱")]
-        public string TourName { get; set; }
-    }
-
-
-
-
-
-    /// <summary>
-    ///     取得我的收藏行程
-    /// </summary>
-    public class TourModifyView: TourAddView
-    {
-        /// <summary>
-        ///     行程Id
-        /// </summary>
-        [Display(Name = "行程Id")]
-        public int TourId { get; set; }
-    }
 
 
 

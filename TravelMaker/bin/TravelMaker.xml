@@ -571,12 +571,12 @@
                 按下分享取得行程景點
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.ToursController.TourDuplicate(TravelMaker.Models.DuplicateTourView)">
+        <member name="M:TravelMaker.Controllers.ToursController.TourDuplicate(System.Int32,System.String)">
             <summary>
                 用戶複製行程
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.ToursController.TourModify(TravelMaker.Models.TourModifyView)">
+        <member name="M:TravelMaker.Controllers.ToursController.TourModify(System.Int32,TravelMaker.Models.TourAddView)">
             <summary>
                 用戶修改原本行程按儲存-覆蓋
             </summary>
@@ -1104,7 +1104,7 @@
         </member>
         <member name="T:TravelMaker.Models.TourAddView">
             <summary>
-                用戶修改原本行程按儲存-新建
+                用戶修改原本行程按儲存-新建、覆蓋
             </summary>
         </member>
         <member name="P:TravelMaker.Models.TourAddView.TourName">
@@ -1185,16 +1185,6 @@
         <member name="P:TravelMaker.Models.DuplicateTourView.TourName">
             <summary>
                 行程名稱
-            </summary>
-        </member>
-        <member name="T:TravelMaker.Models.TourModifyView">
-            <summary>
-                取得我的收藏行程
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.TourModifyView.TourId">
-            <summary>
-                行程Id
             </summary>
         </member>
         <member name="T:TravelMaker.Models.RoomAddView">

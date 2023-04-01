@@ -886,8 +886,8 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpPost]
         [JwtAuthFilter]
-        [Route("duplicate")]
-        public IHttpActionResult TourDuplicate(DuplicateTourView tourAdd)
+        [Route("{tourId}/duplicate")]
+        public IHttpActionResult TourDuplicate([FromUri]int tourId,[FromBody]string TourName)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuuid = (string)userToken["UserGuid"];
@@ -896,9 +896,9 @@ namespace TravelMaker.Controllers
             //複製行程-實際上增加一筆紀錄
             Tour newTour = new Tour();
 
-            if (tourAdd.TourName != "")
+            if (TourName != "")
             {
-                newTour.TourName = tourAdd.TourName;
+                newTour.TourName = TourName;
             }
             else
             {
@@ -911,7 +911,7 @@ namespace TravelMaker.Controllers
             _db.SaveChanges();
 
             //複製行程中的景點
-            var temp = _db.TourAttractions.Where(t => t.TourId == tourAdd.TourId).OrderBy(a => a.OrderNum).ToList();
+            var temp = _db.TourAttractions.Where(t => t.TourId == tourId).OrderBy(a => a.OrderNum).ToList();
             var attractions = temp.Select(a => a.AttractionId);
 
             TourAttraction tourAttraction = new TourAttraction();
@@ -939,15 +939,14 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpPost]
         [JwtAuthFilter]
-        [Route("modify")]
-        public IHttpActionResult TourModify(TourModifyView tourView)
+        [Route("{tourId}/modify")]
+        public IHttpActionResult TourModify([FromUri] int tourId, TourAddView tourView)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            string account = userToken["Account"].ToString();
-            int userId = _db.Users.Where(u => u.Account == account).Select(u=>u.UserId).FirstOrDefault();
-
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
             //是否為該行程擁有者
-            var tour = _db.Tours.Where(t => t.TourId == tourView.TourId).FirstOrDefault();
+            var tour = _db.Tours.Where(t => t.TourId == tourId).FirstOrDefault();
 
             if(tour.UserId== userId)
             {
@@ -956,7 +955,7 @@ namespace TravelMaker.Controllers
                 _db.SaveChanges();
 
                 //刪除原本的行程景點
-                var originAttractions = _db.TourAttractions.Where(t => t.TourId == tourView.TourId).ToList();
+                var originAttractions = _db.TourAttractions.Where(t => t.TourId == tourId).ToList();
                 foreach (var originAttraction in originAttractions)
                 {
                     _db.TourAttractions.Remove(originAttraction);
@@ -968,7 +967,7 @@ namespace TravelMaker.Controllers
                 int i = 1;
                 foreach (int id in tourView.AttractionId)
                 {
-                    tourAttraction.TourId = tourView.TourId;
+                    tourAttraction.TourId = tourId;
                     tourAttraction.AttractionId = id;
                     tourAttraction.OrderNum = i;
                     i++;
@@ -978,7 +977,7 @@ namespace TravelMaker.Controllers
                 }
 
                 //愛心數歸零
-                var likes = _db.TourLikes.Where(l => l.TourId == tourView.TourId).ToList();
+                var likes = _db.TourLikes.Where(l => l.TourId == tourId).ToList();
                 foreach(var like in likes)
                 {
                     _db.TourLikes.Remove(like);

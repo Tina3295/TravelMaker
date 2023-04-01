@@ -250,7 +250,7 @@ namespace TravelMaker.Controllers
         ///     取得我的收藏行程
         /// </summary>
         [HttpGet]
-        [Route("tour/{page}")]
+        [Route("tours/{page}")]
         [JwtAuthFilter]
         public IHttpActionResult FavoriteTour([FromUri] string page)
         {
@@ -316,7 +316,7 @@ namespace TravelMaker.Controllers
         ///     取得我的收藏房間
         /// </summary>
         [HttpGet]
-        [Route("room/{page}")]
+        [Route("rooms/{page}")]
         [JwtAuthFilter]
         public IHttpActionResult MyRoom([FromUri] string page)
         {

@@ -175,7 +175,7 @@ namespace TravelMaker.Controllers
         /// <returns></returns>
         [HttpPut]
         [JwtAuthFilter]
-        [Route("{roomGuid}/name")]
+        [Route("{roomGuid}/rename")]
         public IHttpActionResult RoomName([FromUri] string roomGuid,[FromBody] string RoomName)
         {
             //房客才可以修改名字
