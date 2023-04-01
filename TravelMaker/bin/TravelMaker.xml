@@ -481,22 +481,22 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="T:TravelMaker.Controllers.RoomController">
+        <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomController.RoomAdd(TravelMaker.Models.RoomAddView)">
+        <member name="M:TravelMaker.Controllers.RoomsController.RoomAdd(TravelMaker.Models.RoomAddView)">
             <summary>
                 主揪新增房間
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomController.RoomInfo(System.String)">
+        <member name="M:TravelMaker.Controllers.RoomsController.RoomInfo(System.String)">
             <summary>
                 取得單一房間所有資訊
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomController.RoomName(System.String,System.String)">
+        <member name="M:TravelMaker.Controllers.RoomsController.RoomName(System.String,System.String)">
             <summary>
                 修改房間名稱
             </summary>
@@ -504,84 +504,84 @@
             <param name="RoomName">新房間名稱</param>
             <returns></returns>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomController.RoomModify(TravelMaker.Models.RoomModifyView)">
+        <member name="M:TravelMaker.Controllers.RoomsController.RoomModify(TravelMaker.Models.RoomModifyView)">
             <summary>
                 主揪,被揪編輯(儲存)房間-房間資訊(行程)
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomController.VoteDateAdd(TravelMaker.Models.DateView)">
+        <member name="M:TravelMaker.Controllers.RoomsController.VoteDateAdd(TravelMaker.Models.DateView)">
             <summary>
                 主揪,被揪新增日期選項
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomController.VoteDateDelete(System.Int32)">
+        <member name="M:TravelMaker.Controllers.RoomsController.VoteDateDelete(System.Int32)">
             <summary>
                 主揪,被揪刪除日期選項
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomController.VoteAdd(System.Int32)">
+        <member name="M:TravelMaker.Controllers.RoomsController.VoteAdd(System.Int32)">
             <summary>
                 主揪.被揪投票
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomController.VoteDelete(System.Int32)">
+        <member name="M:TravelMaker.Controllers.RoomsController.VoteDelete(System.Int32)">
             <summary>
                 主揪.被揪取消投票
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomController.RoomMemberAdd(TravelMaker.Models.RoomMemberAddView)">
+        <member name="M:TravelMaker.Controllers.RoomsController.RoomMemberAdd(TravelMaker.Models.RoomMemberAddView)">
             <summary>
                 主揪新增被揪
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomController.RoomMemberDelete(TravelMaker.Models.RoomMemberDelView)">
+        <member name="M:TravelMaker.Controllers.RoomsController.RoomMemberDelete(TravelMaker.Models.RoomMemberDelView)">
             <summary>
                 主揪刪除被揪、被揪刪除自己
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomController.RoomName(System.String)">
+        <member name="M:TravelMaker.Controllers.RoomsController.RoomName(System.String)">
             <summary>
                 主揪刪除房間
             </summary>
             <param name="roomGuid">房間Guid</param>
             <returns></returns>
         </member>
-        <member name="T:TravelMaker.Controllers.TourController">
+        <member name="T:TravelMaker.Controllers.ToursController">
             <summary>
                 行程相關
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.TourController.Make(TravelMaker.Models.GetJourneysView)">
+        <member name="M:TravelMaker.Controllers.ToursController.Make(TravelMaker.Models.GetJourneysView)">
             <summary>
                 隨機產生行程(含鎖點擴充)
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.TourController.TourAdd(TravelMaker.Models.TourAddView)">
+        <member name="M:TravelMaker.Controllers.ToursController.TourAdd(TravelMaker.Models.TourAddView)">
             <summary>
                 用戶修改原本行程按儲存-新建
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.TourController.TourContent(System.Int32)">
+        <member name="M:TravelMaker.Controllers.ToursController.TourContent(System.Int32)">
             <summary>
                 取得單一用戶收藏行程頁面
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.TourController.ShareTour(System.Collections.Generic.List{System.Int32})">
+        <member name="M:TravelMaker.Controllers.ToursController.ShareTour(System.Collections.Generic.List{System.Int32})">
             <summary>
                 按下分享取得行程景點
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.TourController.TourDuplicate(TravelMaker.Models.DuplicateTourView)">
+        <member name="M:TravelMaker.Controllers.ToursController.TourDuplicate(TravelMaker.Models.DuplicateTourView)">
             <summary>
                 用戶複製行程
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.TourController.TourModify(TravelMaker.Models.TourModifyView)">
+        <member name="M:TravelMaker.Controllers.ToursController.TourModify(TravelMaker.Models.TourModifyView)">
             <summary>
                 用戶修改原本行程按儲存-覆蓋
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.TourController.TourDelete(System.Int32)">
+        <member name="M:TravelMaker.Controllers.ToursController.TourDelete(System.Int32)">
             <summary>
                 刪除自己的行程
             </summary>

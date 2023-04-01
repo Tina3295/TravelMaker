@@ -12,8 +12,8 @@ namespace TravelMaker.Controllers
     /// <summary>
     ///     房間相關
     /// </summary>
-    [RoutePrefix("api/room")]
-    public class RoomController : ApiController
+    [RoutePrefix("api/rooms")]
+    public class RoomsController : ApiController
     {
         private TravelMakerDbContext _db = new TravelMakerDbContext();
 
