@@ -388,14 +388,29 @@ namespace TravelMaker.Models
         [Display(Name = "景點圖片路徑")]
         public List<string> ImageUrl { get; set; }
     }
-
-
-
-
     /// <summary>
-    ///     主揪,被揪編輯(儲存)房間-房間資訊(行程)
+    ///     修改房間名稱
     /// </summary>
-    public class RoomModifyView 
+    public class RoomNameView
+    {
+        /// <summary>
+        ///     房間Guid
+        /// </summary>
+        [Display(Name = "房間Guid")]
+        public string RoomGuid { get; set; }
+        /// <summary>
+        ///     房間名稱
+        /// </summary>
+        [Display(Name = "房間名稱")]
+        public string RoomName { get; set; }
+    }
+
+
+
+        /// <summary>
+        ///     主揪,被揪編輯(儲存)房間-房間資訊(行程)
+        /// </summary>
+        public class RoomModifyView 
     {
         /// <summary>
         ///     房間Guid

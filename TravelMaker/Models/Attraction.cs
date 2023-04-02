@@ -154,5 +154,6 @@ namespace TravelMaker.Models
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<TourAttraction> TourAttractions { get; set; }
         public virtual ICollection<RoomAttraction> RoomAttractions { get; set; }
+        public virtual ICollection<AttractionCollection> AttractionCollections { get; set; }
     }
 }

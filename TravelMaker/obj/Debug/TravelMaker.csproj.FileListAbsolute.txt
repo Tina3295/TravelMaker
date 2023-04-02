@@ -170,3 +170,4 @@ C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrat
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.correctOrderToAttrOrder.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addVoteDateTable.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addVoteTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addAttractionCollectionsTable.resources

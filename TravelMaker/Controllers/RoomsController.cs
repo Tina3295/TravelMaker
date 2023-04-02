@@ -170,25 +170,22 @@ namespace TravelMaker.Controllers
         /// <summary>
         ///     修改房間名稱
         /// </summary>
-        /// <param name="roomGuid">房間識別碼</param>
-        /// <param name="RoomName">新房間名稱</param>
-        /// <returns></returns>
         [HttpPut]
         [JwtAuthFilter]
-        [Route("{roomGuid}/rename")]
-        public IHttpActionResult RoomName([FromUri] string roomGuid,[FromBody] string RoomName)
+        [Route("rename")]
+        public IHttpActionResult RoomName(RoomNameView roomNameView)
         {
             //房客才可以修改名字
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuuid = (string)userToken["UserGuid"];
             int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
-            int roomId = _db.Rooms.Where(r => r.RoomGuid == roomGuid).Select(r => r.RoomId).FirstOrDefault();
+            int roomId = _db.Rooms.Where(r => r.RoomGuid == roomNameView.RoomGuid).Select(r => r.RoomId).FirstOrDefault();
             var inRoom = _db.RoomMembers.Where(r => r.UserId == userId && r.RoomId == roomId).FirstOrDefault();
 
             if (inRoom != null)
             {
                 var room = _db.Rooms.Where(r => r.RoomId == roomId).FirstOrDefault();
-                room.RoomName = RoomName;
+                room.RoomName = roomNameView.RoomName;
                 _db.SaveChanges();
 
                 return Ok(new { Message = "修改成功" });

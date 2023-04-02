@@ -235,6 +235,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\AttractionsController.cs" />
     <Compile Include="Controllers\RoomsController.cs" />
     <Compile Include="Controllers\ToursController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -330,8 +331,13 @@
     <Compile Include="Migrations\202303301448063_addVoteTable.Designer.cs">
       <DependentUpon>202303301448063_addVoteTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304021429379_addAttractionCollectionsTable.cs" />
+    <Compile Include="Migrations\202304021429379_addAttractionCollectionsTable.Designer.cs">
+      <DependentUpon>202304021429379_addAttractionCollectionsTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
+    <Compile Include="Models\AttractionCollection.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CategoryAttraction.cs" />
     <Compile Include="Models\City.cs" />
@@ -522,6 +528,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202303301448063_addVoteTable.resx">
       <DependentUpon>202303301448063_addVoteTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304021429379_addAttractionCollectionsTable.resx">
+      <DependentUpon>202304021429379_addAttractionCollectionsTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

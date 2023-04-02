@@ -481,6 +481,25 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
+        <member name="T:TravelMaker.Controllers.AttractionsController">
+            <summary>
+                景點相關
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.AttractionsController.CollectAdd(System.Int32)">
+            <summary>
+                收藏景點
+            </summary>
+            <param name="attractionId">景點Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:TravelMaker.Controllers.AttractionsController.CollectRemove(System.Int32)">
+            <summary>
+                取消收藏景點
+            </summary>
+            <param name="attractionId">景點Id</param>
+            <returns></returns>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
@@ -496,13 +515,10 @@
                 取得單一房間所有資訊
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomsController.RoomName(System.String,System.String)">
+        <member name="M:TravelMaker.Controllers.RoomsController.RoomName(TravelMaker.Models.RoomNameView)">
             <summary>
                 修改房間名稱
             </summary>
-            <param name="roomGuid">房間識別碼</param>
-            <param name="RoomName">新房間名稱</param>
-            <returns></returns>
         </member>
         <member name="M:TravelMaker.Controllers.RoomsController.RoomModify(TravelMaker.Models.RoomModifyView)">
             <summary>
@@ -715,6 +731,26 @@
         <member name="P:TravelMaker.Models.Attraction.InitDate">
             <summary>
                 景點建立日期
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.AttractionCollection">
+            <summary>
+                景點收藏
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionCollection.AttractionCollectionId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionCollection.AttractionId">
+            <summary>
+                對應景點
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionCollection.UserId">
+            <summary>
+                用戶Id
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Category">
@@ -1250,6 +1286,21 @@
         <member name="P:TravelMaker.Models.MyRoom.ImageUrl">
             <summary>
                 景點圖片路徑
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.RoomNameView">
+            <summary>
+                修改房間名稱
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.RoomNameView.RoomGuid">
+            <summary>
+                房間Guid
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.RoomNameView.RoomName">
+            <summary>
+                房間名稱
             </summary>
         </member>
         <member name="T:TravelMaker.Models.RoomModifyView">
