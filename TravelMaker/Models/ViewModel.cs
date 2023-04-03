@@ -407,10 +407,10 @@ namespace TravelMaker.Models
 
 
 
-        /// <summary>
-        ///     主揪,被揪編輯(儲存)房間-房間資訊(行程)
-        /// </summary>
-        public class RoomModifyView 
+    /// <summary>
+    ///     主揪,被揪編輯(儲存)房間-房間資訊(行程)
+    /// </summary>
+    public class RoomModifyView
     {
         /// <summary>
         ///     房間Guid
@@ -502,5 +502,73 @@ namespace TravelMaker.Models
         /// </summary>
         [Display(Name = "被揪Guid")]
         public string UserGuid { get; set; }
+    }
+
+
+
+    /// <summary>
+    ///     主揪,被揪加景點進房間
+    /// </summary>
+    public class AttractionAddView
+    {
+        /// <summary>
+        ///     房間Guid
+        /// </summary>
+        [Display(Name = "房間Guid")]
+        public string RoomGuid { get; set; }
+
+        /// <summary>
+        ///     景點Id
+        /// </summary>
+        [Display(Name = "景點Id")]
+        public int AttractionId { get; set; }
+    }
+
+
+
+
+
+    //-------------------景點View-------------------
+    /// <summary>
+    ///     取得我的收藏景點
+    /// </summary>
+    public class MyAttractionCollectionsView
+    {
+        /// <summary>
+        ///     景點id
+        /// </summary>
+        [Display(Name = "景點id")]
+        public int AttractionId { get; set; }
+
+        /// <summary>
+        ///     景點名稱
+        /// </summary>
+        [Display(Name = "景點名稱")]
+        public string AttractionName { get; set; }
+
+        /// <summary>
+        ///     景點地點
+        /// </summary>
+        [Display(Name = "景點地點")]
+        public string CityDistrict { get; set; }
+
+        /// <summary>
+        ///     平均評分星數
+        /// </summary>
+        [Display(Name = "平均評分星數")]
+        public int AverageScore { get; set; }
+
+        /// <summary>
+        ///     類別
+        /// </summary>
+        [Display(Name = "類別")]
+        public List<string> Category { get; set; }
+
+
+        /// <summary>
+        ///     圖片
+        /// </summary>
+        [Display(Name = "圖片")]
+        public string ImageUrl { get; set; }
     }
 }

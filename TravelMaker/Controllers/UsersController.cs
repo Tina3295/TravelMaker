@@ -377,5 +377,56 @@ namespace TravelMaker.Controllers
         }
 
 
+
+
+        /// <summary>
+        ///     取得我的收藏景點
+        /// </summary>
+        [HttpGet]
+        [Route("attractions/{page}")]
+        [JwtAuthFilter]
+        public IHttpActionResult MyAttractionCollections([FromUri] int page)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+
+            //依照頁數取得我的收藏景點
+            List<object> result = new List<object>();
+            string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
+            int pagSize = 20;
+
+            var attractions = _db.AttractionCollections.Where(a => a.UserId == userId)
+                                .OrderByDescending(a => a.AttractionCollectionId)
+                                .Skip(pagSize * (page - 1)).Take(pagSize).ToList();
+
+            foreach(var attraction in attractions)
+            {
+                MyAttractionCollectionsView myAttraction = new MyAttractionCollectionsView();
+                myAttraction.AttractionId = attraction.AttractionId;
+                myAttraction.AttractionName = _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.AttractionName).FirstOrDefault();
+
+                myAttraction.CityDistrict = _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.District.City.CittyName).FirstOrDefault() 
+                    + " " + _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.District.DistrictName).FirstOrDefault();
+
+
+                //myAttraction.AverageScore =!!!!!!!!!!!!!!!!!!!!!!!!!!!!平均分數
+                myAttraction.Category = _db.CategoryAttractions.Where(c => c.AttractionId == attraction.AttractionId).Select(c => c.CategoryId == 8 || c.CategoryId == 9 ? "餐廳" : c.Category.CategoryName).ToList();
+
+                myAttraction.ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == attraction.AttractionId).Select(i => i.ImageName).FirstOrDefault();
+
+
+                result.Add(myAttraction);
+            }
+
+            if (attractions.Count != 0)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("已無我的收藏景點");
+            }
+        }
     }
 }

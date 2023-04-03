@@ -562,6 +562,11 @@
             <param name="roomGuid">房間Guid</param>
             <returns></returns>
         </member>
+        <member name="M:TravelMaker.Controllers.RoomsController.AttractionAdd(TravelMaker.Models.AttractionAddView)">
+            <summary>
+                主揪,被揪加景點進房間
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.ToursController">
             <summary>
                 行程相關
@@ -640,6 +645,11 @@
         <member name="M:TravelMaker.Controllers.UsersController.MyRoom(System.String)">
             <summary>
                 取得我的收藏房間
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.UsersController.MyAttractionCollections(System.Int32)">
+            <summary>
+                取得我的收藏景點
             </summary>
         </member>
         <member name="M:TravelMaker.Controllers.ValuesController.Test">
@@ -1361,6 +1371,56 @@
         <member name="P:TravelMaker.Models.RoomMemberDelView.UserGuid">
             <summary>
                 被揪Guid
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.AttractionAddView">
+            <summary>
+                主揪,被揪加景點進房間
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionAddView.RoomGuid">
+            <summary>
+                房間Guid
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionAddView.AttractionId">
+            <summary>
+                景點Id
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.MyAttractionCollectionsView">
+            <summary>
+                取得我的收藏景點
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.MyAttractionCollectionsView.AttractionId">
+            <summary>
+                景點id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.MyAttractionCollectionsView.AttractionName">
+            <summary>
+                景點名稱
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.MyAttractionCollectionsView.CityDistrict">
+            <summary>
+                景點地點
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.MyAttractionCollectionsView.AverageScore">
+            <summary>
+                平均評分星數
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.MyAttractionCollectionsView.Category">
+            <summary>
+                類別
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.MyAttractionCollectionsView.ImageUrl">
+            <summary>
+                圖片
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Vote">

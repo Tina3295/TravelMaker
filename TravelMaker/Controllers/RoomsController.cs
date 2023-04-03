@@ -599,5 +599,50 @@ namespace TravelMaker.Controllers
                 return BadRequest("非該房間房主");
             }
         }
+
+
+
+
+
+        /// <summary>
+        ///     主揪,被揪加景點進房間
+        /// </summary>
+        [HttpPost]
+        [JwtAuthFilter]
+        [Route("addAttractions")]
+        public IHttpActionResult AttractionAdd(AttractionAddView addView)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+
+            var inRoom = _db.RoomMembers.Where(r => r.Room.RoomGuid == addView.RoomGuid && r.User.UserGuid == userGuid).FirstOrDefault();
+
+            if(inRoom!=null)
+            {
+                var hadAttraction = _db.RoomAttractions.Where(a => a.Room.RoomGuid == addView.RoomGuid && a.AttractionId == addView.AttractionId).FirstOrDefault();
+
+                if(hadAttraction==null)
+                {
+                    RoomAttraction roomAttraction = new RoomAttraction();
+                    roomAttraction.RoomId = _db.Rooms.Where(r => r.RoomGuid == addView.RoomGuid).Select(r => r.RoomId).FirstOrDefault();
+                    roomAttraction.AttractionId = addView.AttractionId;
+                    roomAttraction.UserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+                    roomAttraction.AttrOrder = 0;
+
+                    _db.RoomAttractions.Add(roomAttraction);
+                    _db.SaveChanges();
+
+                    return Ok(new { Message = "景點新增成功" });
+                }
+                else
+                {
+                    return BadRequest("此景點已在房間內");
+                }
+            }
+            else
+            {
+                return BadRequest("非該房間成員");
+            }
+        }
     }
 }
