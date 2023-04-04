@@ -35,6 +35,7 @@ namespace TravelMaker.Models
         public virtual DbSet<VoteDate> VoteDates { get; set; }
         public virtual DbSet<Vote> Votes { get; set; }
         public virtual DbSet<AttractionCollection> AttractionCollections { get; set; }
+        public virtual DbSet<AttractionComment> AttractionComments { get; set; }
     }
 
     //public class MyEntity

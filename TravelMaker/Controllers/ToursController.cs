@@ -1041,7 +1041,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpGet]
         [Route("search")]
-        public IHttpActionResult TourSearch(string type="", string district="", string keyword="", int page = 1)
+        public IHttpActionResult ToursSearch(string type="", string district="", string keyword="", int page = 1)
         {
             int pageSize = 9;
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
@@ -1064,7 +1064,7 @@ namespace TravelMaker.Controllers
 
             if (!string.IsNullOrEmpty(keyword))
             {
-                temp = temp.Where(t => t.Attraction.AttractionName.Contains(keyword) || t.Attraction.Introduction.Contains(keyword) || t.Tour.TourName.Contains(keyword));
+                temp = temp.Where(t => t.Attraction.AttractionName.Contains(keyword) || t.Attraction.Introduction.Contains(keyword) || t.Attraction.Address.Contains(keyword) || t.Tour.TourName.Contains(keyword));
             }
 
             if (!string.IsNullOrEmpty(type))

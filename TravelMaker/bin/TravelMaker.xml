@@ -500,6 +500,11 @@
             <param name="attractionId">景點Id</param>
             <returns></returns>
         </member>
+        <member name="M:TravelMaker.Controllers.AttractionsController.AttractionsSearch(System.String,System.String,System.String,System.Int32)">
+            <summary>
+                給參數搜尋景點(熱門話題取得所有景點)
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
@@ -607,7 +612,7 @@
                 刪除自己的行程
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.ToursController.TourSearch(System.String,System.String,System.String,System.Int32)">
+        <member name="M:TravelMaker.Controllers.ToursController.ToursSearch(System.String,System.String,System.String,System.Int32)">
             <summary>
                 給參數搜尋行程(熱門話題取得所有行程)
             </summary>
@@ -766,6 +771,46 @@
         <member name="P:TravelMaker.Models.AttractionCollection.UserId">
             <summary>
                 用戶Id
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.AttractionComment">
+            <summary>
+                景點評論
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionComment.AttractionCommentId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionComment.AttractionId">
+            <summary>
+                對應景點
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionComment.UserId">
+            <summary>
+                對應用戶
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionComment.Comment">
+            <summary>
+                評論內容
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionComment.Score">
+            <summary>
+                星數
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionComment.Status">
+            <summary>
+                留言狀態
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionComment.InitDate">
+            <summary>
+                留言日期
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Category">
@@ -1436,6 +1481,16 @@
         <member name="P:TravelMaker.Models.MyAttractionCollectionsView.ImageUrl">
             <summary>
                 圖片
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.AttractionView">
+            <summary>
+                給參數搜尋景點(熱門話題取得所有景點)
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionView.IsCollect">
+            <summary>
+                是否收藏
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Vote">

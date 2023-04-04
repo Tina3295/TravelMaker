@@ -409,9 +409,15 @@ namespace TravelMaker.Controllers
                 myAttraction.CityDistrict = _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.District.City.CittyName).FirstOrDefault() 
                     + " " + _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.District.DistrictName).FirstOrDefault();
 
+                var scores = _db.AttractionComments.Where(c => c.Status == true && c.AttractionId == attraction.AttractionId).Select(c => c.Score);
+                double averageScore = scores.Any() ? scores.Average() : 0;
+                myAttraction.AverageScore = (int)Math.Round(averageScore);
 
-                //myAttraction.AverageScore =!!!!!!!!!!!!!!!!!!!!!!!!!!!!平均分數
-                myAttraction.Category = _db.CategoryAttractions.Where(c => c.AttractionId == attraction.AttractionId).Select(c => c.CategoryId == 8 || c.CategoryId == 9 ? "餐廳" : c.Category.CategoryName).ToList();
+                myAttraction.Category = _db.CategoryAttractions.Where(c => c.AttractionId == attraction.AttractionId && c.CategoryId != 8 && c.CategoryId != 9).Select(c => c.Category.CategoryName).ToList();
+                if (myAttraction.Category.Count == 0)
+                {
+                    myAttraction.Category.Add("餐廳");
+                }
 
                 myAttraction.ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == attraction.AttractionId).Select(i => i.ImageName).FirstOrDefault();
 

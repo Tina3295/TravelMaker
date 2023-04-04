@@ -581,4 +581,16 @@ namespace TravelMaker.Models
         [Display(Name = "圖片")]
         public string ImageUrl { get; set; }
     }
+
+    /// <summary>
+    ///     給參數搜尋景點(熱門話題取得所有景點)
+    /// </summary>
+    public class AttractionView:MyAttractionCollectionsView
+    {
+        /// <summary>
+        ///     是否收藏
+        /// </summary>
+        [Display(Name = "是否收藏")]
+        public bool IsCollect { get; set; }
+    }
 }

@@ -335,9 +335,14 @@
     <Compile Include="Migrations\202304021429379_addAttractionCollectionsTable.Designer.cs">
       <DependentUpon>202304021429379_addAttractionCollectionsTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304041239053_addAttractionCommentTable.cs" />
+    <Compile Include="Migrations\202304041239053_addAttractionCommentTable.Designer.cs">
+      <DependentUpon>202304041239053_addAttractionCommentTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\AttractionCollection.cs" />
+    <Compile Include="Models\AttractionComment.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CategoryAttraction.cs" />
     <Compile Include="Models\City.cs" />
@@ -531,6 +536,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304021429379_addAttractionCollectionsTable.resx">
       <DependentUpon>202304021429379_addAttractionCollectionsTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304041239053_addAttractionCommentTable.resx">
+      <DependentUpon>202304041239053_addAttractionCommentTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
