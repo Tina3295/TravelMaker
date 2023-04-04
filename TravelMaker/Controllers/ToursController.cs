@@ -1131,14 +1131,118 @@ namespace TravelMaker.Controllers
 
 
 
+        /// <summary>
+        ///     試玩行程
+        /// </summary>
+        [HttpGet]
+        [Route("try")]
+        public IHttpActionResult TourTry()
+        {
+            //隨機類別
+            List<int> types = new List<int>();
+            Random random = new Random();
+            int categoryId = random.Next(1, 8);
+            types.Add(categoryId);
+            
+            if (!types.Contains(4))
+            {
+                types.Add(8);
+            }
+            else
+            {
+                types.Add(9);
+            }
+
+            //隨機選區
+            int district = _db.Districts.Select(a => a.DistrictId).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+
+            //景點清單
+            var attractions = _db.CategoryAttractions.Where(a => a.Attraction.OpenStatus == true
+                                                             && types.Contains(a.CategoryId)
+                                                             && a.Attraction.DistrictId == district)
+                              .Select(a => new AttractionList
+                              {
+                                  AttractionId = a.Attraction.AttractionId,
+                                  IsRestaurant = a.CategoryId == 8 || a.CategoryId == 9 ? 1 : 0
+                              })
+                              .Distinct().OrderBy(x => Guid.NewGuid()).ToList();
+
+            //兩景點兩餐廳
+            var fourAttractionIds = new List<int>();
+            for (int i = 0; i < 2; i++)
+            {
+                fourAttractionIds.Add(attractions.Where(a => a.IsRestaurant == 0 && !fourAttractionIds.Contains(a.AttractionId)).Select(a => a.AttractionId).FirstOrDefault());
+                fourAttractionIds.Add(attractions.Where(a => a.IsRestaurant == 1 && !fourAttractionIds.Contains(a.AttractionId)).Select(a => a.AttractionId).FirstOrDefault());
+            }
+
+
+            TourTryView tourTry = new TourTryView();
+            string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
+
+            tourTry.Category = _db.Categories.Where(c => c.CategoryId == categoryId).Select(c => c.CategoryName).FirstOrDefault();
+
+            tourTry.AttractionData = new List<object>();
+            foreach(int id in fourAttractionIds)
+            {
+                var attraction = _db.Attractions.Where(a => a.AttractionId == id).Select(a => new
+                {
+                    a.AttractionId,
+                    a.AttractionName,
+                    ImageUrl =imgPath+_db.Images.Where(i=>i.AttractionId==id).Select(i=>i.ImageName).FirstOrDefault()
+                });
+
+                tourTry.AttractionData.Add(attraction);
+            }
+
+            return Ok(tourTry);
+        }
 
 
 
 
 
+        /// <summary>
+        ///     用戶把行程按愛心
+        /// </summary>
+        /// <param name="tourId">行程Id</param>
+        /// <returns></returns>
+        [HttpPost]
+        [JwtAuthFilter]
+        [Route("{tourId}/like")]
+        public IHttpActionResult TourLike([FromUri]int tourId)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+
+            TourLike tourLike = new TourLike();
+            tourLike.TourId = tourId;
+            tourLike.UserId = userId;
+            tourLike.InitDate = DateTime.Now;
+            _db.TourLikes.Add(tourLike);
+            _db.SaveChanges();
+            return Ok();
+        }
 
 
+        /// <summary>
+        ///      用戶取消行程愛心
+        /// </summary>
+        /// <param name="tourId">行程Id</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [JwtAuthFilter]
+        [Route("{tourId}/like")]
+        public IHttpActionResult TourUnlike([FromUri] int tourId)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
 
-
+            var like= _db.TourLikes.Where(a => a.UserId == userId && a.TourId == tourId).FirstOrDefault();
+            _db.TourLikes.Remove(like);
+            _db.SaveChanges();
+            return Ok();
+        }
     }
 }

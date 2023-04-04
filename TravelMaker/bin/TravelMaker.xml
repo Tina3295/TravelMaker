@@ -505,6 +505,11 @@
                 給參數搜尋景點(熱門話題取得所有景點)
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.AttractionsController.AttractionsSearch(System.Int32)">
+            <summary>
+                取得單一景點資訊
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
@@ -616,6 +621,25 @@
             <summary>
                 給參數搜尋行程(熱門話題取得所有行程)
             </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.ToursController.TourTry">
+            <summary>
+                試玩行程
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.ToursController.TourLike(System.Int32)">
+            <summary>
+                用戶把行程按愛心
+            </summary>
+            <param name="tourId">行程Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:TravelMaker.Controllers.ToursController.TourUnlike(System.Int32)">
+            <summary>
+                 用戶取消行程愛心
+            </summary>
+            <param name="tourId">行程Id</param>
+            <returns></returns>
         </member>
         <member name="T:TravelMaker.Controllers.UsersController">
             <summary>
@@ -1491,6 +1515,31 @@
         <member name="P:TravelMaker.Models.AttractionView.IsCollect">
             <summary>
                 是否收藏
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.AttractionInfoView">
+            <summary>
+                取得單一景點資訊
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionInfoView.AttractionData">
+            <summary>
+                景點資訊
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.TourTryView">
+            <summary>
+                試玩行程
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourTryView.Category">
+            <summary>
+                類別
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourTryView.AttractionData">
+            <summary>
+                四個景點
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Vote">

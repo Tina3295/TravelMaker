@@ -593,4 +593,54 @@ namespace TravelMaker.Models
         [Display(Name = "是否收藏")]
         public bool IsCollect { get; set; }
     }
+
+
+
+
+
+
+    /// <summary>
+    ///     取得單一景點資訊
+    /// </summary>
+    public class AttractionInfoView 
+    {
+        /// <summary>
+        ///     景點資訊
+        /// </summary>
+        public List<AttractionInfo> AttractionData { get; set; }
+    }
+
+    public class AttractionInfo
+    {
+        public int AttractionId { get; set; }
+        public string AttractionName { get; set; }
+        public string Introduction { get; set; }
+        public string Address { get; set; }
+        public string Tel { get; set; }
+        public string Email { get; set; }
+        public string OfficialSite { get; set; }
+        public string Facebook { get; set; }
+        public string OpenTime { get; set; }
+        public List<string> ImageUrl { get; set; }
+    }
+
+
+
+
+    /// <summary>
+    ///     試玩行程
+    /// </summary>
+    public class TourTryView
+    {
+        /// <summary>
+        ///     類別
+        /// </summary>
+        public string Category { get; set; }
+
+        /// <summary>
+        ///     四個景點
+        /// </summary>
+        public List<object> AttractionData { get; set; }
+    }
+
 }

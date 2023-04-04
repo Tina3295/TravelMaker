@@ -160,7 +160,6 @@ namespace TravelMaker.Controllers
             }
 
 
-
             if (totalItem != 0)
             {
                 return Ok(new { TotalPages = totalPages, TotalItem = totalItem, Attractions = result });
@@ -168,6 +167,45 @@ namespace TravelMaker.Controllers
             else
             {
                 return BadRequest("尚無符合搜尋條件的景點");
+            }
+        }
+
+
+
+
+        /// <summary>
+        ///     取得單一景點資訊
+        /// </summary>
+        [HttpGet]
+        [Route("{attractionId}")]
+        public IHttpActionResult AttractionsSearch([FromUri]int attractionId)
+        {
+            string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
+
+            AttractionInfoView attractionInfo = new AttractionInfoView();
+
+            attractionInfo.AttractionData = _db.Attractions.Where(a => a.AttractionId == attractionId && a.OpenStatus == true).Select(a => new AttractionInfo
+            {
+                AttractionId= a.AttractionId,
+                AttractionName=a.AttractionName,
+                Introduction=a.Introduction,
+                Address=a.Address,
+                Tel=a.Tel,
+                Email=a.Email,
+                OfficialSite=a.OfficialSite,
+                Facebook=a.Facebook,
+                OpenTime=a.OpenTime,
+                ImageUrl= _db.Images.Where(i => i.AttractionId == attractionId).Select(i => imgPath + i.ImageName).ToList()
+            }).ToList();
+
+
+            if (attractionInfo != null)
+            {
+                return Ok(attractionInfo);
+            }
+            else
+            {
+                return BadRequest("無此景點頁面");
             }
         }
     }
