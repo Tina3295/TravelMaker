@@ -252,7 +252,7 @@ namespace TravelMaker.Controllers
         [HttpGet]
         [Route("tours/{page}")]
         [JwtAuthFilter]
-        public IHttpActionResult FavoriteTour([FromUri] string page)
+        public IHttpActionResult FavoriteTour([FromUri] int page)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuuid = (string)userToken["UserGuid"];
@@ -261,7 +261,7 @@ namespace TravelMaker.Controllers
             //依照頁數取得我的行程
             List<object> result = new List<object>();
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
-            int pagSize = 20;
+            int pageSize = 20;
 
             var tours = _db.Tours.Where(t => t.User.UserId == userId)
                          .Select(t => new
@@ -269,7 +269,7 @@ namespace TravelMaker.Controllers
                              t.TourId,
                              t.TourName
                          }).OrderByDescending(t => t.TourId)
-                         .Skip(pagSize * (Convert.ToInt32(page) - 1)).Take(pagSize).ToList();
+                         .Skip(pageSize * (page - 1)).Take(pageSize).ToList();
 
 
             //每個景點一張圖片，最多三張
@@ -318,7 +318,7 @@ namespace TravelMaker.Controllers
         [HttpGet]
         [Route("rooms/{page}")]
         [JwtAuthFilter]
-        public IHttpActionResult MyRoom([FromUri] string page)
+        public IHttpActionResult MyRoom([FromUri] int page)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuuid = (string)userToken["UserGuid"];
@@ -327,7 +327,7 @@ namespace TravelMaker.Controllers
             //依照頁數取得我的房間
             List<object> result = new List<object>();
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
-            int pagSize = 20;
+            int pageSize = 20;
 
             var rooms = _db.RoomMembers.Where(r => r.UserId == userId && r.Room.Status == true)
                          .Select(r => new
@@ -336,7 +336,7 @@ namespace TravelMaker.Controllers
                              r.Room.RoomName,
                              r.Room.RoomId
                          }).OrderByDescending(r => r.RoomId)
-                         .Skip(pagSize * (Convert.ToInt32(page) - 1)).Take(pagSize).ToList();
+                         .Skip(pageSize * (page - 1)).Take(pageSize).ToList();
 
 
 
@@ -394,11 +394,11 @@ namespace TravelMaker.Controllers
             //依照頁數取得我的收藏景點
             List<object> result = new List<object>();
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
-            int pagSize = 20;
+            int pageSize = 20;
 
             var attractions = _db.AttractionCollections.Where(a => a.UserId == userId)
                                 .OrderByDescending(a => a.AttractionCollectionId)
-                                .Skip(pagSize * (page - 1)).Take(pagSize).ToList();
+                                .Skip(pageSize * (page - 1)).Take(pageSize).ToList();
 
             foreach(var attraction in attractions)
             {

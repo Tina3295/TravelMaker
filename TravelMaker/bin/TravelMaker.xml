@@ -572,7 +572,7 @@
                 行程相關
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.ToursController.Make(TravelMaker.Models.GetJourneysView)">
+        <member name="M:TravelMaker.Controllers.ToursController.Make(TravelMaker.Models.GetToursView)">
             <summary>
                 隨機產生行程(含鎖點擴充)
             </summary>
@@ -607,6 +607,11 @@
                 刪除自己的行程
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.ToursController.TourSearch(System.String,System.String,System.String,System.Int32)">
+            <summary>
+                給參數搜尋行程(熱門話題取得所有行程)
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.UsersController">
             <summary>
                 用戶服務
@@ -637,12 +642,12 @@
                 修改密碼(會員中心)
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.UsersController.FavoriteTour(System.String)">
+        <member name="M:TravelMaker.Controllers.UsersController.FavoriteTour(System.Int32)">
             <summary>
                 取得我的收藏行程
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.UsersController.MyRoom(System.String)">
+        <member name="M:TravelMaker.Controllers.UsersController.MyRoom(System.Int32)">
             <summary>
                 取得我的收藏房間
             </summary>
@@ -1103,42 +1108,42 @@
                 原密碼
             </summary>
         </member>
-        <member name="T:TravelMaker.Models.GetJourneysView">
+        <member name="T:TravelMaker.Models.GetToursView">
             <summary>
                 產生隨機行程
             </summary>
         </member>
-        <member name="P:TravelMaker.Models.GetJourneysView.CategoryId">
+        <member name="P:TravelMaker.Models.GetToursView.CategoryId">
             <summary>
                 類別Id(多選)
             </summary>
         </member>
-        <member name="P:TravelMaker.Models.GetJourneysView.AttrCounts">
+        <member name="P:TravelMaker.Models.GetToursView.AttrCounts">
             <summary>
                 景點個數
             </summary>
         </member>
-        <member name="P:TravelMaker.Models.GetJourneysView.Transports">
+        <member name="P:TravelMaker.Models.GetToursView.Transports">
             <summary>
                 交通方式
             </summary>
         </member>
-        <member name="P:TravelMaker.Models.GetJourneysView.Elong">
+        <member name="P:TravelMaker.Models.GetToursView.Elong">
             <summary>
                 鄰近經度
             </summary>
         </member>
-        <member name="P:TravelMaker.Models.GetJourneysView.Nlat">
+        <member name="P:TravelMaker.Models.GetToursView.Nlat">
             <summary>
                 鄰近緯度
             </summary>
         </member>
-        <member name="P:TravelMaker.Models.GetJourneysView.DistrictName">
+        <member name="P:TravelMaker.Models.GetToursView.DistrictName">
             <summary>
                 地區
             </summary>
         </member>
-        <member name="P:TravelMaker.Models.GetJourneysView.AttractionId">
+        <member name="P:TravelMaker.Models.GetToursView.AttractionId">
             <summary>
                 回傳景點Id
             </summary>
@@ -1191,6 +1196,16 @@
         <member name="P:TravelMaker.Models.FavoriteTour.ImageUrl">
             <summary>
                 景點圖片路徑
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.TourSearch">
+            <summary>
+                給參數搜尋行程(熱門話題取得所有行程)
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourSearch.IsLike">
+            <summary>
+                是否按愛心
             </summary>
         </member>
         <member name="T:TravelMaker.Models.TourView">

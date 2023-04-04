@@ -89,7 +89,7 @@ namespace TravelMaker.Models
     /// <summary>
     ///     產生隨機行程
     /// </summary>
-    public class GetJourneysView
+    public class GetToursView
     {
         /// <summary>
         ///     類別Id(多選)
@@ -217,7 +217,17 @@ namespace TravelMaker.Models
     }
 
 
-
+    /// <summary>
+    ///     給參數搜尋行程(熱門話題取得所有行程)
+    /// </summary>
+    public class TourSearch : FavoriteTour
+    {
+        /// <summary>
+        ///     是否按愛心
+        /// </summary>
+        [Display(Name = "是否按愛心")]
+        public bool IsLike { get; set; }
+    }
 
 
 

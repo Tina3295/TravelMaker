@@ -24,7 +24,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpPost]
         [Route("make")]
-        public IHttpActionResult Make(GetJourneysView choose)
+        public IHttpActionResult Make(GetToursView choose)
         {
             List<int> types = new List<int>();
 
@@ -758,11 +758,10 @@ namespace TravelMaker.Controllers
 
             //新增行程中的景點
             TourAttraction tourAttraction = new TourAttraction();
+            tourAttraction.TourId = _db.Tours.Where(t => t.TourId == newTour.TourId).Select(t => t.TourId).FirstOrDefault();
             int i = 1;
             foreach(int id in tourAdd.AttractionId)
             {
-                tourAttraction.TourId = _db.Tours.Where(t => t.TourId == newTour.TourId).Select(t => t.TourId).FirstOrDefault();
-
                 tourAttraction.AttractionId = id;
                 tourAttraction.OrderNum = i;
                 i++;
@@ -771,7 +770,7 @@ namespace TravelMaker.Controllers
                 _db.SaveChanges();
             }
 
-            return Ok(new { Message = "新增行程成功" });
+            return Ok(new { Message = "新增行程成功", TourId = tourAttraction.TourId });
         }
 
 
@@ -856,7 +855,7 @@ namespace TravelMaker.Controllers
                         attraction.AttractionName,
                         attraction.Elong,
                         attraction.Nlat,
-                        ImageURL = imgPath + _db.Images.Where(i => i.AttractionId == attractionId).Select(i => i.ImageName).FirstOrDefault()
+                        ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == attractionId).Select(i => i.ImageName).FirstOrDefault()
                     };
 
                     result.Add(temp);
@@ -911,8 +910,7 @@ namespace TravelMaker.Controllers
             _db.SaveChanges();
 
             //複製行程中的景點
-            var temp = _db.TourAttractions.Where(t => t.TourId == tourId).OrderBy(a => a.OrderNum).ToList();
-            var attractions = temp.Select(a => a.AttractionId);
+            var attractions = _db.TourAttractions.Where(t => t.TourId == tourId).OrderBy(a => a.OrderNum).Select(a => a.AttractionId).ToList();
 
             TourAttraction tourAttraction = new TourAttraction();
             int i = 1;
@@ -995,13 +993,6 @@ namespace TravelMaker.Controllers
 
 
 
-
-
-
-
-
-
-
         /// <summary>
         ///     刪除自己的行程
         /// </summary>
@@ -1045,6 +1036,98 @@ namespace TravelMaker.Controllers
 
 
 
+        /// <summary>
+        ///     給參數搜尋行程(熱門話題取得所有行程)
+        /// </summary>
+        [HttpGet]
+        [Route("search")]
+        public IHttpActionResult TourSearch(string type="", string district="", string keyword="", int page = 1)
+        {
+            int pageSize = 9;
+            string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
+            int myUserId = 0;
+            if (Request.Headers.Authorization != null)
+            {
+                var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+                string userGuid = (string)userToken["UserGuid"];
+                myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+            }
+
+
+            //行程搜尋篩選
+            var temp = _db.TourAttractions.AsQueryable();
+
+            if (!string.IsNullOrEmpty(district))
+            {
+                temp = temp.Where(t => t.Attraction.District.DistrictName == district);
+            }
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                temp = temp.Where(t => t.Attraction.AttractionName.Contains(keyword) || t.Attraction.Introduction.Contains(keyword) || t.Tour.TourName.Contains(keyword));
+            }
+
+            if (!string.IsNullOrEmpty(type))
+            {
+                var attractions = _db.CategoryAttractions.Where(a => a.Category.CategoryName == type).Select(a => a.AttractionId).Distinct().ToList();
+
+                temp = temp.Where(t => attractions.Contains(t.AttractionId));
+            }
+
+            //符合搜尋結果的總項目
+            int totalItem = temp.Select(t => t.TourId).Distinct().Count();
+            //總頁數
+            int totalPages = totalItem % pageSize == 0 ? totalItem / pageSize : totalItem / pageSize + 1;
+            //該頁顯示項目
+            var searchTours = temp.Select(t => new
+            {
+                TourId = t.TourId,
+                Likes = _db.TourLikes.Count(l => l.TourId == t.TourId)
+            }).Distinct().OrderByDescending(t => t.Likes).Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+
+            var result = new List<object>();
+
+            foreach (var searchTour in searchTours)
+            {
+                TourSearch tour = new TourSearch();
+                tour.TourId = searchTour.TourId;
+                tour.TourName = _db.Tours.Where(t => t.TourId == searchTour.TourId).Select(t => t.TourName).FirstOrDefault();
+                tour.AttrCounts = _db.TourAttractions.Where(t => t.TourId == searchTour.TourId).Count();
+                tour.Likes = searchTour.Likes;
+
+                tour.ImageUrl = new List<string>();
+                var attractionIds = _db.TourAttractions.Where(t => t.TourId == searchTour.TourId).Select(t => t.AttractionId).ToList();
+                for (int i = 0; i < Math.Min(attractionIds.Count, 3); i++)
+                {
+                    int attractionId = attractionIds[i];
+                    string img = _db.Images.Where(a => a.AttractionId == attractionId).Select(a => a.ImageName).FirstOrDefault();
+
+                    tour.ImageUrl.Add(imgPath + img);
+                }
+
+                if (myUserId != 0)
+                {
+                    tour.IsLike = _db.TourLikes.Where(t => t.TourId == searchTour.TourId).Any(t => t.UserId == myUserId) ? true : false;
+                }
+                else
+                {
+                    tour.IsLike = false;
+                }
+                
+                result.Add(tour);
+            }
+
+
+            
+            if (totalItem != 0)
+            {
+                return Ok(new { TotalPages = totalPages, TotalItem = totalItem, Tours = result });
+            }
+            else
+            {
+                return BadRequest("尚無符合搜尋條件的行程");
+            }
+        }
 
 
 
@@ -1057,6 +1140,5 @@ namespace TravelMaker.Controllers
 
 
 
-       
     }
 }
