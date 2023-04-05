@@ -641,6 +641,11 @@
             <param name="tourId">行程Id</param>
             <returns></returns>
         </member>
+        <member name="M:TravelMaker.Controllers.ToursController.TourHomePage">
+            <summary>
+                首頁-取得熱門行程*4、取得熱門景點*3
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.UsersController">
             <summary>
                 用戶服務
@@ -1472,6 +1477,36 @@
                 景點Id
             </summary>
         </member>
+        <member name="T:TravelMaker.Models.TourTryView">
+            <summary>
+                試玩行程
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourTryView.Category">
+            <summary>
+                類別
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.TourTryView.AttractionData">
+            <summary>
+                四個景點
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.HomePageView">
+            <summary>
+                首頁-取得熱門行程*4、取得熱門景點*3
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.HomePageView.Tours">
+            <summary>
+                熱門行程*4
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.HomePageView.Attractions">
+            <summary>
+                熱門景點*3
+            </summary>
+        </member>
         <member name="T:TravelMaker.Models.MyAttractionCollectionsView">
             <summary>
                 取得我的收藏景點
@@ -1525,21 +1560,6 @@
         <member name="P:TravelMaker.Models.AttractionInfoView.AttractionData">
             <summary>
                 景點資訊
-            </summary>
-        </member>
-        <member name="T:TravelMaker.Models.TourTryView">
-            <summary>
-                試玩行程
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.TourTryView.Category">
-            <summary>
-                類別
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.TourTryView.AttractionData">
-            <summary>
-                四個景點
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Vote">

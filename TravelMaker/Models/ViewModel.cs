@@ -536,6 +536,64 @@ namespace TravelMaker.Models
 
 
 
+    /// <summary>
+    ///     試玩行程
+    /// </summary>
+    public class TourTryView
+    {
+        /// <summary>
+        ///     類別
+        /// </summary>
+        public string Category { get; set; }
+
+        /// <summary>
+        ///     四個景點
+        /// </summary>
+        public List<object> AttractionData { get; set; }
+    }
+
+
+
+
+
+    /// <summary>
+    ///     首頁-取得熱門行程*4、取得熱門景點*3
+    /// </summary>
+    public class HomePageView
+    {
+        /// <summary>
+        ///     熱門行程*4
+        /// </summary>
+        [Display(Name = "熱門行程*4")]
+        public List<HomePageTour> Tours { get; set; }
+
+        /// <summary>
+        ///     熱門景點*3
+        /// </summary>
+        [Display(Name = "熱門景點*3")]
+        public List<AttractionView> Attractions { get; set; }
+    }
+
+    public class HomePageTour
+    {
+        public int TourId { get; set; }
+        public string TourName { get; set; }
+        public string ImageUrl { get; set; }
+        public string Category { get; set; }
+        public int Likes { get; set; }
+        public bool IsLike { get; set; }
+        public List<HomePageTourAttraction> Attractions { get; set; }
+    }
+    public class HomePageTourAttraction
+    {
+        public string AttractionName { get; set; }
+        public double Elong { get; set; }
+        public double Nlat { get; set; }
+    }
+
+
+
+
 
 
     //-------------------景點View-------------------
@@ -627,20 +685,6 @@ namespace TravelMaker.Models
 
 
 
-    /// <summary>
-    ///     試玩行程
-    /// </summary>
-    public class TourTryView
-    {
-        /// <summary>
-        ///     類別
-        /// </summary>
-        public string Category { get; set; }
 
-        /// <summary>
-        ///     四個景點
-        /// </summary>
-        public List<object> AttractionData { get; set; }
-    }
 
 }

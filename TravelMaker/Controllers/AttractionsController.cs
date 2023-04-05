@@ -32,12 +32,20 @@ namespace TravelMaker.Controllers
             string userGuuid = (string)userToken["UserGuid"];
             int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
 
-            AttractionCollection attractionCollection = new AttractionCollection();
-            attractionCollection.AttractionId = attractionId;
-            attractionCollection.UserId = userId;
-            _db.AttractionCollections.Add(attractionCollection);
-            _db.SaveChanges();
-            return Ok(new { Message = "已加入收藏" });
+            var collection = _db.AttractionCollections.Where(a => a.UserId == userId && a.AttractionId == attractionId).FirstOrDefault();
+            if(collection==null)
+            {
+                AttractionCollection attractionCollection = new AttractionCollection();
+                attractionCollection.AttractionId = attractionId;
+                attractionCollection.UserId = userId;
+                _db.AttractionCollections.Add(attractionCollection);
+                _db.SaveChanges();
+                return Ok(new { Message = "加入收藏成功" });
+            }
+            else
+            {
+                return BadRequest("此景點已加過收藏");
+            }
         }
 
 
@@ -58,8 +66,11 @@ namespace TravelMaker.Controllers
             int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
 
             var collection = _db.AttractionCollections.Where(a => a.UserId == userId && a.AttractionId == attractionId).FirstOrDefault();
-            _db.AttractionCollections.Remove(collection);
-            _db.SaveChanges();
+            if (collection != null)
+            {
+                _db.AttractionCollections.Remove(collection);
+                _db.SaveChanges();
+            }
             return Ok(new { Message = "已取消收藏" });
         }
 
