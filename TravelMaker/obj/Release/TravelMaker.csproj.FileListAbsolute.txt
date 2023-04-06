@@ -169,3 +169,9 @@ C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migr
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.correctOrderToAttrOrder.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addVoteDateTable.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addVoteTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SixLabors.ImageSharp.dll
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\System.Text.Encoding.CodePages.dll
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SixLabors.ImageSharp.xml
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\System.Text.Encoding.CodePages.xml
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addAttractionCollectionsTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addAttractionCommentTable.resources

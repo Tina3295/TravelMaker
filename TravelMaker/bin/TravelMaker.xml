@@ -505,7 +505,7 @@
                 給參數搜尋景點(熱門話題取得所有景點)
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.AttractionsController.AttractionsSearch(System.Int32)">
+        <member name="M:TravelMaker.Controllers.AttractionsController.AttractionsInfo(System.Int32)">
             <summary>
                 取得單一景點資訊
             </summary>
@@ -689,6 +689,16 @@
         <member name="M:TravelMaker.Controllers.UsersController.MyAttractionCollections(System.Int32)">
             <summary>
                 取得我的收藏景點
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.UsersController.Rename(System.String)">
+            <summary>
+                修改暱稱
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.UsersController.UploadProfile">
+            <summary>
+                上傳頭貼(測試1)
             </summary>
         </member>
         <member name="M:TravelMaker.Controllers.ValuesController.Test">
@@ -1560,6 +1570,11 @@
         <member name="P:TravelMaker.Models.AttractionInfoView.AttractionData">
             <summary>
                 景點資訊
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionInfoView.CommentData">
+            <summary>
+                評論資訊
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Vote">

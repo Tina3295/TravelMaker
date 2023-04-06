@@ -29,8 +29,8 @@ namespace TravelMaker.Controllers
         public IHttpActionResult CollectAdd([FromUri]int attractionId)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            string userGuuid = (string)userToken["UserGuid"];
-            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
             var collection = _db.AttractionCollections.Where(a => a.UserId == userId && a.AttractionId == attractionId).FirstOrDefault();
             if(collection==null)
@@ -62,8 +62,8 @@ namespace TravelMaker.Controllers
         public IHttpActionResult CollectRemove([FromUri] int attractionId)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            string userGuuid = (string)userToken["UserGuid"];
-            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
             var collection = _db.AttractionCollections.Where(a => a.UserId == userId && a.AttractionId == attractionId).FirstOrDefault();
             if (collection != null)
@@ -189,29 +189,105 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpGet]
         [Route("{attractionId}")]
-        public IHttpActionResult AttractionsSearch([FromUri]int attractionId)
+        public IHttpActionResult AttractionsInfo([FromUri]int attractionId)
         {
-            string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
+            string imgPath = "https://" + Request.RequestUri.Host + "/upload/attractionImage/";
+            string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
 
-            AttractionInfoView attractionInfo = new AttractionInfoView();
+            var hadAttraction = _db.Attractions.Where(a => a.AttractionId == attractionId && a.OpenStatus == true).FirstOrDefault();
 
-            attractionInfo.AttractionData = _db.Attractions.Where(a => a.AttractionId == attractionId && a.OpenStatus == true).Select(a => new AttractionInfo
+            if (hadAttraction != null)
             {
-                AttractionId= a.AttractionId,
-                AttractionName=a.AttractionName,
-                Introduction=a.Introduction,
-                Address=a.Address,
-                Tel=a.Tel,
-                Email=a.Email,
-                OfficialSite=a.OfficialSite,
-                Facebook=a.Facebook,
-                OpenTime=a.OpenTime,
-                ImageUrl= _db.Images.Where(i => i.AttractionId == attractionId).Select(i => imgPath + i.ImageName).ToList()
-            }).ToList();
+                AttractionInfoView attractionInfo = new AttractionInfoView();
+
+                //景點資訊
+                attractionInfo.AttractionData = _db.Attractions.Where(a => a.AttractionId == attractionId && a.OpenStatus == true).Select(a => new AttractionInfo
+                {
+                    AttractionId = a.AttractionId,
+                    AttractionName = a.AttractionName,
+                    Introduction = a.Introduction,
+                    Address = a.Address,
+                    Tel = a.Tel,
+                    Email = a.Email,
+                    OfficialSite = a.OfficialSite,
+                    Facebook = a.Facebook,
+                    OpenTime = a.OpenTime,
+                    ImageUrl = _db.Images.Where(i => i.AttractionId == attractionId).Select(i => imgPath + i.ImageName).ToList()
+                }).ToList();
+
+                //10則高->低評論
+                var hadComment = _db.AttractionComments.Where(c => c.AttractionId == attractionId).FirstOrDefault();
+                CommentData comment = new CommentData();
+
+                if (hadComment!=null)
+                {
+                    comment.AverageScore = (int)Math.Round(_db.AttractionComments.Where(c => c.AttractionId == attractionId).Select(c => c.Score).Average());
+
+                    //如果有登入，自己的評論要在最上面
+                    comment.Comments = new List<Comments>();
+
+                    
+                    if (Request.Headers.Authorization != null)
+                    {
+                        var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+                        string userGuid = (string)userToken["UserGuid"];
+                        int myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+
+                        //用戶自己評論數
+                        int myCommentCount = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.UserId == myUserId).Count();
+
+                        if (myCommentCount != 0)
+                        {
+                            var myComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.UserId == myUserId).OrderByDescending(c => c.Score).ThenByDescending(c => c.InitDate).Take(10 - myCommentCount).ToList().Select(c => new Comments
+                            {
+                                AttractionCommentId = c.AttractionCommentId,
+                                IsMyComment = true,
+                                UserName = c.User.UserName,
+                                ProfilePicture = profilePath + c.User.ProfilePicture,
+                                Score = c.Score,
+                                Comment = c.Comment,
+                                InitDate = CommentTime((DateTime)c.InitDate)
+                            });
+
+                            comment.Comments.AddRange(myComments);
+                        }
 
 
-            if (attractionInfo != null)
-            {
+                        //其他評論數
+                        var otherComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.UserId != myUserId).OrderByDescending(c => c.Score).ThenByDescending(c => c.InitDate).Take(10 - myCommentCount).ToList().Select(c => new Comments
+                        {
+                            AttractionCommentId = c.AttractionCommentId,
+                            IsMyComment=false,
+                            UserName = c.User.UserName,
+                            ProfilePicture = profilePath + c.User.ProfilePicture,
+                            Score = c.Score,
+                            Comment = c.Comment,
+                            InitDate = CommentTime((DateTime)c.InitDate)
+                        });
+                        comment.Comments.AddRange(otherComments);
+                    }
+                    else
+                    {
+                        var allComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId).OrderByDescending(c => c.Score).ThenByDescending(c=>c.InitDate).Take(10).ToList().Select(c => new Comments
+                        {
+                            AttractionCommentId = c.AttractionCommentId,
+                            IsMyComment=false,
+                            UserName = c.User.UserName,
+                            ProfilePicture = profilePath + c.User.ProfilePicture,
+                            Score = c.Score,
+                            Comment = c.Comment,
+                            InitDate = CommentTime((DateTime)c.InitDate)
+                        });
+                        comment.Comments.AddRange(allComments);
+                    }
+                }
+                else
+                {
+                    comment.AverageScore = 0;
+                }
+
+                attractionInfo.CommentData = new List<CommentData>() { comment };
+
                 return Ok(attractionInfo);
             }
             else
@@ -219,5 +295,42 @@ namespace TravelMaker.Controllers
                 return BadRequest("無此景點頁面");
             }
         }
+
+        private string CommentTime(DateTime dateTime) //處理評論時間顯示 分鐘 小時 日 週 月
+        {
+            TimeSpan timeSince = DateTime.Now.Subtract(dateTime);
+
+            if (timeSince.TotalMinutes < 1)
+            {
+                return "剛剛發佈";
+            }
+            else if (timeSince.TotalMinutes < 60)
+            {
+                return (int)timeSince.TotalMinutes + "分鐘前";
+            }
+            else if (timeSince.TotalHours < 24)
+            {
+                return (int)timeSince.TotalHours + "小時前";
+            }
+            else if (timeSince.TotalDays < 7)
+            {
+                return (int)timeSince.TotalDays + "天前";
+            }
+            else if (timeSince.TotalDays < 30)
+            {
+                return (int)timeSince.TotalDays / 7 + "週前";
+            }
+            else if (timeSince.TotalDays < 365)
+            {
+                return (int)timeSince.TotalDays / 30 + "個月前";
+            }
+            else
+            {
+                return (int)timeSince.TotalDays / 365 + "年前";
+            }
+        }
+
+
+
     }
 }

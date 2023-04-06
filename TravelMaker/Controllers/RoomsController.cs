@@ -25,8 +25,8 @@ namespace TravelMaker.Controllers
         public IHttpActionResult RoomAdd(RoomAddView roomAdd)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            string userGuuid = (string)userToken["UserGuid"];
-            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
             //新增房間
             Room room = new Room();
@@ -133,8 +133,8 @@ namespace TravelMaker.Controllers
                     if (Request.Headers.Authorization != null)
                     {
                         var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-                        string userGuuid = (string)userToken["UserGuid"];
-                        myUserId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+                        string userGuid = (string)userToken["UserGuid"];
+                        myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
                     }
 
                     roomContent.VoteDates = new List<object>();
@@ -177,8 +177,8 @@ namespace TravelMaker.Controllers
         {
             //房客才可以修改名字
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            string userGuuid = (string)userToken["UserGuid"];
-            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
             int roomId = _db.Rooms.Where(r => r.RoomGuid == roomNameView.RoomGuid).Select(r => r.RoomId).FirstOrDefault();
             var inRoom = _db.RoomMembers.Where(r => r.UserId == userId && r.RoomId == roomId).FirstOrDefault();
 

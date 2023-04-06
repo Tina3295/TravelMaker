@@ -1,13 +1,18 @@
 ﻿using NSwag.Annotations;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using TravelMaker.Models;
@@ -255,8 +260,8 @@ namespace TravelMaker.Controllers
         public IHttpActionResult FavoriteTour([FromUri] int page)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            string userGuuid = (string)userToken["UserGuid"];
-            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
             //依照頁數取得我的行程
             List<object> result = new List<object>();
@@ -321,8 +326,8 @@ namespace TravelMaker.Controllers
         public IHttpActionResult MyRoom([FromUri] int page)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            string userGuuid = (string)userToken["UserGuid"];
-            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
             //依照頁數取得我的房間
             List<object> result = new List<object>();
@@ -388,8 +393,8 @@ namespace TravelMaker.Controllers
         public IHttpActionResult MyAttractionCollections([FromUri] int page)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            string userGuuid = (string)userToken["UserGuid"];
-            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
             //依照頁數取得我的收藏景點
             List<object> result = new List<object>();
@@ -432,6 +437,98 @@ namespace TravelMaker.Controllers
             else
             {
                 return BadRequest("已無我的收藏景點");
+            }
+        }
+
+
+
+        /// <summary>
+        ///     修改暱稱
+        /// </summary>
+        [HttpPut]
+        [Route("name")]
+        [JwtAuthFilter]
+        public IHttpActionResult Rename([FromBody] string name)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+
+            var user = _db.Users.Where(u => u.UserGuid == userGuid).FirstOrDefault();
+            user.UserName = name;
+            _db.SaveChanges();
+
+            return Ok(new { Message = "修改成功", UserName = name });
+        }
+
+
+
+
+
+
+
+
+
+        /// <summary>
+        ///     上傳頭貼(測試1)
+        /// </summary>
+        [Route("profile")]
+        [HttpPost]
+        [JwtAuthFilter]
+        public async Task<IHttpActionResult> UploadProfile() //非同步執行
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            var user = _db.Users.Where(u => u.UserGuid == userGuid).FirstOrDefault();
+
+            // 檢查請求是否包含 multipart/form-data.
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            string imgPath = HttpContext.Current.Server.MapPath(@"~/Upload/profile");
+            try
+            {
+                // 讀取 MIME 資料
+                var provider = new MultipartMemoryStreamProvider();
+                try
+                {
+                    await Request.Content.ReadAsMultipartAsync(provider);
+                }
+                catch
+                {
+                    return BadRequest("檔案超過限制大小");
+                }
+
+                // 取得檔案副檔名，單檔用.FirstOrDefault()直接取出，多檔需用迴圈
+                string fileNameData = provider.Contents.FirstOrDefault().Headers.ContentDisposition.FileName.Trim('\"');
+                string fileType = fileNameData.Remove(0, fileNameData.LastIndexOf('.')); // .jpg
+
+                // 定義檔案名稱
+                string fileName = user.UserName + "Profile" + DateTime.Now.ToString("yyyyMMddHHmmss") + fileType;
+
+                // 儲存圖片，單檔用.FirstOrDefault()直接取出，多檔需用迴圈
+                var fileBytes = await provider.Contents.FirstOrDefault().ReadAsByteArrayAsync();
+                var outputPath = Path.Combine(imgPath, fileName);
+                using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+                {
+                    await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+                }
+
+                // 使用 SixLabors.ImageSharp 調整圖片尺寸 (正方形大頭貼)
+                var image = SixLabors.ImageSharp.Image.Load<Rgba32>(outputPath);
+                image.Mutate(x => x.Resize(120, 120)); // 輸入(120, 0)會保持比例出現黑邊
+                image.Save(outputPath);
+
+                //更新資料庫
+                user.ProfilePicture = fileName;
+                _db.SaveChanges();
+
+                return Ok(new { Message = "照片上傳成功", ProfilePicture = "https://travelmaker.rocket-coding.com/upload/profile/" + fileName });
+            }
+            catch (Exception)
+            {
+                return BadRequest("照片上傳失敗或未上傳");
             }
         }
     }

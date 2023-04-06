@@ -679,13 +679,13 @@ namespace TravelMaker.Controllers
             }
 
 
-            ////最終輸出不得有景點不足的情況
-            //if(returnAttractionId.Count < attractionCount)
-            //{
-            //    int need = attractionCount - returnAttractionId.Count;
-            //    var needId = attractions.Where(a => !returnAttractionId.Contains(a.AttractionId)).Select(a => a.AttractionId).Take(need).ToList();
-            //    returnAttractionId.AddRange(needId);
-            //}
+            //最終輸出不得有景點不足的情況
+            if (returnAttractionId.Count < attractionCount)
+            {
+                int need = attractionCount - returnAttractionId.Count;
+                var needId = attractions.Where(a => !returnAttractionId.Contains(a.AttractionId)).Select(a => a.AttractionId).Take(need).ToList();
+                returnAttractionId.AddRange(needId);
+            }
 
 
 
@@ -736,9 +736,10 @@ namespace TravelMaker.Controllers
         public IHttpActionResult TourAdd(TourAddView tourAdd)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            string userGuuid = (string)userToken["UserGuid"];
-            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
+          
             //新增行程
             Tour newTour = new Tour();
 
@@ -889,8 +890,8 @@ namespace TravelMaker.Controllers
         public IHttpActionResult TourDuplicate([FromUri]int tourId,[FromBody]string TourName)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            string userGuuid = (string)userToken["UserGuid"];
-            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
             //複製行程-實際上增加一筆紀錄
             Tour newTour = new Tour();
@@ -1212,8 +1213,8 @@ namespace TravelMaker.Controllers
         public IHttpActionResult TourLike([FromUri]int tourId)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            string userGuuid = (string)userToken["UserGuid"];
-            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
             var like = _db.TourLikes.Where(a => a.UserId == userId && a.TourId == tourId).FirstOrDefault();
             if (like == null)
@@ -1244,8 +1245,8 @@ namespace TravelMaker.Controllers
         public IHttpActionResult TourUnlike([FromUri] int tourId)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            string userGuuid = (string)userToken["UserGuid"];
-            int userId = _db.Users.Where(u => u.UserGuid == userGuuid).Select(u => u.UserId).FirstOrDefault();
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
             var like = _db.TourLikes.Where(a => a.UserId == userId && a.TourId == tourId).FirstOrDefault();
             if (like != null)
@@ -1277,11 +1278,11 @@ namespace TravelMaker.Controllers
             }
             HomePageView result = new HomePageView();
 
-            //取得熱門行程*4                 !!!!!!!!!!!!!!!!!熱門行程待定義
-            var tours = _db.TourLikes.GroupBy(t => t.TourId).Where(t => _db.TourAttractions.Where(a => a.TourId == t.Key).Count() > 2 && _db.TourAttractions.Where(a => a.TourId == t.Key).Count() < 7/*&&t.Count() > 100*/).Select(t => new
+            //取得熱門行程*4 (固定四個景點、愛心數>100)          
+            var tours = _db.TourLikes.GroupBy(t => t.TourId).Where(t => _db.TourAttractions.Where(a => a.TourId == t.Key).Count() == 4 && t.Count() > 100).Select(t => new
             {
-                TourId=t.Key,
-                Likes=t.Count()
+                TourId = t.Key,
+                Likes =t.Count()
             }).OrderBy(x => Guid.NewGuid()).Take(4).ToList();
 
             result.Tours = new List<HomePageTour>();

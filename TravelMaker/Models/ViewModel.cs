@@ -666,6 +666,10 @@ namespace TravelMaker.Models
         ///     景點資訊
         /// </summary>
         public List<AttractionInfo> AttractionData { get; set; }
+        /// <summary>
+        ///     評論資訊
+        /// </summary>
+        public List<CommentData> CommentData { get; set; }
     }
 
     public class AttractionInfo
@@ -681,7 +685,21 @@ namespace TravelMaker.Models
         public string OpenTime { get; set; }
         public List<string> ImageUrl { get; set; }
     }
-
+    public class CommentData
+    {
+        public int AverageScore { get; set; }
+        public List<Comments> Comments { get; set; }
+    }
+    public class Comments
+    {
+        public int AttractionCommentId { get; set; }
+        public bool IsMyComment { get; set; }
+        public string UserName { get; set; }
+        public string ProfilePicture { get; set; }
+        public int Score { get; set; }
+        public string Comment { get; set; }
+        public string InitDate { get; set; }
+    }
 
 
 

@@ -27,7 +27,7 @@ namespace TravelMaker.Models
         ///     景點名稱
         /// </summary>
         [Required(ErrorMessage = "{0}必填")]
-        [MaxLength(30)]
+        [MaxLength(50)]
         [Display(Name = "景點名稱")]
         public string AttractionName { get; set; }
 
@@ -82,7 +82,7 @@ namespace TravelMaker.Models
         /// <summary>
         ///     Email
         /// </summary>
-        [MaxLength(50)]
+        [MaxLength(100)]
         [Display(Name = "Email")]
         public string Email { get; set; }
 

@@ -172,3 +172,9 @@ C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrat
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addVoteTable.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addAttractionCollectionsTable.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addAttractionCommentTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SixLabors.ImageSharp.dll
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\System.Text.Encoding.CodePages.dll
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SixLabors.ImageSharp.xml
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\System.Text.Encoding.CodePages.xml
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.CorrctAttractionNameLength.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.correctEmailLength1.resources
