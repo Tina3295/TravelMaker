@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -191,6 +192,13 @@ namespace TravelMaker.Controllers
         [Route("{attractionId}")]
         public IHttpActionResult AttractionsInfo([FromUri]int attractionId)
         {
+            int myUserId = 0;
+            if (Request.Headers.Authorization != null)
+            {
+                var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+                string userGuid = (string)userToken["UserGuid"];
+                myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+            }
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/attractionImage/";
             string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
 
@@ -201,19 +209,35 @@ namespace TravelMaker.Controllers
                 AttractionInfoView attractionInfo = new AttractionInfoView();
 
                 //景點資訊
-                attractionInfo.AttractionData = _db.Attractions.Where(a => a.AttractionId == attractionId && a.OpenStatus == true).Select(a => new AttractionInfo
+                var attractionData = _db.Attractions.Where(a => a.AttractionId == attractionId).ToList().Select(a =>
                 {
-                    AttractionId = a.AttractionId,
-                    AttractionName = a.AttractionName,
-                    Introduction = a.Introduction,
-                    Address = a.Address,
-                    Tel = a.Tel,
-                    Email = a.Email,
-                    OfficialSite = a.OfficialSite,
-                    Facebook = a.Facebook,
-                    OpenTime = a.OpenTime,
-                    ImageUrl = _db.Images.Where(i => i.AttractionId == attractionId).Select(i => imgPath + i.ImageName).ToList()
-                }).ToList();
+                    bool isCollect;
+                    if (myUserId != 0)
+                    {
+                        isCollect = _db.AttractionCollections.Where(c => c.AttractionId == a.AttractionId).Any(c => c.UserId == myUserId) ? true : false;
+                    }
+                    else
+                    {
+                        isCollect = false;
+                    }
+
+                    return new
+                    {
+                        IsCollect = isCollect,
+                        AttractionId = a.AttractionId,
+                        AttractionName = a.AttractionName,
+                        Introduction = a.Introduction,
+                        Address = a.Address,
+                        Tel = a.Tel,
+                        Email = a.Email,
+                        OfficialSite = a.OfficialSite,
+                        Facebook = a.Facebook,
+                        OpenTime = a.OpenTime,
+                        ImageUrl = _db.Images.Where(i => i.AttractionId == attractionId).Select(i => imgPath + i.ImageName).ToList()
+                    };
+                });
+
+                attractionInfo.AttractionData = attractionData.ToList<object>();
 
                 //10則高->低評論
                 var hadComment = _db.AttractionComments.Where(c => c.AttractionId == attractionId).FirstOrDefault();
@@ -223,16 +247,12 @@ namespace TravelMaker.Controllers
                 {
                     comment.AverageScore = (int)Math.Round(_db.AttractionComments.Where(c => c.AttractionId == attractionId).Select(c => c.Score).Average());
 
-                    //如果有登入，自己的評論要在最上面
+                    
                     comment.Comments = new List<Comments>();
 
-                    
-                    if (Request.Headers.Authorization != null)
-                    {
-                        var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-                        string userGuid = (string)userToken["UserGuid"];
-                        int myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
+                    if (myUserId != 0)//如果有登入，自己的評論要在最上面
+                    {
                         //用戶自己評論數
                         int myCommentCount = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.UserId == myUserId).Count();
 
@@ -266,7 +286,7 @@ namespace TravelMaker.Controllers
                         });
                         comment.Comments.AddRange(otherComments);
                     }
-                    else
+                    else //無登入
                     {
                         var allComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId).OrderByDescending(c => c.Score).ThenByDescending(c=>c.InitDate).Take(10).ToList().Select(c => new Comments
                         {
@@ -287,6 +307,35 @@ namespace TravelMaker.Controllers
                 }
 
                 attractionInfo.CommentData = new List<CommentData>() { comment };
+
+
+                //更多附近景點*3
+                DbGeography location = _db.Attractions.Where(a => a.AttractionId == attractionId).Select(a => a.Location).FirstOrDefault();
+
+                var moreAttractions = _db.Attractions.Where(a => a.Location.Distance(location) < 1000 && a.AttractionId != attractionId).Take(3).ToList().Select(a =>
+                    {
+                        bool isCollect;
+                        if (myUserId != 0)
+                        {
+                            isCollect = _db.AttractionCollections.Where(c => c.AttractionId == a.AttractionId).Any(c => c.UserId == myUserId) ? true : false;
+                        }
+                        else
+                        {
+                            isCollect = false;
+                        }
+
+
+                        return new
+                        {
+                            AttractionId = a.AttractionId,
+                            AttractionName = a.AttractionName,
+                            City = a.District.City.CittyName,
+                            ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == a.AttractionId).Select(i => i.ImageName).FirstOrDefault(),
+                            IsColeect = isCollect
+                        };
+                    });
+
+                attractionInfo.MoreAttractions =  moreAttractions.ToList<object>();
 
                 return Ok(attractionInfo);
             }

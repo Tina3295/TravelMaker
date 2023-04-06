@@ -469,7 +469,7 @@ namespace TravelMaker.Controllers
 
 
         /// <summary>
-        ///     上傳頭貼(測試1)
+        ///     上傳頭貼
         /// </summary>
         [Route("profile")]
         [HttpPost]
@@ -517,8 +517,24 @@ namespace TravelMaker.Controllers
 
                 // 使用 SixLabors.ImageSharp 調整圖片尺寸 (正方形大頭貼)
                 var image = SixLabors.ImageSharp.Image.Load<Rgba32>(outputPath);
-                image.Mutate(x => x.Resize(120, 120)); // 輸入(120, 0)會保持比例出現黑邊
+                int size = Math.Min(image.Width, image.Height);
+                int x = (image.Width - size) / 2;
+                int y = (image.Height - size) / 2;
+                Rectangle cropArea = new Rectangle(x, y, size, size);
+
+                if (size > 180)
+                {
+                    image.Mutate(i => i.Crop(cropArea).Resize(180, 180));
+                }
+                else
+                {
+                    image.Mutate(i => i.Crop(cropArea));
+                }
                 image.Save(outputPath);
+
+
+
+
 
                 //更新資料庫
                 user.ProfilePicture = fileName;
