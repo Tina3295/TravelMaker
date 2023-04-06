@@ -89,7 +89,7 @@ namespace TravelMaker.Controllers
                     roomContent.CreaterGuid = _db.Users.Where(u => u.UserId == createrId).Select(u => u.UserGuid).FirstOrDefault();
 
                     //房間用戶
-                    string savePath= "https://" + Request.RequestUri.Host + "/upload/profilePicture/";
+                    string savePath= "https://" + Request.RequestUri.Host + "/upload/profile/";
                     var userIds = _db.RoomMembers.Where(r => r.RoomId == hadRoom.RoomId).Select(r => r.UserId).ToList();
 
                     roomContent.Users = new List<object>();
@@ -501,7 +501,7 @@ namespace TravelMaker.Controllers
                         {
                             UserGuid = memberAdd.UserGuid,
                             UserName = memberAdd.UserName,
-                            ProfilePicture = memberAdd.ProfilePicture == null ? "" : "https://" + Request.RequestUri.Host + "/upload/profilePicture/" + memberAdd.ProfilePicture
+                            ProfilePicture = memberAdd.ProfilePicture == null ? "" : "https://" + Request.RequestUri.Host + "/upload/profile/" + memberAdd.ProfilePicture
                         };
 
                         return Ok(result);

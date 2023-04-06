@@ -55,7 +55,7 @@ namespace TravelMaker.Controllers
                     string profilePicture = "";
                     if (user.ProfilePicture != null)
                     {
-                        profilePicture = "https://" + Request.RequestUri.Host + "/upload/profilePicture/" + user.ProfilePicture;
+                        profilePicture = "https://" + Request.RequestUri.Host + "/upload/profile/" + user.ProfilePicture;
                     }
 
 

@@ -175,3 +175,5 @@ C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SixLabors.ImageSharp.xml
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\System.Text.Encoding.CodePages.xml
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addAttractionCollectionsTable.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addAttractionCommentTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.CorrctAttractionNameLength.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.correctEmailLength1.resources
