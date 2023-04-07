@@ -1160,7 +1160,7 @@ namespace TravelMaker.Controllers
             //景點清單
             var attractions = _db.CategoryAttractions.Where(a => a.Attraction.OpenStatus == true
                                                              && types.Contains(a.CategoryId)
-                                                             && a.Attraction.DistrictId == district)
+                                                             /*&& a.Attraction.DistrictId == district*/)
                               .Select(a => new AttractionList
                               {
                                   AttractionId = a.Attraction.AttractionId,
@@ -1366,6 +1366,70 @@ namespace TravelMaker.Controllers
                 }
 
                 result.Attractions.Add(attraction);
+            }
+
+
+            return Ok(result);
+        }
+
+
+
+
+
+        /// <summary>
+        ///     取得熱門行程*3
+        /// </summary>
+        [HttpGet]
+        [Route("hot")]
+        public IHttpActionResult TourHot()
+        {
+            string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
+            int myUserId = 0;
+            if (Request.Headers.Authorization != null)
+            {
+                var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+                string userGuid = (string)userToken["UserGuid"];
+                myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+            }
+
+            //取得熱門行程*4 (三個景點以上、愛心數>100)          
+            var hotTours = _db.TourLikes.GroupBy(t => t.TourId).Where(t => _db.TourAttractions.Where(a => a.TourId == t.Key).Count() > 2 && t.Count() > 100).Select(t => new
+            {
+                TourId = t.Key,
+                Likes = t.Count()
+            }).OrderBy(x => Guid.NewGuid()).Take(3).ToList();
+
+
+            var result = new List<object>();
+
+            foreach (var hotTour in hotTours)
+            {
+                TourSearch tour = new TourSearch();
+                tour.TourId = hotTour.TourId;
+                tour.TourName = _db.Tours.Where(t => t.TourId == hotTour.TourId).Select(t => t.TourName).FirstOrDefault();
+                tour.AttrCounts = _db.TourAttractions.Where(t => t.TourId == hotTour.TourId).Count();
+                tour.Likes = hotTour.Likes;
+
+                tour.ImageUrl = new List<string>();
+                var attractionIds = _db.TourAttractions.Where(t => t.TourId == hotTour.TourId).Select(t => t.AttractionId).ToList();
+                for (int i = 0; i < Math.Min(attractionIds.Count, 3); i++)
+                {
+                    int attractionId = attractionIds[i];
+                    string img = _db.Images.Where(a => a.AttractionId == attractionId).Select(a => a.ImageName).FirstOrDefault();
+
+                    tour.ImageUrl.Add(imgPath + img);
+                }
+
+                if (myUserId != 0)
+                {
+                    tour.IsLike = _db.TourLikes.Where(t => t.TourId == hotTour.TourId).Any(t => t.UserId == myUserId) ? true : false;
+                }
+                else
+                {
+                    tour.IsLike = false;
+                }
+
+                result.Add(tour);
             }
 
 

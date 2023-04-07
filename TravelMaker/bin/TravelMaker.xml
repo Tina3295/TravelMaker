@@ -646,6 +646,11 @@
                 首頁-取得熱門行程*4、取得熱門景點*3
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.ToursController.TourHot">
+            <summary>
+                取得熱門行程*3
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.UsersController">
             <summary>
                 用戶服務

@@ -209,35 +209,35 @@ namespace TravelMaker.Controllers
                 AttractionInfoView attractionInfo = new AttractionInfoView();
 
                 //景點資訊
-                var attractionData = _db.Attractions.Where(a => a.AttractionId == attractionId).ToList().Select(a =>
+                var attraction = _db.Attractions.FirstOrDefault(a => a.AttractionId == attractionId);
+
+                bool isCollect;
+                if (myUserId != 0)
                 {
-                    bool isCollect;
-                    if (myUserId != 0)
-                    {
-                        isCollect = _db.AttractionCollections.Where(c => c.AttractionId == a.AttractionId).Any(c => c.UserId == myUserId) ? true : false;
-                    }
-                    else
-                    {
-                        isCollect = false;
-                    }
+                    isCollect = _db.AttractionCollections
+                        .Any(c => c.AttractionId == attraction.AttractionId && c.UserId == myUserId);
+                }
+                else
+                {
+                    isCollect = false;
+                }
 
-                    return new
-                    {
-                        IsCollect = isCollect,
-                        AttractionId = a.AttractionId,
-                        AttractionName = a.AttractionName,
-                        Introduction = a.Introduction,
-                        Address = a.Address,
-                        Tel = a.Tel,
-                        Email = a.Email,
-                        OfficialSite = a.OfficialSite,
-                        Facebook = a.Facebook,
-                        OpenTime = a.OpenTime,
-                        ImageUrl = _db.Images.Where(i => i.AttractionId == attractionId).Select(i => imgPath + i.ImageName).ToList()
-                    };
-                });
+                attractionInfo.AttractionData = new AttractionData
+                {
+                    IsCollect = isCollect,
+                    AttractionId = attraction.AttractionId,
+                    AttractionName = attraction.AttractionName,
+                    Introduction = attraction.Introduction,
+                    Address = attraction.Address,
+                    Tel = attraction.Tel,
+                    Email = attraction.Email,
+                    OfficialSite = attraction.OfficialSite,
+                    Facebook = attraction.Facebook,
+                    OpenTime = attraction.OpenTime,
+                    ImageUrl = _db.Images.Where(i => i.AttractionId == attractionId).Select(i => imgPath + i.ImageName).ToList()
+                };
 
-                attractionInfo.AttractionData = attractionData.ToList<object>();
+
 
                 //10則高->低評論
                 var hadComment = _db.AttractionComments.Where(c => c.AttractionId == attractionId).FirstOrDefault();
@@ -246,8 +246,6 @@ namespace TravelMaker.Controllers
                 if (hadComment!=null)
                 {
                     comment.AverageScore = (int)Math.Round(_db.AttractionComments.Where(c => c.AttractionId == attractionId).Select(c => c.Score).Average());
-
-                    
                     comment.Comments = new List<Comments>();
 
 
@@ -267,7 +265,7 @@ namespace TravelMaker.Controllers
                                 Score = c.Score,
                                 Comment = c.Comment,
                                 InitDate = CommentTime((DateTime)c.InitDate)
-                            });
+                            }).ToList();
 
                             comment.Comments.AddRange(myComments);
                         }
@@ -283,7 +281,7 @@ namespace TravelMaker.Controllers
                             Score = c.Score,
                             Comment = c.Comment,
                             InitDate = CommentTime((DateTime)c.InitDate)
-                        });
+                        }).ToList();
                         comment.Comments.AddRange(otherComments);
                     }
                     else //無登入
@@ -297,7 +295,7 @@ namespace TravelMaker.Controllers
                             Score = c.Score,
                             Comment = c.Comment,
                             InitDate = CommentTime((DateTime)c.InitDate)
-                        });
+                        }).ToList();
                         comment.Comments.AddRange(allComments);
                     }
                 }
@@ -306,7 +304,7 @@ namespace TravelMaker.Controllers
                     comment.AverageScore = 0;
                 }
 
-                attractionInfo.CommentData = new List<CommentData>() { comment };
+                attractionInfo.CommentData = comment ;
 
 
                 //更多附近景點*3
@@ -314,7 +312,7 @@ namespace TravelMaker.Controllers
 
                 var moreAttractions = _db.Attractions.Where(a => a.Location.Distance(location) < 1000 && a.AttractionId != attractionId).Take(3).ToList().Select(a =>
                     {
-                        bool isCollect;
+                        //bool isCollect;
                         if (myUserId != 0)
                         {
                             isCollect = _db.AttractionCollections.Where(c => c.AttractionId == a.AttractionId).Any(c => c.UserId == myUserId) ? true : false;

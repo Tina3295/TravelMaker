@@ -665,16 +665,34 @@ namespace TravelMaker.Models
         /// <summary>
         ///     景點資訊
         /// </summary>
-        public List<object> AttractionData { get; set; }
+        public AttractionData AttractionData { get; set; }
         /// <summary>
         ///     評論資訊
         /// </summary>
-        public List<CommentData> CommentData { get; set; }
+        public CommentData CommentData { get; set; }
         /// <summary>
         ///     更多景點*3
         /// </summary>
         public List<object> MoreAttractions { get; set; }
     }
+    public class AttractionData
+    {
+        public bool IsCollect { get; set; }
+        public int AttractionId { get; set; }
+        public string AttractionName { get; set; }
+        public string Introduction { get; set; }
+        public string Address { get; set; }
+        public string Tel { get; set; }
+        public string Email { get; set; }
+        public string OfficialSite { get; set; }
+        public string Facebook { get; set; }
+        public string OpenTime { get; set; }
+        public List<string> ImageUrl { get; set; }
+    }
+
+
+
+
     public class CommentData
     {
         public int AverageScore { get; set; }
