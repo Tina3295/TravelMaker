@@ -510,6 +510,11 @@
                 取得單一景點資訊
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.AttractionsController.MoreComment(TravelMaker.Models.MoreCommentView)">
+            <summary>
+                取得更多景點評論
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
@@ -1585,6 +1590,11 @@
         <member name="P:TravelMaker.Models.AttractionInfoView.MoreAttractions">
             <summary>
                 更多景點*3
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.MoreCommentView">
+            <summary>
+                取得更多景點評論
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Vote">

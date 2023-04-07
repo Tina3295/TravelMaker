@@ -711,6 +711,14 @@ namespace TravelMaker.Models
 
 
 
-
+    /// <summary>
+    ///     取得更多景點評論
+    /// </summary>
+    public class MoreCommentView
+    {
+        public int AttractionId { get; set; }
+        public string Order { get; set; }
+        public int Page { get; set; }
+    }
 
 }

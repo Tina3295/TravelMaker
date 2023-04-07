@@ -1181,19 +1181,12 @@ namespace TravelMaker.Controllers
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
 
             tourTry.Category = _db.Categories.Where(c => c.CategoryId == categoryId).Select(c => c.CategoryName).FirstOrDefault();
-
-            tourTry.AttractionData = new List<object>();
-            foreach(int id in fourAttractionIds)
+            tourTry.AttractionData = _db.Attractions.Where(a => fourAttractionIds.Contains(a.AttractionId)).Select(a => new
             {
-                var attraction = _db.Attractions.Where(a => a.AttractionId == id).Select(a => new
-                {
-                    a.AttractionId,
-                    a.AttractionName,
-                    ImageUrl =imgPath+_db.Images.Where(i=>i.AttractionId==id).Select(i=>i.ImageName).FirstOrDefault()
-                });
-
-                tourTry.AttractionData.Add(attraction);
-            }
+                a.AttractionId,
+                a.AttractionName,
+                ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == a.AttractionId).Select(i => i.ImageName).FirstOrDefault()
+            }).ToList<object>();
 
             return Ok(tourTry);
         }
@@ -1435,5 +1428,7 @@ namespace TravelMaker.Controllers
 
             return Ok(result);
         }
+
+
     }
 }

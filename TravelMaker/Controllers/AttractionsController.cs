@@ -261,7 +261,7 @@ namespace TravelMaker.Controllers
                                 AttractionCommentId = c.AttractionCommentId,
                                 IsMyComment = true,
                                 UserName = c.User.UserName,
-                                ProfilePicture = profilePath + c.User.ProfilePicture,
+                                ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
                                 Score = c.Score,
                                 Comment = c.Comment,
                                 InitDate = CommentTime((DateTime)c.InitDate)
@@ -277,7 +277,7 @@ namespace TravelMaker.Controllers
                             AttractionCommentId = c.AttractionCommentId,
                             IsMyComment=false,
                             UserName = c.User.UserName,
-                            ProfilePicture = profilePath + c.User.ProfilePicture,
+                            ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
                             Score = c.Score,
                             Comment = c.Comment,
                             InitDate = CommentTime((DateTime)c.InitDate)
@@ -289,9 +289,9 @@ namespace TravelMaker.Controllers
                         var allComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId).OrderByDescending(c => c.Score).ThenByDescending(c=>c.InitDate).Take(10).ToList().Select(c => new Comments
                         {
                             AttractionCommentId = c.AttractionCommentId,
-                            IsMyComment=false,
+                            IsMyComment = false,
                             UserName = c.User.UserName,
-                            ProfilePicture = profilePath + c.User.ProfilePicture,
+                            ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
                             Score = c.Score,
                             Comment = c.Comment,
                             InitDate = CommentTime((DateTime)c.InitDate)
@@ -312,7 +312,6 @@ namespace TravelMaker.Controllers
 
                 var moreAttractions = _db.Attractions.Where(a => a.Location.Distance(location) < 1000 && a.AttractionId != attractionId).Take(3).ToList().Select(a =>
                     {
-                        //bool isCollect;
                         if (myUserId != 0)
                         {
                             isCollect = _db.AttractionCollections.Where(c => c.AttractionId == a.AttractionId).Any(c => c.UserId == myUserId) ? true : false;
@@ -379,5 +378,69 @@ namespace TravelMaker.Controllers
 
 
 
+
+        /// <summary>
+        ///     取得更多景點評論
+        /// </summary>
+        [HttpPost]
+        [Route("comment")]
+        public IHttpActionResult MoreComment(MoreCommentView view)
+        {
+            string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
+            int pagesize = 10;
+            int myUserId = 0;
+
+            var allComments = _db.AttractionComments.Where(c => c.AttractionId == view.AttractionId).ToList();
+
+            if (allComments.Any())
+            {
+                // 先依照分數高到低或低到高排序
+                if (view.Order == "higher")
+                {
+                    allComments = allComments.OrderByDescending(c => c.Score).ThenByDescending(c => c.InitDate).ToList();
+                }
+                else
+                {
+                    allComments = allComments.OrderBy(c => c.Score).ThenByDescending(c => c.InitDate).ToList();
+                }
+
+                //如果有登入，自己的評論會在最上面
+                if (Request.Headers.Authorization != null)
+                {
+                    var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+                    string userGuid = (string)userToken["UserGuid"];
+                    myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+
+                    var myComments = allComments.Where(c => c.UserId == myUserId).ToList();
+                    allComments = allComments.Except(myComments).ToList();
+                    allComments = myComments.Concat(allComments).ToList();
+                }
+
+                // 分頁
+                var result = allComments.Skip((view.Page - 1) * pagesize).Take(pagesize).ToList().Select(c => new
+                {
+                    AttractionCommentId = c.AttractionCommentId,
+                    IsMyComment = c.UserId == myUserId,
+                    UserName = c.User.UserName,
+                    ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
+                    Score = c.Score,
+                    Comment = c.Comment,
+                    InitDate = CommentTime((DateTime)c.InitDate)
+                }).ToList();
+
+                if (result.Any())
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return BadRequest("無更多景點評論");
+                }
+            }
+            else
+            {
+                return BadRequest("尚無評論");
+            }
+        }
     }
 }
