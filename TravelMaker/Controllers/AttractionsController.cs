@@ -188,6 +188,8 @@ namespace TravelMaker.Controllers
         /// <summary>
         ///     取得單一景點資訊
         /// </summary>
+        /// <param name="attractionId">景點Id</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{attractionId}")]
         public IHttpActionResult AttractionsInfo([FromUri]int attractionId)

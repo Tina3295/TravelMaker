@@ -85,5 +85,6 @@ namespace TravelMaker.Models
         public virtual ICollection<RoomMember> RoomMembers { get; set; }
         public virtual ICollection<VoteDate> VoteDates { get; set; }
         public virtual ICollection<AttractionComment> AttractionComments { get; set; }
+        public virtual ICollection<Blog> Blogs { get; set; }
     }
 }

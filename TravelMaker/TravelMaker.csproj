@@ -242,6 +242,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AttractionsController.cs" />
+    <Compile Include="Controllers\BlogsController.cs" />
     <Compile Include="Controllers\RoomsController.cs" />
     <Compile Include="Controllers\ToursController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -353,10 +354,25 @@
     <Compile Include="Migrations\202304060912442_correctEmailLength1.Designer.cs">
       <DependentUpon>202304060912442_correctEmailLength1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304080939431_addBlogBlogAttractionBlogImageTable.cs" />
+    <Compile Include="Migrations\202304080939431_addBlogBlogAttractionBlogImageTable.Designer.cs">
+      <DependentUpon>202304080939431_addBlogBlogAttractionBlogImageTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304081005132_renameContentToDescribe.cs" />
+    <Compile Include="Migrations\202304081005132_renameContentToDescribe.Designer.cs">
+      <DependentUpon>202304081005132_renameContentToDescribe.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304081007138_CorrectDescribeToDescription.cs" />
+    <Compile Include="Migrations\202304081007138_CorrectDescribeToDescription.Designer.cs">
+      <DependentUpon>202304081007138_CorrectDescribeToDescription.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\AttractionCollection.cs" />
     <Compile Include="Models\AttractionComment.cs" />
+    <Compile Include="Models\Blog.cs" />
+    <Compile Include="Models\BlogAttraction.cs" />
+    <Compile Include="Models\BlogImage.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CategoryAttraction.cs" />
     <Compile Include="Models\City.cs" />
@@ -559,6 +575,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304060912442_correctEmailLength1.resx">
       <DependentUpon>202304060912442_correctEmailLength1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304080939431_addBlogBlogAttractionBlogImageTable.resx">
+      <DependentUpon>202304080939431_addBlogBlogAttractionBlogImageTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304081005132_renameContentToDescribe.resx">
+      <DependentUpon>202304081005132_renameContentToDescribe.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304081007138_CorrectDescribeToDescription.resx">
+      <DependentUpon>202304081007138_CorrectDescribeToDescription.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

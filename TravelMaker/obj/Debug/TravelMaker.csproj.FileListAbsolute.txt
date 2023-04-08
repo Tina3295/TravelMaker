@@ -178,3 +178,6 @@ C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\SixLabors.ImageSharp.xml
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\bin\System.Text.Encoding.CodePages.xml
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.CorrctAttractionNameLength.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.correctEmailLength1.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addBlogBlogAttractionBlogImageTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.renameContentToDescribe.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.CorrectDescribeToDescription.resources

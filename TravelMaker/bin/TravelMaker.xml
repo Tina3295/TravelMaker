@@ -509,11 +509,32 @@
             <summary>
                 取得單一景點資訊
             </summary>
+            <param name="attractionId">景點Id</param>
+            <returns></returns>
         </member>
         <member name="M:TravelMaker.Controllers.AttractionsController.MoreComment(TravelMaker.Models.MoreCommentView)">
             <summary>
                 取得更多景點評論
             </summary>
+        </member>
+        <member name="T:TravelMaker.Controllers.BlogsController">
+            <summary>
+                遊記相關
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogAdd(System.Int32)">
+            <summary>
+                新增草稿遊記
+            </summary>
+            <param name="tourId">行程Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.GetBlogDraft(System.String)">
+            <summary>
+                取得草稿遊記
+            </summary>
+            <param name="blogGuid">遊記Guid</param>
+            <returns></returns>
         </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
@@ -865,6 +886,106 @@
         <member name="P:TravelMaker.Models.AttractionComment.InitDate">
             <summary>
                 留言日期
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.Blog">
+            <summary>
+                遊記
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Blog.BlogId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Blog.BlogGuid">
+            <summary>
+                遊記Guid
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Blog.UserId">
+            <summary>
+                對應用戶
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Blog.Title">
+            <summary>
+                標題
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Blog.Category">
+            <summary>
+                類別
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Blog.Cover">
+            <summary>
+                封面
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Blog.Status">
+            <summary>
+                遊記狀態(0草稿1發佈2刪除)
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Blog.InitDate">
+            <summary>
+                遊記建立日期
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.BlogAttraction">
+            <summary>
+                遊記中的景點
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogAttraction.BlogAttractionId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogAttraction.BlogId">
+            <summary>
+                對應遊記
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogAttraction.AttractionId">
+            <summary>
+                景點Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogAttraction.Description">
+            <summary>
+                心得
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogAttraction.InitDate">
+            <summary>
+                遊記景點建立日期
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.BlogImage">
+            <summary>
+                遊記照片
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogImage.BlogImageId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogImage.BlogAttractionId">
+            <summary>
+                對應遊記
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogImage.ImageName">
+            <summary>
+                圖片名稱
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogImage.InitDate">
+            <summary>
+                照片上傳日期
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Category">
