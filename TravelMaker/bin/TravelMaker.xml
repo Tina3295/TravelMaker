@@ -536,6 +536,20 @@
             <param name="blogGuid">遊記Guid</param>
             <returns></returns>
         </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogRelease(System.String)">
+            <summary>
+                新增遊記(發布)
+            </summary>
+            <param name="blogGuid">遊記Guid</param>
+            <returns></returns>
+        </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogRemove(System.String)">
+            <summary>
+                刪除遊記
+            </summary>
+            <param name="blogGuid">遊記Guid</param>
+            <returns></returns>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關

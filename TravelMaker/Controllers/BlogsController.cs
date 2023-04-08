@@ -120,12 +120,81 @@ namespace TravelMaker.Controllers
             {
                 return BadRequest("非此遊記創建者");
             }
-
-
-            
         }
 
 
+
+        /// <summary>
+        ///     新增遊記(發布)
+        /// </summary>
+        /// <param name="blogGuid">遊記Guid</param>
+        /// <returns></returns>
+        [HttpPut]
+        [JwtAuthFilter]
+        [Route("release/{blogGuid}")]
+        public IHttpActionResult BlogRelease([FromUri] string blogGuid)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+
+            var isMyDraftBlog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blogGuid && b.User.UserGuid == userGuid);
+            if (isMyDraftBlog != null)
+            {
+                if(isMyDraftBlog.Status==0)
+                {
+                    isMyDraftBlog.Status = 1;
+                    _db.SaveChanges();
+                    return Ok("成功發佈");
+                }
+                else if(isMyDraftBlog.Status == 1)
+                {
+                    return BadRequest("此遊記已發佈");
+                }
+                else
+                {
+                    return BadRequest("此遊記已刪除");
+                } 
+            }
+            else
+            {
+                return BadRequest("非此遊記創建者");
+            }
+        }
+
+
+
+        /// <summary>
+        ///     刪除遊記
+        /// </summary>
+        /// <param name="blogGuid">遊記Guid</param>
+        /// <returns></returns>
+        [HttpPut]
+        [JwtAuthFilter]
+        [Route("remove/{blogGuid}")]
+        public IHttpActionResult BlogRemove([FromUri] string blogGuid)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+
+            var isMyDraftBlog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blogGuid && b.User.UserGuid == userGuid);
+            if (isMyDraftBlog != null)
+            {
+                if (isMyDraftBlog.Status == 0|| isMyDraftBlog.Status == 1)
+                {
+                    isMyDraftBlog.Status = 2;
+                    _db.SaveChanges();
+                    return Ok("成功刪除");
+                }
+                else
+                {
+                    return BadRequest("此遊記已刪除");
+                }
+            }
+            else
+            {
+                return BadRequest("非此遊記創建者");
+            }
+        }
 
     }
 }
