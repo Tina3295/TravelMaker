@@ -550,6 +550,11 @@
             <param name="blogGuid">遊記Guid</param>
             <returns></returns>
         </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogEdit">
+            <summary>
+                編輯遊記
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
@@ -1735,6 +1740,11 @@
         <member name="T:TravelMaker.Models.MoreCommentView">
             <summary>
                 取得更多景點評論
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.BlogEditView">
+            <summary>
+                
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Vote">

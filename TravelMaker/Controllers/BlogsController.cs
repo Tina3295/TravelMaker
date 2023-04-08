@@ -1,8 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using TravelMaker.Models;
 using TravelMaker.Security;
@@ -100,7 +104,7 @@ namespace TravelMaker.Controllers
                         Cover = blog.Cover == null ? "" : blogImagePath + blog.Cover,
                         Category = blog.Category == null ? new string[0] : blog.Category.Split(','),
                         Status = blog.Status,
-                        AttractionList = _db.BlogAttractions.Where(a => a.Blog.BlogGuid == blogGuid).Select(a => new
+                        BlogAttractionList = _db.BlogAttractions.Where(a => a.Blog.BlogGuid == blogGuid).Select(a => new
                         {
                             AttractionId = a.AttractionId,
                             AttractionName = _db.Attractions.FirstOrDefault(n => n.AttractionId == a.AttractionId).AttractionName,
@@ -194,6 +198,146 @@ namespace TravelMaker.Controllers
             {
                 return BadRequest("非此遊記創建者");
             }
+        }
+
+
+
+
+
+        /// <summary>
+        ///     編輯遊記
+        /// </summary>
+        [HttpPost]
+        [JwtAuthFilter]
+        [Route("edit")]
+        public async Task<IHttpActionResult> BlogEdit()
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            var user = _db.Users.Where(u => u.UserGuid == userGuid).FirstOrDefault();
+            //string imgPath = HttpContext.Current.Server.MapPath(@"~/Upload/profile");!!!!!!!!!!!本地測試路徑先
+            string imgPath = "C:/Users/swps4/source/repos/TravelMaker/TravelMaker/Upload/blogImage/";
+
+            try
+            {
+                var provider = new MultipartMemoryStreamProvider();
+                try
+                {
+                    await Request.Content.ReadAsMultipartAsync(provider);
+                }
+                catch
+                {
+                    return BadRequest("檔案超過限制大小");
+                }
+
+                //檢查非圖檔
+                var images = provider.Contents.Where(c => c.Headers.ContentDisposition.Name == "\"Image\""); ;
+                if (images.Any())
+                {
+                    foreach (var image in images)
+                    {
+                        try
+                        {
+                            string fileName = image.Headers.ContentDisposition.FileName.Trim('"');
+
+                            if (!IsImage(fileName))
+                            {
+                                return BadRequest("上傳的檔案必須為圖片檔");
+                            }
+                        }
+                        catch
+                        {
+                            return BadRequest("圖片上傳失敗");
+                        }
+                    }
+                }
+
+
+
+                // 遊記更新內容
+                var blogData = provider.Contents.FirstOrDefault(c => c.Headers.ContentDisposition.Name == "\"BlogData\"");
+                if (blogData == null)
+                {
+                    return BadRequest("遊記更新內容缺失");
+                }
+                var blogJson = await blogData.ReadAsStringAsync();
+                var blog = JsonConvert.DeserializeObject<BlogEditView>(blogJson);
+
+                //更新遊記
+                var originBlog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blog.BlogGuid);
+                originBlog.Title = blog.Title;
+                originBlog.Category = blog.Category == null ? null : string.Join(",", blog.Category);
+                originBlog.Cover = blog.Cover;
+
+                //刪除原本的景點照片、景點
+                _db.BlogImages.Where(b => b.BlogAttraction.Blog.BlogGuid == blog.BlogGuid).ToList().ForEach(image => _db.BlogImages.Remove(image));
+                _db.BlogAttractions.Where(b => b.Blog.BlogGuid == blog.BlogGuid).ToList().ForEach(att => _db.BlogAttractions.Remove(att));
+
+                _db.SaveChanges();
+
+
+                //更新上傳的景點、景點照片
+                foreach(var attraction in blog.BlogAttractionList)
+                {
+                    BlogAttraction blogAttraction = new BlogAttraction();
+                    blogAttraction.BlogId = originBlog.BlogId;
+                    blogAttraction.AttractionId = attraction.AttractionId;
+                    blogAttraction.Description = attraction.Description;
+                    blogAttraction.InitDate = DateTime.Now;
+
+                    _db.BlogAttractions.Add(blogAttraction);
+                    _db.SaveChanges();
+
+                    foreach(string image in attraction.ImageUrl)
+                    {
+                        BlogImage blogImage = new BlogImage();
+                        blogImage.BlogAttractionId = blogAttraction.BlogAttractionId;
+                        blogImage.ImageName = image;
+                        blogImage.InitDate = DateTime.Now;
+
+                        _db.BlogImages.Add(blogImage);
+                        _db.SaveChanges();
+                    }
+                }
+
+
+
+                // 儲存遊記照片檔案
+                if (images.Any())
+                {
+                    foreach (var image in images)
+                    {
+                        try
+                        {
+                            var imageBytes = await image.ReadAsByteArrayAsync();
+                            string fileName = image.Headers.ContentDisposition.FileName.Trim('"');
+
+                            var outputPath = Path.Combine(imgPath, fileName);
+                            using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+                            {
+                                await output.WriteAsync(imageBytes, 0, imageBytes.Length);
+                            }
+                        }
+                        catch
+                        {
+                            return BadRequest("圖片上傳失敗");
+                        }
+                    }
+                }
+
+                return Ok("已儲存編輯內容");
+            }
+            catch (Exception)
+            {
+                return BadRequest("儲存失敗");
+            }
+        }
+
+        
+        private bool IsImage(string fileName) //檢查是否為圖片檔
+        {
+            string ext = Path.GetExtension(fileName).ToLower();
+            return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" || ext == ".bmp" || ext == ".webp" || ext == ".svg" || ext == ".ico";
         }
 
     }

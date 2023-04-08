@@ -721,4 +721,27 @@ namespace TravelMaker.Models
         public int Page { get; set; }
     }
 
+
+
+
+    //-------------------遊記View-------------------
+
+
+    /// <summary>
+    ///     
+    /// </summary>
+    public class BlogEditView
+    {
+        public string BlogGuid { get; set; }
+        public string Title { get; set; }
+        public string Cover { get; set; }
+        public string[] Category { get; set; }
+        public List<BlogAttractionList> BlogAttractionList { get; set; }
+    }
+    public class BlogAttractionList
+    {
+        public int AttractionId { get; set; }
+        public string Description { get; set; }
+        public string[] ImageUrl { get; set; }
+    }
 }
