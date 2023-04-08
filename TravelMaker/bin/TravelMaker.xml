@@ -577,6 +577,11 @@
             <param name="roomGuid">房間Guid</param>
             <returns></returns>
         </member>
+        <member name="M:TravelMaker.Controllers.RoomsController.GetRooms">
+            <summary>
+                主揪,被揪加景點進房間前需要get所在的房間
+            </summary>
+        </member>
         <member name="M:TravelMaker.Controllers.RoomsController.AttractionAdd(TravelMaker.Models.AttractionAddView)">
             <summary>
                 主揪,被揪加景點進房間

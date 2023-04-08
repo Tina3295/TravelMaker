@@ -601,6 +601,35 @@ namespace TravelMaker.Controllers
         }
 
 
+        /// <summary>
+        ///     主揪,被揪加景點進房間前需要get所在的房間
+        /// </summary>
+        [HttpGet]
+        [JwtAuthFilter]
+        [Route("getRooms")]
+        public IHttpActionResult GetRooms()
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+
+            var result = _db.RoomMembers.Where(r => r.User.UserGuid == userGuid && r.Room.Status == true).Select(r => new
+            {
+                r.RoomId,
+                r.Room.RoomName
+            }).ToList();
+
+            if(result.Any())
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("沒有任何房間");
+            }
+        }
+
+
+
 
 
 
@@ -644,5 +673,6 @@ namespace TravelMaker.Controllers
                 return BadRequest("非該房間成員");
             }
         }
+
     }
 }
