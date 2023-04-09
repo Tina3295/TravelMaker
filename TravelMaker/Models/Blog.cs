@@ -79,6 +79,19 @@ namespace TravelMaker.Models
 
 
 
+        /// <summary>
+        ///     遊記編輯日期
+        /// </summary>
+        [Display(Name = "遊記編輯日期")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
+        [DataType(DataType.DateTime)]
+        public DateTime? EditDate { get; set; }
+
+
+
         public virtual ICollection<BlogAttraction> BlogAttractions { get; set; }
+        public virtual ICollection<BlogCollection> BlogCollections { get; set; }
+        public virtual ICollection<BlogLike> BlogLikes { get; set; }
+        public virtual ICollection<BlogComment> BlogComments { get; set; }
     }
 }

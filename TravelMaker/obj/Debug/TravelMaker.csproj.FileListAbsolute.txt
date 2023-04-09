@@ -181,3 +181,8 @@ C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrat
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addBlogBlogAttractionBlogImageTable.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.renameContentToDescribe.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.CorrectDescribeToDescription.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addBlogCollectionTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addEditDateInBlogTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addBlogLikeTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addBlogCommentTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addBlogReplyTable.resources

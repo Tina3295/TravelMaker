@@ -366,13 +366,37 @@
     <Compile Include="Migrations\202304081007138_CorrectDescribeToDescription.Designer.cs">
       <DependentUpon>202304081007138_CorrectDescribeToDescription.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304090800470_addBlogCollectionTable.cs" />
+    <Compile Include="Migrations\202304090800470_addBlogCollectionTable.Designer.cs">
+      <DependentUpon>202304090800470_addBlogCollectionTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304090905140_addEditDateInBlogTable.cs" />
+    <Compile Include="Migrations\202304090905140_addEditDateInBlogTable.Designer.cs">
+      <DependentUpon>202304090905140_addEditDateInBlogTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304090924224_addBlogLikeTable.cs" />
+    <Compile Include="Migrations\202304090924224_addBlogLikeTable.Designer.cs">
+      <DependentUpon>202304090924224_addBlogLikeTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304090954073_addBlogCommentTable.cs" />
+    <Compile Include="Migrations\202304090954073_addBlogCommentTable.Designer.cs">
+      <DependentUpon>202304090954073_addBlogCommentTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304091252105_addBlogReplyTable.cs" />
+    <Compile Include="Migrations\202304091252105_addBlogReplyTable.Designer.cs">
+      <DependentUpon>202304091252105_addBlogReplyTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\AttractionCollection.cs" />
     <Compile Include="Models\AttractionComment.cs" />
     <Compile Include="Models\Blog.cs" />
     <Compile Include="Models\BlogAttraction.cs" />
+    <Compile Include="Models\BlogCollection.cs" />
+    <Compile Include="Models\BlogComment.cs" />
     <Compile Include="Models\BlogImage.cs" />
+    <Compile Include="Models\BlogLike.cs" />
+    <Compile Include="Models\BlogReply.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CategoryAttraction.cs" />
     <Compile Include="Models\City.cs" />
@@ -584,6 +608,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304081007138_CorrectDescribeToDescription.resx">
       <DependentUpon>202304081007138_CorrectDescribeToDescription.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304090800470_addBlogCollectionTable.resx">
+      <DependentUpon>202304090800470_addBlogCollectionTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304090905140_addEditDateInBlogTable.resx">
+      <DependentUpon>202304090905140_addEditDateInBlogTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304090924224_addBlogLikeTable.resx">
+      <DependentUpon>202304090924224_addBlogLikeTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304090954073_addBlogCommentTable.resx">
+      <DependentUpon>202304090954073_addBlogCommentTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304091252105_addBlogReplyTable.resx">
+      <DependentUpon>202304091252105_addBlogReplyTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

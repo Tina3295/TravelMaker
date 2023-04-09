@@ -744,4 +744,54 @@ namespace TravelMaker.Models
         public string Description { get; set; }
         public string[] ImageUrl { get; set; }
     }
+
+
+
+
+    /// <summary>
+    ///     funtion
+    /// </summary>
+    public class Tool
+    {
+        public static string CommentTime(DateTime dateTime) //處理評論時間顯示 分鐘 小時 日 週 月
+        {
+            TimeSpan timeSince = DateTime.Now.Subtract(dateTime);
+
+            if (timeSince.TotalMinutes < 1)
+            {
+                return "剛剛";
+            }
+            else if (timeSince.TotalMinutes < 60)
+            {
+                return (int)timeSince.TotalMinutes + "分鐘前";
+            }
+            else if (timeSince.TotalHours < 24)
+            {
+                return (int)timeSince.TotalHours + "小時前";
+            }
+            else if (timeSince.TotalDays < 7)
+            {
+                return (int)timeSince.TotalDays + "天前";
+            }
+            else if (timeSince.TotalDays < 30)
+            {
+                return (int)timeSince.TotalDays / 7 + "週前";
+            }
+            else if (timeSince.TotalDays < 365)
+            {
+                return (int)timeSince.TotalDays / 30 + "個月前";
+            }
+            else
+            {
+                return (int)timeSince.TotalDays / 365 + "年前";
+            }
+        }
+    }
+
+
+
+
+
+
+    
 }

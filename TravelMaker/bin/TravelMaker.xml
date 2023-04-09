@@ -555,6 +555,13 @@
                 編輯遊記
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.GetBlogInfo(System.String)">
+            <summary>
+                取得單一遊記資訊
+            </summary>
+            <param name="blogGuid">遊記Guid</param>
+            <returns></returns>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
@@ -952,6 +959,11 @@
                 遊記建立日期
             </summary>
         </member>
+        <member name="P:TravelMaker.Models.Blog.EditDate">
+            <summary>
+                遊記編輯日期
+            </summary>
+        </member>
         <member name="T:TravelMaker.Models.BlogAttraction">
             <summary>
                 遊記中的景點
@@ -982,6 +994,66 @@
                 遊記景點建立日期
             </summary>
         </member>
+        <member name="T:TravelMaker.Models.BlogCollection">
+            <summary>
+                收藏遊記
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogCollection.BlogCollectionId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogCollection.BlogId">
+            <summary>
+                對應遊記
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogCollection.UserId">
+            <summary>
+                用戶Id
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.BlogComment">
+            <summary>
+                遊記評論
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogComment.BlogCommentId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogComment.BlogId">
+            <summary>
+                對應遊記
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogComment.UserId">
+            <summary>
+                用戶Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogComment.Comment">
+            <summary>
+                評論內容
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogComment.Status">
+            <summary>
+                評論狀態
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogComment.InitDate">
+            <summary>
+                評論建立日期
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogComment.EditDate">
+            <summary>
+                評論編輯日期
+            </summary>
+        </member>
         <member name="T:TravelMaker.Models.BlogImage">
             <summary>
                 遊記照片
@@ -1005,6 +1077,66 @@
         <member name="P:TravelMaker.Models.BlogImage.InitDate">
             <summary>
                 照片上傳日期
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.BlogLike">
+            <summary>
+                遊記喜歡數
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogLike.BlogLikeId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogLike.BlogId">
+            <summary>
+                對應遊記
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogLike.UserId">
+            <summary>
+                用戶Id
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.BlogReply">
+            <summary>
+                遊記留言回復
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogReply.BlogReplyId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogReply.BlogCommentId">
+            <summary>
+                對應遊記留言
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogReply.UserId">
+            <summary>
+                用戶Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogReply.Reply">
+            <summary>
+                回覆內容
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogReply.Status">
+            <summary>
+                回覆狀態
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogReply.InitDate">
+            <summary>
+                回覆建立日期
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogReply.EditDate">
+            <summary>
+                回覆編輯日期
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Category">
@@ -1745,6 +1877,11 @@
         <member name="T:TravelMaker.Models.BlogEditView">
             <summary>
                 
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.Tool">
+            <summary>
+                funtion
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Vote">

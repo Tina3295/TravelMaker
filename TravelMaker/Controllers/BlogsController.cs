@@ -147,6 +147,9 @@ namespace TravelMaker.Controllers
                 if(isMyDraftBlog.Status==0)
                 {
                     isMyDraftBlog.Status = 1;
+                    isMyDraftBlog.InitDate = DateTime.Now;
+                    isMyDraftBlog.EditDate = null;
+
                     _db.SaveChanges();
                     return Ok("成功發佈");
                 }
@@ -214,9 +217,9 @@ namespace TravelMaker.Controllers
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
-            var user = _db.Users.Where(u => u.UserGuid == userGuid).FirstOrDefault();
-            //string imgPath = HttpContext.Current.Server.MapPath(@"~/Upload/profile");!!!!!!!!!!!本地測試路徑先
-            string imgPath = "C:/Users/swps4/source/repos/TravelMaker/TravelMaker/Upload/blogImage/";
+
+            string imgPath = HttpContext.Current.Server.MapPath(@"~/Upload/blogImage");
+            //string imgPath = "C:/Users/swps4/source/repos/TravelMaker/TravelMaker/Upload/blogImage/";
 
             try
             {
@@ -253,8 +256,7 @@ namespace TravelMaker.Controllers
                 }
 
 
-
-                // 遊記更新內容
+                // 取出json
                 var blogData = provider.Contents.FirstOrDefault(c => c.Headers.ContentDisposition.Name == "\"BlogData\"");
                 if (blogData == null)
                 {
@@ -263,11 +265,20 @@ namespace TravelMaker.Controllers
                 var blogJson = await blogData.ReadAsStringAsync();
                 var blog = JsonConvert.DeserializeObject<BlogEditView>(blogJson);
 
-                //更新遊記
-                var originBlog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blog.BlogGuid);
+
+                var originBlog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blog.BlogGuid && b.User.UserGuid == userGuid);
+
+                //檢查是否擁有此篇遊記
+                if (originBlog == null)
+                {
+                    return BadRequest("非此遊記創建者");
+                }
+
+                //更新遊記內容
                 originBlog.Title = blog.Title;
                 originBlog.Category = blog.Category == null ? null : string.Join(",", blog.Category);
                 originBlog.Cover = blog.Cover;
+                originBlog.EditDate = DateTime.Now;
 
                 //刪除原本的景點照片、景點
                 _db.BlogImages.Where(b => b.BlogAttraction.Blog.BlogGuid == blog.BlogGuid).ToList().ForEach(image => _db.BlogImages.Remove(image));
@@ -329,7 +340,7 @@ namespace TravelMaker.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("儲存失敗");
+                return BadRequest("編輯內容儲存失敗");
             }
         }
 
@@ -340,5 +351,119 @@ namespace TravelMaker.Controllers
             return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" || ext == ".bmp" || ext == ".webp" || ext == ".svg" || ext == ".ico";
         }
 
+
+
+
+        /// <summary>
+        ///     取得單一遊記資訊
+        /// </summary>
+        /// <param name="blogGuid">遊記Guid</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{blogGuid}")]
+        public IHttpActionResult GetBlogInfo([FromUri] string blogGuid)
+        {
+            string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
+            string blogPath = "https://" + Request.RequestUri.Host + "/upload/blogImage/";
+            int myUserId = 0;
+            if (Request.Headers.Authorization != null)
+            {
+                var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+                string userGuid = (string)userToken["UserGuid"];
+                myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+            }
+
+
+            var blog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blogGuid && b.Status == 1);
+
+            if (blog != null)
+            {
+                //一市多區
+                var attractions = _db.Attractions.Where(a => _db.BlogAttractions.Where(b => b.Blog.BlogGuid == blogGuid).Select(b => b.AttractionId).Contains(a.AttractionId)).Select(a => new
+                {
+                    District = a.District.DistrictName,
+                    City = a.District.City.CittyName
+                }).Distinct().ToList();
+
+                var cityDistricts = new Dictionary<string, List<string>>();
+                foreach (var a in attractions)
+                {
+                    if (!cityDistricts.ContainsKey(a.City))
+                    {
+                        cityDistricts.Add(a.City, new List<string>());
+                    }
+                    cityDistricts[a.City].Add(a.District);
+                }
+
+                // 處理格式-> 臺北市 大安區、中正區
+                var cityAndDistricts = new List<string>();
+                foreach (var cityDistrict in cityDistricts)
+                {
+                    var city = cityDistrict.Key;
+                    var districts = string.Join("、", cityDistrict.Value.Distinct());
+                    cityAndDistricts.Add(city + " " + districts);
+                }
+
+
+
+                var result = new
+                {
+                    IsCollect = _db.BlogCollections.FirstOrDefault(c => c.Blog.BlogGuid == blogGuid && c.UserId == myUserId) == null ? false : true,
+                    Cover = blog.Cover == null ? "" : blogPath + blog.Cover,
+                    Title = blog.Title,
+                    Category = blog.Category == null ? new string[0] : blog.Category.Split(','),
+                    CityAndDistricts = string.Join("；", cityAndDistricts), //未來有其他縣市以;區隔
+                    UserGuid = blog.User.UserGuid,
+                    UserName = blog.User.UserName,
+                    ProfilePicture = blog.User.ProfilePicture == null ? "" : profilePath + blog.User.ProfilePicture,
+                    InitDate = blog.InitDate.Value.ToString("yyyy-MM-dd HH:mm") + (blog.EditDate == null ? "" : " (已編輯)"),
+                    Likes = _db.BlogLikes.Where(l => l.BlogId == blog.BlogId).Count(),
+                    CommentCount = _db.BlogComments.Where(c => c.Blog.BlogGuid == blogGuid && c.Status == true).Count(),
+                    AttractionData = _db.BlogAttractions.Where(a => a.Blog.BlogGuid == blogGuid).Select(a => new
+                    {
+                        AttractionId = a.AttractionId,
+                        AttractionName = _db.Attractions.FirstOrDefault(n => n.AttractionId == a.AttractionId).AttractionName,
+                        Description = a.Description,
+                        ImageUrl = _db.BlogImages.Where(i => i.BlogAttraction.BlogAttractionId == a.BlogAttractionId).Select(i => blogPath + i.ImageName)
+                    }),
+                    Comments = _db.BlogComments.Where(c => c.Blog.BlogGuid == blogGuid && c.Status == true).ToList().Select(c =>
+                    {
+                        var user = _db.Users.FirstOrDefault(u => u.UserId == c.UserId);
+
+                        return new
+                        {
+                            IsMyComment = c.UserId == myUserId ? true : false,
+                            BlogCommentId = c.BlogCommentId,
+                            UserGuid = user.UserGuid,
+                            UserName = user.UserName,
+                            InitDate = Tool.CommentTime((DateTime)c.InitDate) + (c.EditDate == null ? "" : " (已編輯)"),
+                            ProfilePicture = user.ProfilePicture == null ? "" : profilePath + user.ProfilePicture,
+                            Comment = c.Comment,
+                            Replies = _db.BlogReplies.Where(r => r.BlogCommentId == c.BlogCommentId && r.Status == true).ToList().Select(r =>
+                                {
+                                    var userReply = _db.Users.FirstOrDefault(u => u.UserId == r.UserId);
+
+                                    return new
+                                    {
+                                        IsMyComment = r.UserId == myUserId ? true : false,
+                                        BlogReplyId = r.BlogReplyId,
+                                        UserGuid = userReply.UserGuid,
+                                        UserName = userReply.UserName,
+                                        InitDate = Tool.CommentTime((DateTime)r.InitDate) + (r.EditDate == null ? "" : " (已編輯)"),
+                                        ProfilePicture = userReply.ProfilePicture == null ? "" : profilePath + userReply.ProfilePicture,
+                                        Reply = r.Reply
+                                    };
+                                })
+                        };
+                    })
+                };
+
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("此篇遊記不存在");
+            }
+        }
     }
 }

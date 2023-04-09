@@ -242,23 +242,23 @@ namespace TravelMaker.Controllers
 
 
                 //10則高->低評論
-                var hadComment = _db.AttractionComments.Where(c => c.AttractionId == attractionId).FirstOrDefault();
+                var hadComment = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.Status == true).FirstOrDefault();
                 CommentData comment = new CommentData();
 
                 if (hadComment!=null)
                 {
-                    comment.AverageScore = (int)Math.Round(_db.AttractionComments.Where(c => c.AttractionId == attractionId).Select(c => c.Score).Average());
+                    comment.AverageScore = (int)Math.Round(_db.AttractionComments.Where(c => c.AttractionId == attractionId && c.Status == true).Select(c => c.Score).Average());
                     comment.Comments = new List<Comments>();
 
 
                     if (myUserId != 0)//如果有登入，自己的評論要在最上面
                     {
                         //用戶自己評論數
-                        int myCommentCount = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.UserId == myUserId).Count();
+                        int myCommentCount = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.UserId == myUserId && c.Status == true).Count();
 
                         if (myCommentCount != 0)
                         {
-                            var myComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.UserId == myUserId).OrderByDescending(c => c.Score).ThenByDescending(c => c.InitDate).Take(10 - myCommentCount).ToList().Select(c => new Comments
+                            var myComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.UserId == myUserId && c.Status == true).OrderByDescending(c => c.Score).ThenByDescending(c => c.InitDate).ToList().Select(c => new Comments
                             {
                                 AttractionCommentId = c.AttractionCommentId,
                                 IsMyComment = true,
@@ -266,7 +266,7 @@ namespace TravelMaker.Controllers
                                 ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
                                 Score = c.Score,
                                 Comment = c.Comment,
-                                InitDate = CommentTime((DateTime)c.InitDate)
+                                InitDate = Tool.CommentTime((DateTime)c.InitDate)
                             }).ToList();
 
                             comment.Comments.AddRange(myComments);
@@ -274,7 +274,7 @@ namespace TravelMaker.Controllers
 
 
                         //其他評論數
-                        var otherComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.UserId != myUserId).OrderByDescending(c => c.Score).ThenByDescending(c => c.InitDate).Take(10 - myCommentCount).ToList().Select(c => new Comments
+                        var otherComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.UserId != myUserId && c.Status == true).OrderByDescending(c => c.Score).ThenByDescending(c => c.InitDate).Take(10 - myCommentCount).ToList().Select(c => new Comments
                         {
                             AttractionCommentId = c.AttractionCommentId,
                             IsMyComment=false,
@@ -282,13 +282,13 @@ namespace TravelMaker.Controllers
                             ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
                             Score = c.Score,
                             Comment = c.Comment,
-                            InitDate = CommentTime((DateTime)c.InitDate)
+                            InitDate = Tool.CommentTime((DateTime)c.InitDate)
                         }).ToList();
                         comment.Comments.AddRange(otherComments);
                     }
                     else //無登入
                     {
-                        var allComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId).OrderByDescending(c => c.Score).ThenByDescending(c=>c.InitDate).Take(10).ToList().Select(c => new Comments
+                        var allComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.Status == true).OrderByDescending(c => c.Score).ThenByDescending(c=>c.InitDate).Take(10).ToList().Select(c => new Comments
                         {
                             AttractionCommentId = c.AttractionCommentId,
                             IsMyComment = false,
@@ -296,7 +296,7 @@ namespace TravelMaker.Controllers
                             ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
                             Score = c.Score,
                             Comment = c.Comment,
-                            InitDate = CommentTime((DateTime)c.InitDate)
+                            InitDate = Tool.CommentTime((DateTime)c.InitDate)
                         }).ToList();
                         comment.Comments.AddRange(allComments);
                     }
@@ -344,39 +344,7 @@ namespace TravelMaker.Controllers
             }
         }
 
-        private string CommentTime(DateTime dateTime) //處理評論時間顯示 分鐘 小時 日 週 月
-        {
-            TimeSpan timeSince = DateTime.Now.Subtract(dateTime);
 
-            if (timeSince.TotalMinutes < 1)
-            {
-                return "剛剛發佈";
-            }
-            else if (timeSince.TotalMinutes < 60)
-            {
-                return (int)timeSince.TotalMinutes + "分鐘前";
-            }
-            else if (timeSince.TotalHours < 24)
-            {
-                return (int)timeSince.TotalHours + "小時前";
-            }
-            else if (timeSince.TotalDays < 7)
-            {
-                return (int)timeSince.TotalDays + "天前";
-            }
-            else if (timeSince.TotalDays < 30)
-            {
-                return (int)timeSince.TotalDays / 7 + "週前";
-            }
-            else if (timeSince.TotalDays < 365)
-            {
-                return (int)timeSince.TotalDays / 30 + "個月前";
-            }
-            else
-            {
-                return (int)timeSince.TotalDays / 365 + "年前";
-            }
-        }
 
 
 
@@ -392,7 +360,7 @@ namespace TravelMaker.Controllers
             int pagesize = 10;
             int myUserId = 0;
 
-            var allComments = _db.AttractionComments.Where(c => c.AttractionId == view.AttractionId).ToList();
+            var allComments = _db.AttractionComments.Where(c => c.AttractionId == view.AttractionId && c.Status == true).ToList();
 
             if (allComments.Any())
             {
@@ -427,7 +395,7 @@ namespace TravelMaker.Controllers
                     ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
                     Score = c.Score,
                     Comment = c.Comment,
-                    InitDate = CommentTime((DateTime)c.InitDate)
+                    InitDate = Tool.CommentTime((DateTime)c.InitDate)
                 }).ToList();
 
                 if (result.Any())
