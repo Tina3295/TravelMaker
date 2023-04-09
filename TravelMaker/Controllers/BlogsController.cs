@@ -418,7 +418,7 @@ namespace TravelMaker.Controllers
                     ProfilePicture = blog.User.ProfilePicture == null ? "" : profilePath + blog.User.ProfilePicture,
                     InitDate = blog.InitDate.Value.ToString("yyyy-MM-dd HH:mm") + (blog.EditDate == null ? "" : " (已編輯)"),
                     Likes = _db.BlogLikes.Where(l => l.BlogId == blog.BlogId).Count(),
-                    CommentCount = _db.BlogComments.Where(c => c.Blog.BlogGuid == blogGuid && c.Status == true).Count(),
+                    CommentCount = _db.BlogComments.Where(c => c.Blog.BlogGuid == blogGuid && c.Status == true).Count()+_db.BlogReplies.Where(r=>r.BlogComment.Blog.BlogGuid==blogGuid&&r.Status==true).Count(),
                     AttractionData = _db.BlogAttractions.Where(a => a.Blog.BlogGuid == blogGuid).Select(a => new
                     {
                         AttractionId = a.AttractionId,
@@ -426,36 +426,36 @@ namespace TravelMaker.Controllers
                         Description = a.Description,
                         ImageUrl = _db.BlogImages.Where(i => i.BlogAttraction.BlogAttractionId == a.BlogAttractionId).Select(i => blogPath + i.ImageName)
                     }),
-                    Comments = _db.BlogComments.Where(c => c.Blog.BlogGuid == blogGuid && c.Status == true).ToList().Select(c =>
-                    {
-                        var user = _db.Users.FirstOrDefault(u => u.UserId == c.UserId);
+                    Comments = _db.BlogComments.Where(c => c.Blog.BlogGuid == blogGuid && c.Status == true).OrderByDescending(c => c.InitDate).Take(10).ToList().Select(c =>
+                      {
+                          var user = _db.Users.FirstOrDefault(u => u.UserId == c.UserId);
 
-                        return new
-                        {
-                            IsMyComment = c.UserId == myUserId ? true : false,
-                            BlogCommentId = c.BlogCommentId,
-                            UserGuid = user.UserGuid,
-                            UserName = user.UserName,
-                            InitDate = Tool.CommentTime((DateTime)c.InitDate) + (c.EditDate == null ? "" : " (已編輯)"),
-                            ProfilePicture = user.ProfilePicture == null ? "" : profilePath + user.ProfilePicture,
-                            Comment = c.Comment,
-                            Replies = _db.BlogReplies.Where(r => r.BlogCommentId == c.BlogCommentId && r.Status == true).ToList().Select(r =>
-                                {
-                                    var userReply = _db.Users.FirstOrDefault(u => u.UserId == r.UserId);
+                          return new
+                          {
+                              IsMyComment = c.UserId == myUserId ? true : false,
+                              BlogCommentId = c.BlogCommentId,
+                              UserGuid = user.UserGuid,
+                              UserName = user.UserName,
+                              InitDate = Tool.CommentTime((DateTime)c.InitDate) + (c.EditDate == null ? "" : " (已編輯)"),
+                              ProfilePicture = user.ProfilePicture == null ? "" : profilePath + user.ProfilePicture,
+                              Comment = c.Comment,
+                              Replies = _db.BlogReplies.Where(r => r.BlogCommentId == c.BlogCommentId && r.Status == true).ToList().Select(r =>
+                                  {
+                                      var userReply = _db.Users.FirstOrDefault(u => u.UserId == r.UserId);
 
-                                    return new
-                                    {
-                                        IsMyComment = r.UserId == myUserId ? true : false,
-                                        BlogReplyId = r.BlogReplyId,
-                                        UserGuid = userReply.UserGuid,
-                                        UserName = userReply.UserName,
-                                        InitDate = Tool.CommentTime((DateTime)r.InitDate) + (r.EditDate == null ? "" : " (已編輯)"),
-                                        ProfilePicture = userReply.ProfilePicture == null ? "" : profilePath + userReply.ProfilePicture,
-                                        Reply = r.Reply
-                                    };
-                                })
-                        };
-                    })
+                                      return new
+                                      {
+                                          IsMyComment = r.UserId == myUserId ? true : false,
+                                          BlogReplyId = r.BlogReplyId,
+                                          UserGuid = userReply.UserGuid,
+                                          UserName = userReply.UserName,
+                                          InitDate = Tool.CommentTime((DateTime)r.InitDate) + (r.EditDate == null ? "" : " (已編輯)"),
+                                          ProfilePicture = userReply.ProfilePicture == null ? "" : profilePath + userReply.ProfilePicture,
+                                          Reply = r.Reply
+                                      };
+                                  })
+                          };
+                      })
                 };
 
                 return Ok(result);
@@ -465,5 +465,86 @@ namespace TravelMaker.Controllers
                 return BadRequest("此篇遊記不存在");
             }
         }
+
+
+
+
+        /// <summary>
+        ///     取得更多遊記評論
+        /// </summary>
+        [HttpPost]
+        [Route("comments")]
+        public IHttpActionResult MoreBlogComments(MoreBlogCommentsView view)
+        {
+            string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
+            int pagesize = 10;
+            int myUserId = 0;
+
+            var allComments = _db.BlogComments.Where(c => c.Blog.BlogGuid == view.BlogGuid && c.Status == true).OrderByDescending(c => c.InitDate).ToList();
+
+            if (allComments.Any())
+            {
+                //如果有登入，自己的評論會在最上面
+                if (Request.Headers.Authorization != null)
+                {
+                    var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+                    string userGuid = (string)userToken["UserGuid"];
+                    myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+
+                    var myComments = allComments.Where(c => c.UserId == myUserId).ToList();
+                    allComments = allComments.Except(myComments).ToList();
+                    allComments = myComments.Concat(allComments).ToList();
+                }
+
+                // 分頁
+                var result = allComments.Skip((view.Page - 1) * pagesize).Take(pagesize).ToList().Select(c =>
+                {
+                    var user = _db.Users.FirstOrDefault(u => u.UserId == c.UserId);
+
+                    return new
+                    {
+                        IsMyComment = c.UserId == myUserId ? true : false,
+                        BlogCommentId = c.BlogCommentId,
+                        UserGuid = user.UserGuid,
+                        UserName = user.UserName,
+                        InitDate = Tool.CommentTime((DateTime)c.InitDate) + (c.EditDate == null ? "" : " (已編輯)"),
+                        ProfilePicture = user.ProfilePicture == null ? "" : profilePath + user.ProfilePicture,
+                        Comment = c.Comment,
+                        Replies = _db.BlogReplies.Where(r => r.BlogCommentId == c.BlogCommentId && r.Status == true).ToList().Select(r =>
+                        {
+                            var userReply = _db.Users.FirstOrDefault(u => u.UserId == r.UserId);
+
+                            return new
+                            {
+                                IsMyComment = r.UserId == myUserId ? true : false,
+                                BlogReplyId = r.BlogReplyId,
+                                UserGuid = userReply.UserGuid,
+                                UserName = userReply.UserName,
+                                InitDate = Tool.CommentTime((DateTime)r.InitDate) + (r.EditDate == null ? "" : " (已編輯)"),
+                                ProfilePicture = userReply.ProfilePicture == null ? "" : profilePath + userReply.ProfilePicture,
+                                Reply = r.Reply
+                            };
+                        })
+                    };
+                }).ToList();
+
+                if (result.Any())
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return BadRequest("無更多景點評論");
+                }
+            }
+            else
+            {
+                return BadRequest("尚無評論");
+            }
+        }
+
+
+
+
     }
 }

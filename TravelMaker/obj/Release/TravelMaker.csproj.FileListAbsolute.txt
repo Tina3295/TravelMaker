@@ -177,3 +177,11 @@ C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migr
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addAttractionCommentTable.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.CorrctAttractionNameLength.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.correctEmailLength1.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addBlogBlogAttractionBlogImageTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.renameContentToDescribe.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.CorrectDescribeToDescription.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addBlogCollectionTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addEditDateInBlogTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addBlogLikeTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addBlogCommentTable.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Release\TravelMaker.Migrations.addBlogReplyTable.resources

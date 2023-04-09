@@ -353,7 +353,7 @@ namespace TravelMaker.Controllers
         ///     取得更多景點評論
         /// </summary>
         [HttpPost]
-        [Route("comment")]
+        [Route("comments")]
         public IHttpActionResult MoreComment(MoreCommentView view)
         {
             string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";

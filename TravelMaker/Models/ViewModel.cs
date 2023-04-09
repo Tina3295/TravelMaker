@@ -749,6 +749,22 @@ namespace TravelMaker.Models
 
 
     /// <summary>
+    ///     取得更多遊記評論
+    /// </summary>
+    public class MoreBlogCommentsView
+    {
+        public string BlogGuid { get; set; }
+        public int Page { get; set; }
+    }
+
+
+
+
+
+
+
+
+    /// <summary>
     ///     funtion
     /// </summary>
     public class Tool
