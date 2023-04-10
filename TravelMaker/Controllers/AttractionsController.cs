@@ -262,6 +262,7 @@ namespace TravelMaker.Controllers
                             {
                                 AttractionCommentId = c.AttractionCommentId,
                                 IsMyComment = true,
+                                UserGuid=c.User.UserGuid,
                                 UserName = c.User.UserName,
                                 ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
                                 Score = c.Score,
@@ -278,6 +279,7 @@ namespace TravelMaker.Controllers
                         {
                             AttractionCommentId = c.AttractionCommentId,
                             IsMyComment=false,
+                            UserGuid = c.User.UserGuid,
                             UserName = c.User.UserName,
                             ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
                             Score = c.Score,
@@ -292,6 +294,7 @@ namespace TravelMaker.Controllers
                         {
                             AttractionCommentId = c.AttractionCommentId,
                             IsMyComment = false,
+                            UserGuid = c.User.UserGuid,
                             UserName = c.User.UserName,
                             ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
                             Score = c.Score,
@@ -328,7 +331,7 @@ namespace TravelMaker.Controllers
                         {
                             AttractionId = a.AttractionId,
                             AttractionName = a.AttractionName,
-                            City = a.District.City.CittyName,
+                            City = a.District.City.CittyName+"  距離"+Math.Round((double)a.Location.Distance(location))+"公尺",
                             ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == a.AttractionId).Select(i => i.ImageName).FirstOrDefault(),
                             IsColeect = isCollect
                         };
@@ -391,6 +394,7 @@ namespace TravelMaker.Controllers
                 {
                     AttractionCommentId = c.AttractionCommentId,
                     IsMyComment = c.UserId == myUserId,
+                    UserGuid = c.User.UserGuid,
                     UserName = c.User.UserName,
                     ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
                     Score = c.Score,

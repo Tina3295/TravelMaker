@@ -386,6 +386,10 @@
     <Compile Include="Migrations\202304091252105_addBlogReplyTable.Designer.cs">
       <DependentUpon>202304091252105_addBlogReplyTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304100615058_addBlogCollectionInitdate.cs" />
+    <Compile Include="Migrations\202304100615058_addBlogCollectionInitdate.Designer.cs">
+      <DependentUpon>202304100615058_addBlogCollectionInitdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\AttractionCollection.cs" />
@@ -623,6 +627,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304091252105_addBlogReplyTable.resx">
       <DependentUpon>202304091252105_addBlogReplyTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304100615058_addBlogCollectionInitdate.resx">
+      <DependentUpon>202304100615058_addBlogCollectionInitdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

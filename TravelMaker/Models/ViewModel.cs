@@ -702,6 +702,7 @@ namespace TravelMaker.Models
     {
         public int AttractionCommentId { get; set; }
         public bool IsMyComment { get; set; }
+        public string UserGuid { get; set; }
         public string UserName { get; set; }
         public string ProfilePicture { get; set; }
         public int Score { get; set; }

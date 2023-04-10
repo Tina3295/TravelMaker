@@ -768,6 +768,11 @@
                 上傳頭貼
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.UsersController.MyBlogCollections(System.Int32)">
+            <summary>
+                取得我的收藏遊記
+            </summary>
+        </member>
         <member name="M:TravelMaker.Controllers.ValuesController.Test">
             <summary>
             跨域測試用
@@ -1017,6 +1022,11 @@
         <member name="P:TravelMaker.Models.BlogCollection.UserId">
             <summary>
                 用戶Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogCollection.InitDate">
+            <summary>
+                收藏日期
             </summary>
         </member>
         <member name="T:TravelMaker.Models.BlogComment">

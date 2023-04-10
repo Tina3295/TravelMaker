@@ -547,5 +547,49 @@ namespace TravelMaker.Controllers
                 return BadRequest("照片上傳失敗或未上傳");
             }
         }
+
+
+
+
+
+
+        /// <summary>
+        ///     取得我的收藏遊記
+        /// </summary>
+        [HttpGet]
+        [Route("blogCollections/{page}")]
+        [JwtAuthFilter]
+        public IHttpActionResult MyBlogCollections([FromUri] int page)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+            string imgPath = "https://" + Request.RequestUri.Host + "/upload/blogImage/";
+            int pageSize = 20;
+
+            //依照頁數取得我的收藏遊記
+            var result = _db.BlogCollections.Where(b => b.UserId == userId).OrderByDescending(b => b.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(b => new
+            {
+                BlogGuid = b.Blog.BlogGuid,
+                Title = b.Blog.Title,
+                Cover = b.Blog.Cover == null ? "" : imgPath + b.Blog.Cover,
+                UserGuid = b.Blog.User.UserGuid,
+                UserName = b.Blog.User.UserName,
+                InitDate = b.Blog.InitDate.Value.ToString("yyyy-MM-dd HH:mm"),
+                Sees = 0,
+                Likes = _db.BlogLikes.Where(l => l.BlogId == b.BlogId).Count(),
+                Comments = _db.BlogComments.Where(c => c.BlogId == b.BlogId && c.Status == true).Count() + _db.BlogReplies.Where(c => c.BlogComment.BlogId == b.BlogId && c.Status == true).Count(),
+                Category = b.Blog.Category == null ? new string[0] : b.Blog.Category.Split(',')
+            }).ToList();
+
+            if (result.Any())
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("已無我的收藏遊記");
+            }
+        }
     }
 }

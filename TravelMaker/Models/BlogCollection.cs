@@ -39,5 +39,15 @@ namespace TravelMaker.Models
         [Required]
         [Display(Name = "用戶Id")]
         public int UserId { get; set; }
+
+
+
+        /// <summary>
+        ///     收藏日期
+        /// </summary>
+        [Display(Name = "收藏日期")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
+        [DataType(DataType.DateTime)]
+        public DateTime? InitDate { get; set; }
     }
 }
