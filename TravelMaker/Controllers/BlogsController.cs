@@ -741,5 +741,60 @@ namespace TravelMaker.Controllers
                 return BadRequest("未追蹤此用戶");
             }
         }
+
+
+
+        /// <summary>
+        ///     取得單一用戶社群頁面(遊記)
+        /// </summary>
+        [HttpGet]
+        [Route("profile/{userGuid}")]
+        public IHttpActionResult BlogProfile([FromUri]string userGuid)
+        {
+            int pageSize = 12;
+            string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
+            string blogPath = "https://" + Request.RequestUri.Host + "/upload/blogImage/";
+            int myUserId = 0;
+            if (Request.Headers.Authorization != null)
+            {
+                var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+                string myGuid = (string)userToken["UserGuid"];
+                myUserId = _db.Users.FirstOrDefault(u => u.UserGuid == myGuid).UserId;
+            }
+
+            var blogger = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid);
+            if (blogger!=null)
+            {
+                var result = new
+                {
+                    ProfilePicture = blogger.ProfilePicture == null ? "" : profilePath + blogger.ProfilePicture,
+                    UserName=blogger.UserName,
+                    IsFollow=_db.BlogFollowers.FirstOrDefault(f=>f.UserId==blogger.UserId&&f.FollowingUserId==myUserId)==null?false:true,
+                    Blogs = _db.Blogs.Where(b => b.User.UserGuid == userGuid && b.Status == 1).Count(),
+                    Fans = _db.BlogFollowers.Where(f => f.User.UserGuid == userGuid).Count(),
+                    Follows = _db.BlogFollowers.Where(f => f.FollowingUserId == blogger.UserId).Count(),
+                    BlogData = _db.Blogs.Where(b => b.User.UserGuid == userGuid && b.Status == 1).OrderByDescending(b=>b.InitDate).Take(pageSize).ToList().Select(b=>new
+                    {
+                        IsCollect = _db.BlogCollections.FirstOrDefault(c => c.BlogId == b.BlogId && c.UserId == myUserId) == null ? false : true,
+                        Cover = b.Cover == null ? "" : blogPath + b.Cover,
+                        Title = b.Title,
+                        Profile = blogger.ProfilePicture == null ? "" : profilePath + blogger.ProfilePicture,
+                        UserName = blogger.UserName,
+                        InitDate = b.InitDate.Value.ToString("yyyy-MM-dd HH:mm"),
+                        Sees = 0,
+                        Likes = _db.BlogLikes.Where(l => l.BlogId == b.BlogId).Count(),
+                        Comments = _db.BlogComments.Where(c => c.BlogId == b.BlogId).Count() + _db.BlogReplies.Where(l => l.BlogComment.BlogId == b.BlogId).Count(),
+                        Category = b.Category == null ? new string[0] : b.Category.Split(',')
+                    })
+                };
+
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("沒有此用戶頁面");
+            }
+
+        }
     }
 }

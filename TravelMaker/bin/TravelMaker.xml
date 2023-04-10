@@ -591,6 +591,11 @@
             <param name="userGuid">追蹤用戶Guid</param>
             <returns></returns>
         </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogProfile(System.String)">
+            <summary>
+                取得單一用戶社群頁面(遊記)
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
