@@ -581,14 +581,14 @@
             <summary>
                 新增追蹤
             </summary>
-            <param name="userGuid">用戶Guid</param>
+            <param name="userGuid">追蹤用戶Guid</param>
             <returns></returns>
         </member>
         <member name="M:TravelMaker.Controllers.BlogsController.FollowerRemove(System.String)">
             <summary>
                 取消追蹤
             </summary>
-            <param name="userGuid">用戶Guid</param>
+            <param name="userGuid">追蹤用戶Guid</param>
             <returns></returns>
         </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
@@ -800,6 +800,11 @@
         <member name="M:TravelMaker.Controllers.UsersController.MyBlogDrafts(System.Int32)">
             <summary>
                 取得我的草稿遊記
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.UsersController.MyFollow(System.Int32)">
+            <summary>
+                取得我的追蹤
             </summary>
         </member>
         <member name="M:TravelMaker.Controllers.ValuesController.Test">

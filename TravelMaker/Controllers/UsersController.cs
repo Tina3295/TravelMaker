@@ -629,5 +629,47 @@ namespace TravelMaker.Controllers
                 return BadRequest("已無我的草稿遊記");
             }
         }
+
+
+
+
+        /// <summary>
+        ///     取得我的追蹤
+        /// </summary>
+        [HttpGet]
+        [Route("followers/{page}")]
+        [JwtAuthFilter]
+        public IHttpActionResult MyFollow([FromUri] int page)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string myGuid = (string)userToken["UserGuid"];
+            int myId = _db.Users.FirstOrDefault(u => u.UserGuid == myGuid).UserId;
+            string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
+            int pageSize = 20;
+
+            int totalItem = _db.BlogFollowers.Where(f => f.FollowingUserId == myId).Count();
+            var result = _db.BlogFollowers.Where(f => f.FollowingUserId == myId).OrderByDescending(f=>f.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(f =>
+            {
+                var blogger = _db.Users.FirstOrDefault(u => u.UserId == f.UserId);
+                return new
+                {
+                    UserGuid = blogger.UserGuid,
+                    UserName = blogger.UserName,
+                    ProfilePicture = blogger.ProfilePicture == null ? "" : profilePath + blogger.ProfilePicture,
+                    Blogs = _db.Blogs.Where(b => b.User.UserId == blogger.UserId && b.Status == 1).Count(),
+                    Follows = _db.BlogFollowers.Where(b => b.FollowingUserId == blogger.UserId).Count(),
+                    Fans = _db.BlogFollowers.Where(b => b.UserId == blogger.UserId).Count()
+                };
+            });
+
+            if (result.Any())
+            {
+                return Ok(new { TotalItem = totalItem, FollowData = result });
+            }
+            else
+            {
+                return BadRequest("已無我的追蹤");
+            }
+        }
     }
 }
