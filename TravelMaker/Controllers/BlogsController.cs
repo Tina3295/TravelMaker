@@ -21,6 +21,36 @@ namespace TravelMaker.Controllers
     {
         private TravelMakerDbContext _db = new TravelMakerDbContext();
 
+
+        /// <summary>
+        ///     新增草稿遊記前需要取得所有行程id名字
+        /// </summary>
+        [HttpGet]
+        [JwtAuthFilter]
+        [Route("tours")]
+        public IHttpActionResult GetToursBeforeBlogDraft()
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+
+            var result = _db.Tours.Where(t => t.User.UserGuid == userGuid).OrderByDescending(t => t.InitDate).Select(t => new
+            {
+                t.TourId,
+                t.TourName
+            }).ToList();
+
+            if (result.Any())
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("沒有任何創建行程");
+            }
+        }
+
+
+
         /// <summary>
         ///     新增草稿遊記
         /// </summary>
@@ -643,5 +673,9 @@ namespace TravelMaker.Controllers
                 return BadRequest("尚無符合搜尋條件的遊記");
             }
         }
+
+
+
+
     }
 }

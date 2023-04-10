@@ -522,6 +522,11 @@
                 遊記相關
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.GetToursBeforeBlogDraft">
+            <summary>
+                新增草稿遊記前需要取得所有行程id名字
+            </summary>
+        </member>
         <member name="M:TravelMaker.Controllers.BlogsController.BlogAdd(System.Int32)">
             <summary>
                 新增草稿遊記
