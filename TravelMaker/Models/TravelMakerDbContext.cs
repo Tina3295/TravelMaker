@@ -43,6 +43,7 @@ namespace TravelMaker.Models
         public virtual DbSet<BlogLike> BlogLikes { get; set; }
         public virtual DbSet<BlogComment> BlogComments { get; set; }
         public virtual DbSet<BlogReply> BlogReplies { get; set; }
+        public virtual DbSet<BlogFollower> BlogFollowers { get; set; }
     }
 
     //public class MyEntity

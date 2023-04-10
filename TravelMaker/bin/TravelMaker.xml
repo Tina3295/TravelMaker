@@ -577,6 +577,20 @@
                 給參數搜尋遊記(熱門話題取得所有遊記)
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.FollowerAdd(System.String)">
+            <summary>
+                新增追蹤
+            </summary>
+            <param name="userGuid">用戶Guid</param>
+            <returns></returns>
+        </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.FollowerRemove(System.String)">
+            <summary>
+                取消追蹤
+            </summary>
+            <param name="userGuid">用戶Guid</param>
+            <returns></returns>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
@@ -1082,6 +1096,31 @@
         <member name="P:TravelMaker.Models.BlogComment.EditDate">
             <summary>
                 評論編輯日期
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.BlogFollower">
+            <summary>
+                追蹤
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogFollower.BlogFollowerId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogFollower.UserId">
+            <summary>
+                對應用戶(被追蹤者)
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogFollower.FollowingUserId">
+            <summary>
+                追蹤者
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogFollower.InitDate">
+            <summary>
+                追蹤日期
             </summary>
         </member>
         <member name="T:TravelMaker.Models.BlogImage">

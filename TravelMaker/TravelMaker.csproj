@@ -390,6 +390,10 @@
     <Compile Include="Migrations\202304100615058_addBlogCollectionInitdate.Designer.cs">
       <DependentUpon>202304100615058_addBlogCollectionInitdate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304100939516_addBlogFollowerTable.cs" />
+    <Compile Include="Migrations\202304100939516_addBlogFollowerTable.Designer.cs">
+      <DependentUpon>202304100939516_addBlogFollowerTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\AttractionCollection.cs" />
@@ -398,6 +402,7 @@
     <Compile Include="Models\BlogAttraction.cs" />
     <Compile Include="Models\BlogCollection.cs" />
     <Compile Include="Models\BlogComment.cs" />
+    <Compile Include="Models\BlogFollower.cs" />
     <Compile Include="Models\BlogImage.cs" />
     <Compile Include="Models\BlogLike.cs" />
     <Compile Include="Models\BlogReply.cs" />
@@ -630,6 +635,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304100615058_addBlogCollectionInitdate.resx">
       <DependentUpon>202304100615058_addBlogCollectionInitdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304100939516_addBlogFollowerTable.resx">
+      <DependentUpon>202304100939516_addBlogFollowerTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

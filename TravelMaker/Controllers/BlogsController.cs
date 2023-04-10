@@ -676,6 +676,70 @@ namespace TravelMaker.Controllers
 
 
 
+        /// <summary>
+        ///     新增追蹤
+        /// </summary>
+        /// <param name="userGuid">追蹤用戶Guid</param>
+        /// <returns></returns>
+        [HttpPost]
+        [JwtAuthFilter]
+        [Route("follow/{userGuid}")]
+        public IHttpActionResult FollowerAdd([FromUri] string userGuid)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string myGuid = userToken["UserGuid"].ToString();
+            int myId = _db.Users.FirstOrDefault(u => u.UserGuid == myGuid).UserId;
 
+            int followedUserId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+            var hadFollewed = _db.BlogFollowers.FirstOrDefault(f => f.UserId== followedUserId && f.FollowingUserId == myId);
+
+            if (hadFollewed == null)
+            {
+                BlogFollower blogFollower = new BlogFollower();
+                blogFollower.UserId = followedUserId;
+                blogFollower.FollowingUserId = myId;
+                blogFollower.InitDate = DateTime.Now;
+                _db.BlogFollowers.Add(blogFollower);
+                _db.SaveChanges();
+
+                return Ok("追蹤成功");
+            }
+            else
+            {
+                return BadRequest("已追蹤此用戶");
+            }
+        }
+
+
+
+        /// <summary>
+        ///     取消追蹤
+        /// </summary>
+        /// <param name="userGuid">追蹤用戶Guid</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [JwtAuthFilter]
+        [Route("follow/{userGuid}")]
+        public IHttpActionResult FollowerRemove([FromUri] string userGuid)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string myGuid = userToken["UserGuid"].ToString();
+            int myId = _db.Users.FirstOrDefault(u => u.UserGuid == myGuid).UserId;
+
+            int followedUserId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+            var hadFollewed = _db.BlogFollowers.FirstOrDefault(f => f.UserId == followedUserId && f.FollowingUserId == myId);
+
+            if (hadFollewed!=null)
+            {
+                _db.BlogFollowers.Remove(hadFollewed);
+                _db.SaveChanges();
+
+                return Ok("已取消追蹤");
+            }
+            else
+            {
+                return BadRequest("未追蹤此用戶");
+            }
+        }
     }
 }
