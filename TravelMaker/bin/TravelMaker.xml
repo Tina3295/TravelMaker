@@ -567,6 +567,11 @@
                 取得更多遊記評論
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogsSearch(System.String,System.String,System.String,System.Int32)">
+            <summary>
+                給參數搜尋遊記(熱門話題取得所有遊記)
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
@@ -771,6 +776,11 @@
         <member name="M:TravelMaker.Controllers.UsersController.MyBlogCollections(System.Int32)">
             <summary>
                 取得我的收藏遊記
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.UsersController.MyBlogDrafts(System.Int32)">
+            <summary>
+                取得我的草稿遊記
             </summary>
         </member>
         <member name="M:TravelMaker.Controllers.ValuesController.Test">

@@ -565,6 +565,83 @@ namespace TravelMaker.Controllers
 
 
 
+        /// <summary>
+        ///     給參數搜尋遊記(熱門話題取得所有遊記)
+        /// </summary>
+        [HttpGet]
+        [Route("search")]
+        public IHttpActionResult BlogsSearch(string type = "", string district = "", string keyword = "", int page = 1)
+        {
+            int pageSize = 9;
+            string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
+            string blogPath = "https://" + Request.RequestUri.Host + "/upload/blogImage/";
+            int myUserId = 0;
+            if (Request.Headers.Authorization != null)
+            {
+                var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+                string userGuid = (string)userToken["UserGuid"];
+                myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+            }
 
+
+            //遊記搜尋篩選
+            var temp = _db.BlogAttractions.Where(b=>b.Blog.Status==1).AsQueryable();
+
+            if (!string.IsNullOrEmpty(district))
+            {
+                var attractions = _db.Attractions.Where(a => a.District.DistrictName == district).Select(a => a.AttractionId).Distinct().ToList();
+
+                temp = temp.Where(t => attractions.Contains(t.AttractionId));
+            }
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                var attractions = _db.Attractions.Where(a => a.AttractionName.Contains(keyword) || a.Introduction.Contains(keyword) || a.Address.Contains(keyword)).Select(a => a.AttractionId).Distinct().ToList();
+
+                temp = temp.Where(t => attractions.Contains(t.AttractionId) || t.Blog.Title.Contains(keyword) || t.Description.Contains(keyword));
+            }
+
+            if (!string.IsNullOrEmpty(type))
+            {
+                temp = temp.Where(t => t.Blog.Category != null);
+                temp = temp.ToList().Where(t => t.Blog.Category.Split(',').Contains(type)).AsQueryable();
+            }
+
+            //符合搜尋結果的總項目
+            int totalItem = temp.Select(t => t.BlogId).Distinct().Count();
+            //總頁數
+            int totalPages = totalItem % pageSize == 0 ? totalItem / pageSize : totalItem / pageSize + 1;
+            //該頁顯示項目
+            var searchBlogs = temp.Select(t => new
+            {
+                BlogGuid = t.Blog.BlogGuid,           
+                Likes = _db.BlogLikes.Where(l => l.BlogId == t.BlogId).Count(),
+            }).Distinct().OrderByDescending(t => t.Likes).Skip(pageSize * (page - 1)).Take(pageSize).ToDictionary(t => t.BlogGuid, t => t.Likes);
+
+            var result = _db.Blogs.Where(b=> searchBlogs.Keys.Contains(b.BlogGuid)).ToList().Select(b=>new
+            {
+                IsCollect = _db.BlogCollections.FirstOrDefault(c => c.Blog.BlogGuid == b.BlogGuid && c.UserId == myUserId) != null ? true : false,
+                BlogGuid = b.BlogGuid,
+                Title = b.Title,
+                Cover = b.Cover == null ? "" : blogPath + b.Cover,
+                UserGuid = b.User.UserGuid,
+                UserName = b.User.UserName,
+                ProfilePicture = b.User.ProfilePicture == null ? "" : profilePath + b.User.ProfilePicture,
+                InitDate = b.InitDate.Value.ToString("yyyy-MM-dd HH:mm"),
+                Sees = 0,
+                Likes = searchBlogs[b.BlogGuid],
+                Comments = _db.BlogComments.Where(c => c.BlogId == b.BlogId && c.Status == true).Count() + _db.BlogReplies.Where(c => c.BlogComment.BlogId == b.BlogId && c.Status == true).Count(),
+                Category = b.Category == null ? new string[0] : b.Category.Split(',')
+            });
+
+            if (totalItem != 0)
+            {
+                return Ok(new { TotalPages = totalPages, TotalItem = totalItem, Tours = result });
+            }
+            else
+            {
+                return BadRequest("尚無符合搜尋條件的遊記");
+            }
+        }
     }
 }

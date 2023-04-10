@@ -564,17 +564,19 @@ namespace TravelMaker.Controllers
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
             int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
-            string imgPath = "https://" + Request.RequestUri.Host + "/upload/blogImage/";
+            string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
+            string blogPath = "https://" + Request.RequestUri.Host + "/upload/blogImage/";
             int pageSize = 20;
 
             //依照頁數取得我的收藏遊記
-            var result = _db.BlogCollections.Where(b => b.UserId == userId).OrderByDescending(b => b.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(b => new
+            var result = _db.BlogCollections.Where(b => b.UserId == userId && b.Blog.Status == 1).OrderByDescending(b => b.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(b => new
             {
                 BlogGuid = b.Blog.BlogGuid,
                 Title = b.Blog.Title,
-                Cover = b.Blog.Cover == null ? "" : imgPath + b.Blog.Cover,
+                Cover = b.Blog.Cover == null ? "" : blogPath + b.Blog.Cover,
                 UserGuid = b.Blog.User.UserGuid,
                 UserName = b.Blog.User.UserName,
+                ProfilePicture = b.Blog.User.ProfilePicture == null ? "" : profilePath + b.Blog.User.ProfilePicture,
                 InitDate = b.Blog.InitDate.Value.ToString("yyyy-MM-dd HH:mm"),
                 Sees = 0,
                 Likes = _db.BlogLikes.Where(l => l.BlogId == b.BlogId).Count(),
@@ -589,6 +591,42 @@ namespace TravelMaker.Controllers
             else
             {
                 return BadRequest("已無我的收藏遊記");
+            }
+        }
+
+
+
+
+        /// <summary>
+        ///     取得我的草稿遊記
+        /// </summary>
+        [HttpGet]
+        [Route("blogDrafts/{page}")]
+        [JwtAuthFilter]
+        public IHttpActionResult MyBlogDrafts([FromUri] int page)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+            string imgPath = "https://" + Request.RequestUri.Host + "/upload/blogImage/";
+            int pageSize = 20;
+
+            //依照頁數取得我的草稿遊記
+            var result = _db.Blogs.Where(b => b.UserId == userId && b.Status == 0).OrderByDescending(b => b.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(b => new
+            {
+                BlogGuid = b.BlogGuid,
+                Title = b.Title,
+                Cover = b.Cover == null ? "" : imgPath + b.Cover,
+                InitDate = b.InitDate.Value.ToString("yyyy-MM-dd HH:mm")
+            }).ToList();
+
+            if (result.Any())
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("已無我的草稿遊記");
             }
         }
     }
