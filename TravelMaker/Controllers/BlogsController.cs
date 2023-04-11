@@ -82,7 +82,7 @@ namespace TravelMaker.Controllers
 
                 var attractionIds = _db.TourAttractions.Where(a => a.TourId == tourId).Select(a => a.AttractionId).ToList();
 
-                foreach(var attractionId in attractionIds)
+                foreach (var attractionId in attractionIds)
                 {
                     BlogAttraction attraction = new BlogAttraction();
                     attraction.BlogId = blogId;
@@ -120,9 +120,9 @@ namespace TravelMaker.Controllers
 
             var isMyDraftBlog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blogGuid && b.User.UserGuid == userGuid);
 
-            if(isMyDraftBlog!=null)
+            if (isMyDraftBlog != null)
             {
-                if(isMyDraftBlog.Status!=2)
+                if (isMyDraftBlog.Status != 2)
                 {
                     string blogImagePath = "https://" + Request.RequestUri.Host + "/upload/blogImage/";
 
@@ -174,7 +174,7 @@ namespace TravelMaker.Controllers
             var isMyDraftBlog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blogGuid && b.User.UserGuid == userGuid);
             if (isMyDraftBlog != null)
             {
-                if(isMyDraftBlog.Status==0)
+                if (isMyDraftBlog.Status == 0)
                 {
                     isMyDraftBlog.Status = 1;
                     isMyDraftBlog.InitDate = DateTime.Now;
@@ -183,14 +183,14 @@ namespace TravelMaker.Controllers
                     _db.SaveChanges();
                     return Ok("成功發佈");
                 }
-                else if(isMyDraftBlog.Status == 1)
+                else if (isMyDraftBlog.Status == 1)
                 {
                     return BadRequest("此遊記已發佈");
                 }
                 else
                 {
                     return BadRequest("此遊記已刪除");
-                } 
+                }
             }
             else
             {
@@ -216,7 +216,7 @@ namespace TravelMaker.Controllers
             var isMyDraftBlog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blogGuid && b.User.UserGuid == userGuid);
             if (isMyDraftBlog != null)
             {
-                if (isMyDraftBlog.Status == 0|| isMyDraftBlog.Status == 1)
+                if (isMyDraftBlog.Status == 0 || isMyDraftBlog.Status == 1)
                 {
                     isMyDraftBlog.Status = 2;
                     _db.SaveChanges();
@@ -318,7 +318,7 @@ namespace TravelMaker.Controllers
 
 
                 //更新上傳的景點、景點照片
-                foreach(var attraction in blog.BlogAttractionList)
+                foreach (var attraction in blog.BlogAttractionList)
                 {
                     BlogAttraction blogAttraction = new BlogAttraction();
                     blogAttraction.BlogId = originBlog.BlogId;
@@ -329,7 +329,7 @@ namespace TravelMaker.Controllers
                     _db.BlogAttractions.Add(blogAttraction);
                     _db.SaveChanges();
 
-                    foreach(string image in attraction.ImageUrl)
+                    foreach (string image in attraction.ImageUrl)
                     {
                         BlogImage blogImage = new BlogImage();
                         blogImage.BlogAttractionId = blogAttraction.BlogAttractionId;
@@ -374,7 +374,7 @@ namespace TravelMaker.Controllers
             }
         }
 
-        
+
         private bool IsImage(string fileName) //檢查是否為圖片檔
         {
             string ext = Path.GetExtension(fileName).ToLower();
@@ -435,7 +435,7 @@ namespace TravelMaker.Controllers
                 }
 
 
-  
+
                 var allComments = _db.BlogComments.Where(c => c.Blog.BlogGuid == blogGuid && c.Status == true).OrderByDescending(c => c.InitDate).ToList();
 
                 //如果有登入，自己的評論會在最上面
@@ -497,7 +497,7 @@ namespace TravelMaker.Controllers
                     ProfilePicture = blog.User.ProfilePicture == null ? "" : profilePath + blog.User.ProfilePicture,
                     InitDate = blog.InitDate.Value.ToString("yyyy-MM-dd HH:mm") + (blog.EditDate == null ? "" : " (已編輯)"),
                     Likes = _db.BlogLikes.Where(l => l.BlogId == blog.BlogId).Count(),
-                    CommentCount = _db.BlogComments.Where(c => c.Blog.BlogGuid == blogGuid && c.Status == true).Count()+_db.BlogReplies.Where(r=>r.BlogComment.Blog.BlogGuid==blogGuid&&r.Status==true).Count(),
+                    CommentCount = _db.BlogComments.Where(c => c.Blog.BlogGuid == blogGuid && c.Status == true).Count() + _db.BlogReplies.Where(r => r.BlogComment.Blog.BlogGuid == blogGuid && r.Status == true).Count(),
                     AttractionData = _db.BlogAttractions.Where(a => a.Blog.BlogGuid == blogGuid).Select(a => new
                     {
                         AttractionId = a.AttractionId,
@@ -615,7 +615,7 @@ namespace TravelMaker.Controllers
 
 
             //遊記搜尋篩選
-            var temp = _db.BlogAttractions.Where(b=>b.Blog.Status==1).AsQueryable();
+            var temp = _db.BlogAttractions.Where(b => b.Blog.Status == 1).AsQueryable();
 
             if (!string.IsNullOrEmpty(district))
             {
@@ -644,11 +644,11 @@ namespace TravelMaker.Controllers
             //該頁顯示項目
             var searchBlogs = temp.Select(t => new
             {
-                BlogGuid = t.Blog.BlogGuid,           
+                BlogGuid = t.Blog.BlogGuid,
                 Likes = _db.BlogLikes.Where(l => l.BlogId == t.BlogId).Count(),
             }).Distinct().OrderByDescending(t => t.Likes).Skip(pageSize * (page - 1)).Take(pageSize).ToDictionary(t => t.BlogGuid, t => t.Likes);
 
-            var result = _db.Blogs.Where(b=> searchBlogs.Keys.Contains(b.BlogGuid)).ToList().Select(b=>new
+            var result = _db.Blogs.Where(b => searchBlogs.Keys.Contains(b.BlogGuid)).ToList().Select(b => new
             {
                 IsCollect = _db.BlogCollections.FirstOrDefault(c => c.Blog.BlogGuid == b.BlogGuid && c.UserId == myUserId) != null ? true : false,
                 BlogGuid = b.BlogGuid,
@@ -691,7 +691,7 @@ namespace TravelMaker.Controllers
             int myId = _db.Users.FirstOrDefault(u => u.UserGuid == myGuid).UserId;
 
             int followedUserId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
-            var hadFollewed = _db.BlogFollowers.FirstOrDefault(f => f.UserId== followedUserId && f.FollowingUserId == myId);
+            var hadFollewed = _db.BlogFollowers.FirstOrDefault(f => f.UserId == followedUserId && f.FollowingUserId == myId);
 
             if (hadFollewed == null)
             {
@@ -729,7 +729,7 @@ namespace TravelMaker.Controllers
             int followedUserId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
             var hadFollewed = _db.BlogFollowers.FirstOrDefault(f => f.UserId == followedUserId && f.FollowingUserId == myId);
 
-            if (hadFollewed!=null)
+            if (hadFollewed != null)
             {
                 _db.BlogFollowers.Remove(hadFollewed);
                 _db.SaveChanges();
@@ -749,7 +749,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpGet]
         [Route("profile/{userGuid}")]
-        public IHttpActionResult BlogProfile([FromUri]string userGuid)
+        public IHttpActionResult BlogProfile([FromUri] string userGuid)
         {
             int pageSize = 12;
             string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
@@ -763,17 +763,17 @@ namespace TravelMaker.Controllers
             }
 
             var blogger = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid);
-            if (blogger!=null)
+            if (blogger != null)
             {
                 var result = new
                 {
                     ProfilePicture = blogger.ProfilePicture == null ? "" : profilePath + blogger.ProfilePicture,
-                    UserName=blogger.UserName,
-                    IsFollow=_db.BlogFollowers.FirstOrDefault(f=>f.UserId==blogger.UserId&&f.FollowingUserId==myUserId)==null?false:true,
+                    UserName = blogger.UserName,
+                    IsFollow = _db.BlogFollowers.FirstOrDefault(f => f.UserId == blogger.UserId && f.FollowingUserId == myUserId) == null ? false : true,
                     Blogs = _db.Blogs.Where(b => b.User.UserGuid == userGuid && b.Status == 1).Count(),
                     Fans = _db.BlogFollowers.Where(f => f.User.UserGuid == userGuid).Count(),
                     Follows = _db.BlogFollowers.Where(f => f.FollowingUserId == blogger.UserId).Count(),
-                    BlogData = _db.Blogs.Where(b => b.User.UserGuid == userGuid && b.Status == 1).OrderByDescending(b=>b.InitDate).Take(pageSize).ToList().Select(b=>new
+                    BlogData = _db.Blogs.Where(b => b.User.UserGuid == userGuid && b.Status == 1).OrderByDescending(b => b.InitDate).Take(pageSize).ToList().Select(b => new
                     {
                         IsCollect = _db.BlogCollections.FirstOrDefault(c => c.BlogId == b.BlogId && c.UserId == myUserId) == null ? false : true,
                         Cover = b.Cover == null ? "" : blogPath + b.Cover,
@@ -795,6 +795,45 @@ namespace TravelMaker.Controllers
                 return BadRequest("沒有此用戶頁面");
             }
 
+        }
+
+
+
+        /// <summary>
+        ///     新增留言
+        /// </summary>
+        [HttpPost]
+        [JwtAuthFilter]
+        [Route("{blogGuid}/comments")]
+        public IHttpActionResult AddBlogComments([FromUri] string blogGuid,[FromBody]string comment)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            var blog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blogGuid && b.Status == 1);
+            if (blog != null)
+            {
+                if(comment.Length>500)
+                {
+                    return BadRequest("評論字數不得超過500字");
+                }
+
+                BlogComment blogComment = new BlogComment();
+                blogComment.BlogId = blog.BlogId;
+                blogComment.UserId = userId;
+                blogComment.Comment = comment;
+                blogComment.Status = true;
+                blogComment.InitDate = DateTime.Now;
+                _db.BlogComments.Add(blogComment);
+                _db.SaveChanges();
+
+                return Ok(new { BlogCommentId = blogComment.BlogCommentId });
+            }
+            else
+            {
+                return BadRequest("無此遊記");
+            }
         }
     }
 }

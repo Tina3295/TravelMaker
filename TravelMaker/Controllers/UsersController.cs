@@ -261,49 +261,50 @@ namespace TravelMaker.Controllers
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
-            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
 
-            //依照頁數取得我的行程
-            List<object> result = new List<object>();
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
             int pageSize = 20;
 
-            var tours = _db.Tours.Where(t => t.User.UserId == userId)
-                         .Select(t => new
-                         {
-                             t.TourId,
-                             t.TourName
-                         }).OrderByDescending(t => t.TourId)
-                         .Skip(pageSize * (page - 1)).Take(pageSize).ToList();
-
-
-            //每個景點一張圖片，最多三張
-            foreach (var tour in tours)
+            //依照頁數取得我的行程
+            var tours = _db.Tours.Where(t => t.User.UserId == userId).OrderByDescending(t => t.TourId).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(t =>
             {
-                FavoriteTour favoriteTour = new FavoriteTour();
-                favoriteTour.TourId = tour.TourId;
-                favoriteTour.TourName = tour.TourName;
-                favoriteTour.AttrCounts= _db.TourAttractions.Where(t => t.TourId == tour.TourId).Count();
-                favoriteTour.Likes=_db.TourLikes.Where(t => t.TourId == tour.TourId).Count();
+                var attractionIds = _db.TourAttractions.Where(a => a.TourId == t.TourId)
+                                                       .Select(a => a.AttractionId).ToList();
 
-                favoriteTour.ImageUrl = new List<string>();
-
-                var attractionIds = _db.TourAttractions.Where(t => t.TourId == tour.TourId)
-                                                       .Select(t => t.AttractionId).ToList();
-
+                List<string> imageUrl = new List<string>();
                 for (int i = 0; i < Math.Min(attractionIds.Count, 3); i++)
                 {
                     int attractionId = attractionIds[i];
                     string img = _db.Images.Where(a => a.AttractionId == attractionId).Select(a => a.ImageName).FirstOrDefault();
 
-                    favoriteTour.ImageUrl.Add(imgPath + img);
+                    imageUrl.Add(imgPath + img);
                 }
-                result.Add(favoriteTour);
-            }
 
 
+                return new
+                {
+                    TourId = t.TourId,
+                    TourName = t.TourName,
+                    AttrCounts = _db.TourAttractions.Where(a => a.TourId == t.TourId).Count(),
+                    Likes = _db.TourLikes.Where(l => l.TourId == t.TourId).Count(),
+                    ImageUrl = imageUrl
+                };
+            });
 
-            if (tours.Count != 0)
+
+            int tourCount = _db.Tours.Where(t => t.UserId == userId).Count();
+            int roomCount = _db.RoomMembers.Where(r => r.UserId == userId && r.Room.Status == true).Count();
+
+            var result = new {
+                TotalItems = tourCount + roomCount,
+                TourCounts = tourCount,
+                RoomCounts = roomCount,
+                TourData = tours
+            };
+
+
+            if (tours.Any())
             {
                 return Ok(result);
             }

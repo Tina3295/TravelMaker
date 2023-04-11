@@ -596,6 +596,11 @@
                 取得單一用戶社群頁面(遊記)
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.AddBlogComments(System.String,System.String)">
+            <summary>
+                新增留言
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
