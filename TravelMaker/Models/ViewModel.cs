@@ -759,7 +759,14 @@ namespace TravelMaker.Models
     }
 
 
-
+    /// <summary>
+    ///     編輯留言
+    /// </summary>
+    public class EditBlogCommentsView
+    {
+        public int blogCommentId { get; set; }
+        public string comment { get; set; }
+    }
 
 
 

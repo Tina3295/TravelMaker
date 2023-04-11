@@ -601,6 +601,18 @@
                 新增留言
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.EditBlogComments(TravelMaker.Models.EditBlogCommentsView)">
+            <summary>
+                編輯留言
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.RemoveBlogComments(System.Int32)">
+            <summary>
+                刪除評論
+            </summary>
+            <param name="blogCommentId">要刪除的評論</param>
+            <returns></returns>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
@@ -1966,6 +1978,11 @@
         <member name="T:TravelMaker.Models.MoreBlogCommentsView">
             <summary>
                 取得更多遊記評論
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.EditBlogCommentsView">
+            <summary>
+                編輯留言
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Tool">

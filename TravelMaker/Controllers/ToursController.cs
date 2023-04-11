@@ -64,7 +64,7 @@ namespace TravelMaker.Controllers
             else
             {
                 shortDistance = 500;
-                longDistance = 6000;
+                longDistance = 4000;
             }
 
 

@@ -816,7 +816,7 @@ namespace TravelMaker.Controllers
             {
                 if(comment.Length>500)
                 {
-                    return BadRequest("評論字數不得超過500字");
+                    return BadRequest("留言字數不得超過500字");
                 }
 
                 BlogComment blogComment = new BlogComment();
@@ -833,6 +833,87 @@ namespace TravelMaker.Controllers
             else
             {
                 return BadRequest("無此遊記");
+            }
+        }
+
+
+
+
+        /// <summary>
+        ///     編輯留言
+        /// </summary>
+        [HttpPut]
+        [JwtAuthFilter]
+        [Route("comments/edit")]
+        public IHttpActionResult EditBlogComments(EditBlogCommentsView view)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            var originComment = _db.BlogComments.FirstOrDefault(b => b.BlogCommentId == view.blogCommentId && b.UserId == userId);
+
+            if (originComment != null)
+            {
+                if (originComment.Status == true)
+                {
+                    if (view.comment.Length > 500)
+                    {
+                        return BadRequest("評論字數不得超過500字");
+                    }
+                    originComment.Comment = view.comment;
+                    originComment.EditDate=DateTime.Now;
+                    _db.SaveChanges();
+
+                    return Ok("留言已修改");
+                }
+                else
+                {
+                    return BadRequest("此留言已刪除");
+                }
+            }
+            else
+            {
+                return BadRequest("無法編輯此留言");
+            }
+        }
+
+
+
+
+        /// <summary>
+        ///     刪除評論
+        /// </summary>
+        /// <param name="blogCommentId">要刪除的留言Id</param>
+        /// <returns></returns>
+        [HttpPut]
+        [JwtAuthFilter]
+        [Route("comments/{blogCommentId}")]
+        public IHttpActionResult RemoveBlogComments([FromUri] int blogCommentId)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            var originComment = _db.BlogComments.FirstOrDefault(b => b.BlogCommentId == blogCommentId && b.UserId == userId);
+
+            if (originComment != null)
+            {
+                if (originComment.Status == true)
+                {
+                    originComment.Status = false;
+                    _db.SaveChanges();
+
+                    return Ok("留言刪除成功");
+                }
+                else
+                {
+                    return BadRequest("此留言已刪除");
+                }
+            }
+            else
+            {
+                return BadRequest("無法刪除此留言");
             }
         }
     }
