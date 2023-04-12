@@ -440,5 +440,92 @@ namespace TravelMaker.Controllers
                 return BadRequest("無此景點");
             }
         }
+
+
+
+
+        /// <summary>
+        ///     編輯評論
+        /// </summary>
+        [HttpPut]
+        [JwtAuthFilter]
+        [Route("comments/edit")]
+        public IHttpActionResult EditAttractionComments(EditAttractionCommentsView view)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            var originComment = _db.AttractionComments.FirstOrDefault(a=>a.AttractionCommentId == view.AttractionCommentId && a.UserId==userId);
+
+            if (originComment != null)
+            {
+                if (originComment.Status == true)
+                {
+                    if (string.IsNullOrWhiteSpace(view.Comment) || view.Comment.Length > 500)
+                    {
+                        return BadRequest("評論不得空白或超過500字");
+                    }
+                    if (view.Score == 0)
+                    {
+                        return BadRequest("請選擇星數");
+                    }
+
+                    originComment.Comment = view.Comment;
+                    originComment.Score = view.Score;
+                    originComment.EditDate = DateTime.Now;
+                    _db.SaveChanges();
+
+                    return Ok("評論已修改");
+                }
+                else
+                {
+                    return BadRequest("此評論已刪除");
+                }
+            }
+            else
+            {
+                return BadRequest("無法編輯此評論");
+            }
+        }
+
+
+
+
+        /// <summary>
+        ///     刪除評論
+        /// </summary>
+        /// <param name="attractionCommentId">要刪除的評論Id</param>
+        /// <returns></returns>
+        [HttpPut]
+        [JwtAuthFilter]
+        [Route("comments/{attractionCommentId}")]
+        public IHttpActionResult RemoveAttractionComments([FromUri] int attractionCommentId)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            var originComment = _db.AttractionComments.FirstOrDefault(a=>a.AttractionCommentId == attractionCommentId && a.UserId == userId);
+
+            if (originComment != null)
+            {
+                if (originComment.Status == true)
+                {
+                    originComment.Status = false;
+                    _db.SaveChanges();
+
+                    return Ok("評論刪除成功");
+                }
+                else
+                {
+                    return BadRequest("此評論已刪除");
+                }
+            }
+            else
+            {
+                return BadRequest("無法刪除此評論");
+            }
+        }
     }
 }

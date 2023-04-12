@@ -522,6 +522,18 @@
                 新增單一景點評論
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.AttractionsController.EditAttractionComments(TravelMaker.Models.EditAttractionCommentsView)">
+            <summary>
+                編輯評論
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.AttractionsController.RemoveAttractionComments(System.Int32)">
+            <summary>
+                刪除評論
+            </summary>
+            <param name="attractionCommentId">要刪除的評論Id</param>
+            <returns></returns>
+        </member>
         <member name="T:TravelMaker.Controllers.BlogsController">
             <summary>
                 遊記相關
@@ -1997,14 +2009,14 @@
                 景點評分
             </summary>
         </member>
+        <member name="T:TravelMaker.Models.EditAttractionCommentsView">
+            <summary>
+                編輯評論
+            </summary>
+        </member>
         <member name="T:TravelMaker.Models.BlogEditView">
             <summary>
                 
-            </summary>
-        </member>
-        <member name="T:TravelMaker.Models.MoreBlogCommentsView">
-            <summary>
-                取得更多遊記評論
             </summary>
         </member>
         <member name="T:TravelMaker.Models.AddBlogCommentsView">

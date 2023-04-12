@@ -911,9 +911,9 @@ namespace TravelMaker.Controllers
             {
                 if (originComment.Status == true)
                 {
-                    if (view.Comment.Length > 500)
+                    if (string.IsNullOrWhiteSpace(view.Comment) || view.Comment.Length > 500)
                     {
-                        return BadRequest("評論字數不得超過500字");
+                        return BadRequest("留言不得空白或超過500字");
                     }
                     originComment.Comment = view.Comment;
                     originComment.EditDate=DateTime.Now;
@@ -1034,9 +1034,9 @@ namespace TravelMaker.Controllers
             {
                 if (originReply.Status == true)
                 {
-                    if (view.Reply.Length > 500)
+                    if (string.IsNullOrWhiteSpace(view.Reply)||view.Reply.Length > 500)
                     {
-                        return BadRequest("回覆字數不得超過500字");
+                        return BadRequest("回覆不得空白或超過500字");
                     }
                     originReply.Reply=view.Reply;
                     originReply.EditDate = DateTime.Now;

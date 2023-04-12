@@ -704,6 +704,16 @@ namespace TravelMaker.Models
     }
 
 
+    /// <summary>
+    ///     編輯評論
+    /// </summary>
+    public class EditAttractionCommentsView
+    {
+        public int AttractionCommentId { get; set; }
+        public string Comment { get; set; }
+        public int Score { get; set; }
+    }
+
     //-------------------遊記View-------------------
 
 
@@ -727,15 +737,6 @@ namespace TravelMaker.Models
 
 
 
-
-    /// <summary>
-    ///     取得更多遊記評論
-    /// </summary>
-    public class MoreBlogCommentsView
-    {
-        public string BlogGuid { get; set; }
-        public int Page { get; set; }
-    }
 
     /// <summary>
     ///     新增留言
