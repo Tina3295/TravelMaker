@@ -248,6 +248,31 @@ namespace TravelMaker.Controllers
 
 
 
+        /// <summary>
+        ///     進入會員中心要get左邊選單各項數量
+        /// </summary>
+        [HttpGet]
+        [Route("dataCounts")]
+        [JwtAuthFilter]
+        public IHttpActionResult MyCounts()
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            var result = new
+            {
+                TourCounts = _db.Tours.Where(t => t.UserId == userId).Count() + _db.RoomMembers.Where(r => r.UserId == userId && r.Room.Status == true).Count(),
+                AttCounts = _db.AttractionCollections.Where(a => a.UserId == userId && a.Attraction.OpenStatus == true).Count(),
+                BlogCounts = _db.Blogs.Where(b => b.UserId == userId && b.Status == 0).Count() + _db.BlogCollections.Where(b => b.UserId == userId && b.Blog.Status == 1).Count(),
+                FollowCounts = _db.BlogFollowers.Where(f => f.FollowingUserId == userId).Count(),
+                AttCommentCounts = _db.AttractionComments.Where(c => c.UserId == userId && c.Status == true && c.Attraction.OpenStatus == true).Count()
+            };
+
+            return Ok(result);
+        }
+
+
 
 
 
@@ -267,43 +292,18 @@ namespace TravelMaker.Controllers
             int pageSize = 20;
 
             //依照頁數取得我的行程
-            var tours = _db.Tours.Where(t => t.User.UserId == userId).OrderByDescending(t => t.TourId).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(t =>
+            var tours = _db.Tours.Where(t => t.User.UserId == userId).OrderByDescending(t => t.TourId).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(t => new
             {
-                var attractionIds = _db.TourAttractions.Where(a => a.TourId == t.TourId)
-                                                       .Select(a => a.AttractionId).ToList();
-
-                List<string> imageUrl = new List<string>();
-                for (int i = 0; i < Math.Min(attractionIds.Count, 3); i++)
-                {
-                    int attractionId = attractionIds[i];
-                    string img = _db.Images.Where(a => a.AttractionId == attractionId).Select(a => a.ImageName).FirstOrDefault();
-
-                    imageUrl.Add(imgPath + img);
-                }
-
-
-                return new
-                {
-                    TourId = t.TourId,
-                    TourName = t.TourName,
-                    AttrCounts = _db.TourAttractions.Where(a => a.TourId == t.TourId).Count(),
-                    Likes = _db.TourLikes.Where(l => l.TourId == t.TourId).Count(),
-                    ImageUrl = imageUrl
-                };
+                TourId = t.TourId,
+                TourName = t.TourName,
+                AttrCounts = _db.TourAttractions.Where(a => a.TourId == t.TourId).Count(),
+                Likes = _db.TourLikes.Where(l => l.TourId == t.TourId).Count(),
+                ImageUrl = _db.TourAttractions.Where(a => a.TourId == t.TourId).SelectMany(a => _db.Images.Where(i => i.AttractionId == a.AttractionId).Take(1)).Take(3).Select(a => imgPath + a.ImageName).ToList()
             });
 
-
-            int tourCounts = _db.Tours.Where(t => t.UserId == userId).Count();
-            int roomCounts = _db.RoomMembers.Where(r => r.UserId == userId && r.Room.Status == true).Count();
-
-            int attractionCounts = _db.AttractionCollections.Where(a => a.UserId == userId).Count();
-            int followCounts = _db.BlogFollowers.Where(f => f.FollowingUserId == userId).Count();
-            //int blogCounts
-
             var result = new {
-                TotalItems = tourCounts + roomCounts,
-                TourCounts = tourCounts,
-                RoomCounts = roomCounts,
+                TourCounts = _db.Tours.Where(t => t.UserId == userId).Count(),
+                RoomCounts = _db.RoomMembers.Where(r => r.UserId == userId && r.Room.Status == true).Count(),
                 TourData = tours
             };
 

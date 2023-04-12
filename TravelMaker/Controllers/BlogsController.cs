@@ -522,15 +522,15 @@ namespace TravelMaker.Controllers
         /// <summary>
         ///     取得更多遊記評論
         /// </summary>
-        [HttpPost]
-        [Route("comments")]
-        public IHttpActionResult MoreBlogComments(MoreBlogCommentsView view)
+        [HttpGet]
+        [Route("{blogGuid}/comments/{page}")]
+        public IHttpActionResult MoreBlogComments([FromUri]string blogGuid,int page)
         {
             string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
             int pagesize = 10;
             int myUserId = 0;
 
-            var allComments = _db.BlogComments.Where(c => c.Blog.BlogGuid == view.BlogGuid && c.Status == true).OrderByDescending(c => c.InitDate).ToList();
+            var allComments = _db.BlogComments.Where(c => c.Blog.BlogGuid == blogGuid && c.Status == true).OrderByDescending(c => c.InitDate).ToList();
 
             if (allComments.Any())
             {
@@ -547,7 +547,7 @@ namespace TravelMaker.Controllers
                 }
 
                 // 分頁
-                var result = allComments.Skip((view.Page - 1) * pagesize).Take(pagesize).ToList().Select(c =>
+                var result = allComments.Skip((page - 1) * pagesize).Take(pagesize).ToList().Select(c =>
                 {
                     var user = _db.Users.FirstOrDefault(u => u.UserId == c.UserId);
 
@@ -584,7 +584,7 @@ namespace TravelMaker.Controllers
                 }
                 else
                 {
-                    return BadRequest("無更多景點評論");
+                    return BadRequest("無更多遊記評論");
                 }
             }
             else

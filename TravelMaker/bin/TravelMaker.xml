@@ -567,7 +567,7 @@
             <param name="blogGuid">遊記Guid</param>
             <returns></returns>
         </member>
-        <member name="M:TravelMaker.Controllers.BlogsController.MoreBlogComments(TravelMaker.Models.MoreBlogCommentsView)">
+        <member name="M:TravelMaker.Controllers.BlogsController.MoreBlogComments(System.String,System.Int32)">
             <summary>
                 取得更多遊記評論
             </summary>
@@ -594,6 +594,11 @@
         <member name="M:TravelMaker.Controllers.BlogsController.BlogProfile(System.String)">
             <summary>
                 取得單一用戶社群頁面(遊記)
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogProfileMore(System.String,System.Int32)">
+            <summary>
+                取得更多單一用戶社群頁面的遊記
             </summary>
         </member>
         <member name="M:TravelMaker.Controllers.BlogsController.AddBlogComments(TravelMaker.Models.AddBlogCommentsView)">
@@ -629,11 +634,6 @@
             </summary>
             <param name="blogReplyId">遊記留言回覆Id</param>
             <returns></returns>
-        </member>
-        <member name="M:TravelMaker.Controllers.BlogsController.BlogProfileMore(System.String,System.Int32)">
-            <summary>
-                取得更多單一用戶社群頁面的遊記
-            </summary>
         </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
@@ -809,6 +809,11 @@
         <member name="M:TravelMaker.Controllers.UsersController.ChangePassword(TravelMaker.Models.ChangePasswordView)">
             <summary>
                 修改密碼(會員中心)
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.UsersController.MyCounts">
+            <summary>
+                進入會員中心要get左邊選單各項數量
             </summary>
         </member>
         <member name="M:TravelMaker.Controllers.UsersController.FavoriteTour(System.Int32)">
