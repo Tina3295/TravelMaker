@@ -1084,42 +1084,22 @@ namespace TravelMaker.Controllers
             {
                 TourId = t.TourId,
                 Likes = _db.TourLikes.Count(l => l.TourId == t.TourId)
-            }).Distinct().OrderByDescending(t => t.Likes).Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+            }).Distinct().OrderByDescending(t => t.Likes).Skip(pageSize * (page - 1)).Take(pageSize).ToDictionary(t => t.TourId, t => t.Likes);
 
-            var result = new List<object>();
-
-            foreach (var searchTour in searchTours)
+            var result = _db.Tours.Where(a => searchTours.Keys.Contains(a.TourId)).ToList().Select(a => new
             {
-                TourSearch tour = new TourSearch();
-                tour.TourId = searchTour.TourId;
-                tour.TourName = _db.Tours.Where(t => t.TourId == searchTour.TourId).Select(t => t.TourName).FirstOrDefault();
-                tour.AttrCounts = _db.TourAttractions.Where(t => t.TourId == searchTour.TourId).Count();
-                tour.Likes = searchTour.Likes;
-
-                tour.ImageUrl = new List<string>();
-                var attractionIds = _db.TourAttractions.Where(t => t.TourId == searchTour.TourId).Select(t => t.AttractionId).ToList();
-                for (int i = 0; i < Math.Min(attractionIds.Count, 3); i++)
-                {
-                    int attractionId = attractionIds[i];
-                    string img = _db.Images.Where(a => a.AttractionId == attractionId).Select(a => a.ImageName).FirstOrDefault();
-
-                    tour.ImageUrl.Add(imgPath + img);
-                }
-
-                if (myUserId != 0)
-                {
-                    tour.IsLike = _db.TourLikes.Where(t => t.TourId == searchTour.TourId).Any(t => t.UserId == myUserId) ? true : false;
-                }
-                else
-                {
-                    tour.IsLike = false;
-                }
-                
-                result.Add(tour);
-            }
+                IsLike = _db.TourLikes.FirstOrDefault(l => l.UserId == myUserId && l.TourId == a.TourId) == null ? false : true,
+                TourId = a.TourId,
+                TourName = a.TourName,
+                AttrCounts = _db.TourAttractions.Count(t => t.TourId == a.TourId),
+                Likes = searchTours[a.TourId],
+                ImageUrl = _db.TourAttractions.Where(t => t.TourId == a.TourId)
+                        .SelectMany(t => _db.Images.Where(i => i.AttractionId == t.AttractionId).Take(1))
+                        .Take(3).Select(t => imgPath + t.ImageName).ToList()
+            })
+                .OrderByDescending(a => a.Likes);
 
 
-            
             if (totalItem != 0)
             {
                 return Ok(new { TotalPages = totalPages, TotalItem = totalItem, Tours = result });

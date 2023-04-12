@@ -758,13 +758,20 @@ namespace TravelMaker.Models
         public int Page { get; set; }
     }
 
-
+    /// <summary>
+    ///     新增留言
+    /// </summary>
+    public class AddBlogCommentsView
+    {
+        public string BlogGuid { get; set; }
+        public string comment { get; set; }
+    }
     /// <summary>
     ///     編輯留言
     /// </summary>
     public class EditBlogCommentsView
     {
-        public int blogCommentId { get; set; }
+        public int BlogCommentId { get; set; }
         public string comment { get; set; }
     }
 

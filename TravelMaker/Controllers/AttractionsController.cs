@@ -135,41 +135,51 @@ namespace TravelMaker.Controllers
                     AverageScore = averageScoreRound
                 };
 
-            }).Distinct().OrderByDescending(a => a.AverageScore).Skip(pageSize * (page - 1)).Take(pageSize);
+            }).Distinct().OrderByDescending(a => a.AverageScore).Skip(pageSize * (page - 1)).Take(pageSize).ToDictionary(a=>a.AttractionId,a=>a.AverageScore);
 
-            var result = new List<object>();
-
-            foreach (var searchAttraction in searchAttractions)
+            var result = _db.Attractions.Where(a => searchAttractions.Keys.Contains(a.AttractionId)).ToList().Select(a => new
             {
-                AttractionView attraction = new AttractionView();
-                attraction.AttractionId = searchAttraction.AttractionId;
-                attraction.AttractionName = _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.AttractionName).FirstOrDefault();
+                IsCollect = _db.AttractionCollections.FirstOrDefault(c => c.AttractionId == a.AttractionId && c.UserId == myUserId) == null ? false : true,
+                AttractionId = a.AttractionId,
+                AttractionName = a.AttractionName,
+                CityDistrict = a.District.City.CittyName + " " + a.District.DistrictName,
+                AverageScore = searchAttractions[a.AttractionId],
+                Category = _db.CategoryAttractions.Where(c => c.AttractionId == a.AttractionId && c.CategoryId != 8 && c.CategoryId != 9).Select(c => c.Category.CategoryName).DefaultIfEmpty("餐廳").ToList(),
+                ImageUrl = imgPath + _db.Images.FirstOrDefault(i => i.AttractionId == a.AttractionId).ImageName
+            })
+                .OrderByDescending(a=>a.AverageScore);
 
-                attraction.CityDistrict = _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.District.City.CittyName).FirstOrDefault()
-                    + " " + _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.District.DistrictName).FirstOrDefault();
+            //foreach (var searchAttraction in searchAttractions)
+            //{
+            //    AttractionView attraction = new AttractionView();
+            //    attraction.AttractionId = searchAttraction.AttractionId;
+            //    attraction.AttractionName = _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.AttractionName).FirstOrDefault();
 
-                attraction.AverageScore = searchAttraction.AverageScore;
+            //    attraction.CityDistrict = _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.District.City.CittyName).FirstOrDefault()
+            //        + " " + _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.District.DistrictName).FirstOrDefault();
 
-                attraction.Category = _db.CategoryAttractions.Where(c => c.AttractionId == attraction.AttractionId && c.CategoryId != 8 && c.CategoryId != 9).Select(c => c.Category.CategoryName).ToList();
-                if (attraction.Category.Count == 0)
-                {
-                    attraction.Category.Add("餐廳");
-                }
+            //    attraction.AverageScore = searchAttraction.AverageScore;
 
-                attraction.ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == attraction.AttractionId).Select(i => i.ImageName).FirstOrDefault();
+            //    attraction.Category = _db.CategoryAttractions.Where(c => c.AttractionId == attraction.AttractionId && c.CategoryId != 8 && c.CategoryId != 9).Select(c => c.Category.CategoryName).ToList();
+            //    if (attraction.Category.Count == 0)
+            //    {
+            //        attraction.Category.Add("餐廳");
+            //    }
+
+            //    attraction.ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == attraction.AttractionId).Select(i => i.ImageName).FirstOrDefault();
 
 
-                if (myUserId != 0)
-                {
-                    attraction.IsCollect = _db.AttractionCollections.Where(a => a.AttractionId == attraction.AttractionId).Any(a => a.UserId == myUserId) ? true : false;
-                }
-                else
-                {
-                    attraction.IsCollect = false;
-                }
+            //    if (myUserId != 0)
+            //    {
+            //        attraction.IsCollect = _db.AttractionCollections.Where(a => a.AttractionId == attraction.AttractionId).Any(a => a.UserId == myUserId) ? true : false;
+            //    }
+            //    else
+            //    {
+            //        attraction.IsCollect = false;
+            //    }
 
-                result.Add(attraction);
-            }
+            //    result.Add(attraction);
+            //}
 
 
             if (totalItem != 0)

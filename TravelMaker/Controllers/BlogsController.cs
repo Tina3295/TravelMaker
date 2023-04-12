@@ -662,7 +662,8 @@ namespace TravelMaker.Controllers
                 Likes = searchBlogs[b.BlogGuid],
                 Comments = _db.BlogComments.Where(c => c.BlogId == b.BlogId && c.Status == true).Count() + _db.BlogReplies.Where(c => c.BlogComment.BlogId == b.BlogId && c.Status == true).Count(),
                 Category = b.Category == null ? new string[0] : b.Category.Split(',')
-            });
+            })
+                .OrderByDescending(a => a.Likes);
 
             if (totalItem != 0)
             {
@@ -804,17 +805,17 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpPost]
         [JwtAuthFilter]
-        [Route("{blogGuid}/comments")]
-        public IHttpActionResult AddBlogComments([FromUri] string blogGuid,[FromBody]string comment)
+        [Route("comments/add")]
+        public IHttpActionResult AddBlogComments(AddBlogCommentsView view)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = userToken["UserGuid"].ToString();
             int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
 
-            var blog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blogGuid && b.Status == 1);
+            var blog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == view.BlogGuid && b.Status == 1);
             if (blog != null)
             {
-                if(comment.Length>500)
+                if(view.comment.Length>500)
                 {
                     return BadRequest("留言字數不得超過500字");
                 }
@@ -822,7 +823,7 @@ namespace TravelMaker.Controllers
                 BlogComment blogComment = new BlogComment();
                 blogComment.BlogId = blog.BlogId;
                 blogComment.UserId = userId;
-                blogComment.Comment = comment;
+                blogComment.Comment = view.comment;
                 blogComment.Status = true;
                 blogComment.InitDate = DateTime.Now;
                 _db.BlogComments.Add(blogComment);
@@ -851,7 +852,7 @@ namespace TravelMaker.Controllers
             string userGuid = userToken["UserGuid"].ToString();
             int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
 
-            var originComment = _db.BlogComments.FirstOrDefault(b => b.BlogCommentId == view.blogCommentId && b.UserId == userId);
+            var originComment = _db.BlogComments.FirstOrDefault(b => b.BlogCommentId == view.BlogCommentId && b.UserId == userId);
 
             if (originComment != null)
             {
@@ -882,7 +883,7 @@ namespace TravelMaker.Controllers
 
 
         /// <summary>
-        ///     刪除評論
+        ///     刪除留言
         /// </summary>
         /// <param name="blogCommentId">要刪除的留言Id</param>
         /// <returns></returns>

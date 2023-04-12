@@ -596,7 +596,7 @@
                 取得單一用戶社群頁面(遊記)
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.BlogsController.AddBlogComments(System.String,System.String)">
+        <member name="M:TravelMaker.Controllers.BlogsController.AddBlogComments(TravelMaker.Models.AddBlogCommentsView)">
             <summary>
                 新增留言
             </summary>
@@ -608,9 +608,9 @@
         </member>
         <member name="M:TravelMaker.Controllers.BlogsController.RemoveBlogComments(System.Int32)">
             <summary>
-                刪除評論
+                刪除留言
             </summary>
-            <param name="blogCommentId">要刪除的評論</param>
+            <param name="blogCommentId">要刪除的留言Id</param>
             <returns></returns>
         </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
@@ -1978,6 +1978,11 @@
         <member name="T:TravelMaker.Models.MoreBlogCommentsView">
             <summary>
                 取得更多遊記評論
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.AddBlogCommentsView">
+            <summary>
+                新增留言
             </summary>
         </member>
         <member name="T:TravelMaker.Models.EditBlogCommentsView">
