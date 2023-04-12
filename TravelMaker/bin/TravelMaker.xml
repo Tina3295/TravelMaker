@@ -630,6 +630,11 @@
             <param name="blogReplyId">遊記留言回覆Id</param>
             <returns></returns>
         </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogProfileMore(System.String,System.Int32)">
+            <summary>
+                取得更多單一用戶社群頁面的遊記
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
