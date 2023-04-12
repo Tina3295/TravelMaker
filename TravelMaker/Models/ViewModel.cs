@@ -684,7 +684,24 @@ namespace TravelMaker.Models
         public int Page { get; set; }
     }
 
-
+    /// <summary>
+    ///     新增單一景點評論
+    /// </summary>
+    public class AddAttractionView
+    {
+        /// <summary>
+        ///     景點Id
+        /// </summary>
+        public int AttractionId { get; set; }
+        /// <summary>
+        ///     景點評論
+        /// </summary>
+        public string Comment { get; set; }
+        /// <summary>
+        ///     景點評分
+        /// </summary>
+        public int Score { get; set; }
+    }
 
 
     //-------------------遊記View-------------------

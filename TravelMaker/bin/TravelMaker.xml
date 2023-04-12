@@ -517,6 +517,11 @@
                 取得更多景點評論
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.AttractionsController.AddAttractionComments(TravelMaker.Models.AddAttractionView)">
+            <summary>
+                新增單一景點評論
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.BlogsController">
             <summary>
                 遊記相關
@@ -1005,6 +1010,11 @@
         <member name="P:TravelMaker.Models.AttractionComment.InitDate">
             <summary>
                 留言日期
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttractionComment.EditDate">
+            <summary>
+                編輯日期
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Blog">
@@ -1965,6 +1975,26 @@
         <member name="T:TravelMaker.Models.MoreCommentView">
             <summary>
                 取得更多景點評論
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.AddAttractionView">
+            <summary>
+                新增單一景點評論
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AddAttractionView.AttractionId">
+            <summary>
+                景點Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AddAttractionView.Comment">
+            <summary>
+                景點評論
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AddAttractionView.Score">
+            <summary>
+                景點評分
             </summary>
         </member>
         <member name="T:TravelMaker.Models.BlogEditView">

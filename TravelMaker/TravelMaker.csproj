@@ -394,6 +394,10 @@
     <Compile Include="Migrations\202304100939516_addBlogFollowerTable.Designer.cs">
       <DependentUpon>202304100939516_addBlogFollowerTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304121517078_addEditDateInAttractionComment.cs" />
+    <Compile Include="Migrations\202304121517078_addEditDateInAttractionComment.Designer.cs">
+      <DependentUpon>202304121517078_addEditDateInAttractionComment.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\AttractionCollection.cs" />
@@ -638,6 +642,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304100939516_addBlogFollowerTable.resx">
       <DependentUpon>202304100939516_addBlogFollowerTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304121517078_addEditDateInAttractionComment.resx">
+      <DependentUpon>202304121517078_addEditDateInAttractionComment.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

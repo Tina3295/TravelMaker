@@ -71,5 +71,15 @@ namespace TravelMaker.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]  //只顯示年月日
         [DataType(DataType.DateTime)]
         public DateTime? InitDate { get; set; }
+
+
+
+        /// <summary>
+        ///     編輯日期
+        /// </summary>
+        [Display(Name = "編輯日期")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]  //只顯示年月日
+        [DataType(DataType.DateTime)]
+        public DateTime? EditDate { get; set; }
     }
 }

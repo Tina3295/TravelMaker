@@ -868,9 +868,9 @@ namespace TravelMaker.Controllers
             var blog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == view.BlogGuid && b.Status == 1);
             if (blog != null)
             {
-                if(view.Comment.Length>500)
+                if (string.IsNullOrWhiteSpace(view.Comment) || view.Comment.Length > 500)
                 {
-                    return BadRequest("留言字數不得超過500字");
+                    return BadRequest("留言不得空白或超過500字");
                 }
 
                 BlogComment blogComment = new BlogComment();
@@ -989,9 +989,9 @@ namespace TravelMaker.Controllers
             var blogComment = _db.BlogComments.FirstOrDefault(b => b.BlogCommentId==view.BlogCommentId && b.Status==true);
             if (blogComment != null)
             {
-                if (view.Reply.Length > 500)
+                if (string.IsNullOrWhiteSpace(view.Reply) || view.Reply.Length > 500)
                 {
-                    return BadRequest("回覆字數不得超過500字");
+                    return BadRequest("回覆不得空白或超過500字");
                 }
 
                 BlogReply blogReply = new BlogReply();

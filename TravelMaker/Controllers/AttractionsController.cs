@@ -377,7 +377,7 @@ namespace TravelMaker.Controllers
                     ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
                     Score = c.Score,
                     Comment = c.Comment,
-                    InitDate = Tool.CommentTime((DateTime)c.InitDate)
+                    InitDate = Tool.CommentTime((DateTime)c.InitDate) + c.EditDate == null ? "" : " (已編輯)"
                 }).ToList();
 
                 if (result.Any())
@@ -392,6 +392,52 @@ namespace TravelMaker.Controllers
             else
             {
                 return BadRequest("尚無評論");
+            }
+        }
+
+
+
+
+        /// <summary>
+        ///     新增單一景點評論
+        /// </summary>
+        [HttpPost]
+        [JwtAuthFilter]
+        [Route("comments/add")]
+        public IHttpActionResult AddAttractionComments(AddAttractionView view)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            var attraction = _db.Attractions.FirstOrDefault(a => a.AttractionId == view.AttractionId && a.OpenStatus == true);
+            if (attraction != null)
+            {
+                if (string.IsNullOrWhiteSpace(view.Comment) || view.Comment.Length > 500)
+                {
+                    return BadRequest("評論不得空白或超過500字");
+                }
+                if (view.Score == 0)
+                {
+                    return BadRequest("請選擇星數");
+                }
+
+                AttractionComment comment = new AttractionComment();
+                comment.AttractionId = view.AttractionId;
+                comment.UserId = userId;
+                comment.Comment = view.Comment;
+                comment.Score = view.Score;
+                comment.Status = true;
+                comment.InitDate = DateTime.Now;
+
+                _db.AttractionComments.Add(comment);
+                _db.SaveChanges();
+
+                return Ok(new { AttractionCommentId = comment.AttractionCommentId });
+            }
+            else
+            {
+                return BadRequest("無此景點");
             }
         }
     }
