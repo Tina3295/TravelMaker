@@ -249,7 +249,7 @@ namespace TravelMaker.Controllers
 
 
         /// <summary>
-        ///     進入會員中心要get左邊選單各項數量
+        ///     會員中心左邊選單各項數量
         /// </summary>
         [HttpGet]
         [Route("dataCounts")]
@@ -648,6 +648,42 @@ namespace TravelMaker.Controllers
             else
             {
                 return BadRequest("已無我的追蹤");
+            }
+        }
+
+
+
+        /// <summary>
+        ///     取得我的景點評論
+        /// </summary>
+        [HttpGet]
+        [Route("comments/{page}")]
+        [JwtAuthFilter]
+        public IHttpActionResult MyAttractionComments([FromUri] int page)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string myGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == myGuid).UserId;
+            int pageSize = 20;
+
+            int attCommentCounts = _db.AttractionComments.Where(c => c.UserId == userId && c.Status == true && c.Attraction.OpenStatus == true).Count();
+
+            var commentData = _db.AttractionComments.Where(c => c.UserId == userId && c.Status == true && c.Attraction.OpenStatus == true).OrderByDescending(c => c.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(c => new
+            {
+                AttractionCommentId = c.AttractionCommentId,
+                AttractionName = c.Attraction.AttractionName,
+                Score = c.Score,
+                InitDate = Tool.CommentTime((DateTime)c.InitDate) + (c.EditDate == null ? "" : " (已編輯)"),
+                Comment = c.Comment
+            }).ToList();
+
+            if (commentData.Any())
+            {
+                return Ok(new { AttCommentCounts = attCommentCounts, CommentData = commentData });
+            }
+            else
+            {
+                return BadRequest("已無我的景點評論");
             }
         }
     }

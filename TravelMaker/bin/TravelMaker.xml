@@ -830,7 +830,7 @@
         </member>
         <member name="M:TravelMaker.Controllers.UsersController.MyCounts">
             <summary>
-                進入會員中心要get左邊選單各項數量
+                會員中心左邊選單各項數量
             </summary>
         </member>
         <member name="M:TravelMaker.Controllers.UsersController.FavoriteTour(System.Int32)">
@@ -871,6 +871,11 @@
         <member name="M:TravelMaker.Controllers.UsersController.MyFollow(System.Int32)">
             <summary>
                 取得我的追蹤
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.UsersController.MyAttractionComments(System.Int32)">
+            <summary>
+                取得我的景點評論
             </summary>
         </member>
         <member name="M:TravelMaker.Controllers.ValuesController.Test">
