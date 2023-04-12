@@ -764,7 +764,7 @@ namespace TravelMaker.Models
     public class AddBlogCommentsView
     {
         public string BlogGuid { get; set; }
-        public string comment { get; set; }
+        public string Comment { get; set; }
     }
     /// <summary>
     ///     編輯留言
@@ -772,9 +772,26 @@ namespace TravelMaker.Models
     public class EditBlogCommentsView
     {
         public int BlogCommentId { get; set; }
-        public string comment { get; set; }
+        public string Comment { get; set; }
     }
 
+
+    /// <summary>
+    ///     新增回覆
+    /// </summary>
+    public class AddBlogCommentRepliesView
+    {
+        public int BlogCommentId { get; set; }
+        public string Reply { get; set; }
+    }
+    /// <summary>
+    ///     編輯留言
+    /// </summary>
+    public class EditBlogCommentRepliesView
+    {
+        public int BlogReplyId { get; set; }
+        public string Reply { get; set; }
+    }
 
 
 

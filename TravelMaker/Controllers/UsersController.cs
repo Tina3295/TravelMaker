@@ -293,13 +293,17 @@ namespace TravelMaker.Controllers
             });
 
 
-            int tourCount = _db.Tours.Where(t => t.UserId == userId).Count();
-            int roomCount = _db.RoomMembers.Where(r => r.UserId == userId && r.Room.Status == true).Count();
+            int tourCounts = _db.Tours.Where(t => t.UserId == userId).Count();
+            int roomCounts = _db.RoomMembers.Where(r => r.UserId == userId && r.Room.Status == true).Count();
+
+            int attractionCounts = _db.AttractionCollections.Where(a => a.UserId == userId).Count();
+            int followCounts = _db.BlogFollowers.Where(f => f.FollowingUserId == userId).Count();
+            //int blogCounts
 
             var result = new {
-                TotalItems = tourCount + roomCount,
-                TourCounts = tourCount,
-                RoomCounts = roomCount,
+                TotalItems = tourCounts + roomCounts,
+                TourCounts = tourCounts,
+                RoomCounts = roomCounts,
                 TourData = tours
             };
 

@@ -149,38 +149,6 @@ namespace TravelMaker.Controllers
             })
                 .OrderByDescending(a=>a.AverageScore);
 
-            //foreach (var searchAttraction in searchAttractions)
-            //{
-            //    AttractionView attraction = new AttractionView();
-            //    attraction.AttractionId = searchAttraction.AttractionId;
-            //    attraction.AttractionName = _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.AttractionName).FirstOrDefault();
-
-            //    attraction.CityDistrict = _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.District.City.CittyName).FirstOrDefault()
-            //        + " " + _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.District.DistrictName).FirstOrDefault();
-
-            //    attraction.AverageScore = searchAttraction.AverageScore;
-
-            //    attraction.Category = _db.CategoryAttractions.Where(c => c.AttractionId == attraction.AttractionId && c.CategoryId != 8 && c.CategoryId != 9).Select(c => c.Category.CategoryName).ToList();
-            //    if (attraction.Category.Count == 0)
-            //    {
-            //        attraction.Category.Add("餐廳");
-            //    }
-
-            //    attraction.ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == attraction.AttractionId).Select(i => i.ImageName).FirstOrDefault();
-
-
-            //    if (myUserId != 0)
-            //    {
-            //        attraction.IsCollect = _db.AttractionCollections.Where(a => a.AttractionId == attraction.AttractionId).Any(a => a.UserId == myUserId) ? true : false;
-            //    }
-            //    else
-            //    {
-            //        attraction.IsCollect = false;
-            //    }
-
-            //    result.Add(attraction);
-            //}
-
 
             if (totalItem != 0)
             {

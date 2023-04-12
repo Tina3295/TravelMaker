@@ -613,6 +613,23 @@
             <param name="blogCommentId">要刪除的留言Id</param>
             <returns></returns>
         </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.AddBlogCommentReplies(TravelMaker.Models.AddBlogCommentRepliesView)">
+            <summary>
+                新增回覆
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.EditBlogCommentReplies(TravelMaker.Models.EditBlogCommentRepliesView)">
+            <summary>
+                編輯回覆
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.RemoveBlogCommentReplies(System.Int32)">
+            <summary>
+                刪除回覆
+            </summary>
+            <param name="blogReplyId">遊記留言回覆Id</param>
+            <returns></returns>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
@@ -1986,6 +2003,16 @@
             </summary>
         </member>
         <member name="T:TravelMaker.Models.EditBlogCommentsView">
+            <summary>
+                編輯留言
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.AddBlogCommentRepliesView">
+            <summary>
+                新增回覆
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.EditBlogCommentRepliesView">
             <summary>
                 編輯留言
             </summary>

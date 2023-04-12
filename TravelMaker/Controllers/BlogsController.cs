@@ -815,7 +815,7 @@ namespace TravelMaker.Controllers
             var blog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == view.BlogGuid && b.Status == 1);
             if (blog != null)
             {
-                if(view.comment.Length>500)
+                if(view.Comment.Length>500)
                 {
                     return BadRequest("留言字數不得超過500字");
                 }
@@ -823,7 +823,7 @@ namespace TravelMaker.Controllers
                 BlogComment blogComment = new BlogComment();
                 blogComment.BlogId = blog.BlogId;
                 blogComment.UserId = userId;
-                blogComment.Comment = view.comment;
+                blogComment.Comment = view.Comment;
                 blogComment.Status = true;
                 blogComment.InitDate = DateTime.Now;
                 _db.BlogComments.Add(blogComment);
@@ -858,11 +858,11 @@ namespace TravelMaker.Controllers
             {
                 if (originComment.Status == true)
                 {
-                    if (view.comment.Length > 500)
+                    if (view.Comment.Length > 500)
                     {
                         return BadRequest("評論字數不得超過500字");
                     }
-                    originComment.Comment = view.comment;
+                    originComment.Comment = view.Comment;
                     originComment.EditDate=DateTime.Now;
                     _db.SaveChanges();
 
@@ -915,6 +915,128 @@ namespace TravelMaker.Controllers
             else
             {
                 return BadRequest("無法刪除此留言");
+            }
+        }
+
+
+
+
+        /// <summary>
+        ///     新增回覆
+        /// </summary>
+        [HttpPost]
+        [JwtAuthFilter]
+        [Route("replies/add")]
+        public IHttpActionResult AddBlogCommentReplies(AddBlogCommentRepliesView view)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            var blogComment = _db.BlogComments.FirstOrDefault(b => b.BlogCommentId==view.BlogCommentId && b.Status==true);
+            if (blogComment != null)
+            {
+                if (view.Reply.Length > 500)
+                {
+                    return BadRequest("回覆字數不得超過500字");
+                }
+
+                BlogReply blogReply = new BlogReply();
+                blogReply.BlogCommentId = view.BlogCommentId;
+                blogReply.UserId = userId;
+                blogReply.Reply = view.Reply;
+                blogReply.Status = true;
+                blogReply.InitDate = DateTime.Now;
+
+                _db.BlogReplies.Add(blogReply);
+                _db.SaveChanges();
+
+                return Ok(new { BlogReplyId = blogReply.BlogReplyId });
+            }
+            else
+            {
+                return BadRequest("無此遊記留言");
+            }
+        }
+
+
+
+
+
+        /// <summary>
+        ///     編輯回覆
+        /// </summary>
+        [HttpPut]
+        [JwtAuthFilter]
+        [Route("replies/edit")]
+        public IHttpActionResult EditBlogCommentReplies(EditBlogCommentRepliesView view)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            var originReply = _db.BlogReplies.FirstOrDefault(b => b.BlogReplyId == view.BlogReplyId && b.UserId == userId);
+
+            if (originReply != null)
+            {
+                if (originReply.Status == true)
+                {
+                    if (view.Reply.Length > 500)
+                    {
+                        return BadRequest("回覆字數不得超過500字");
+                    }
+                    originReply.Reply=view.Reply;
+                    originReply.EditDate = DateTime.Now;
+                    _db.SaveChanges();
+
+                    return Ok("回覆已修改");
+                }
+                else
+                {
+                    return BadRequest("此回覆已刪除");
+                }
+            }
+            else
+            {
+                return BadRequest("無法編輯此回覆");
+            }
+        }
+
+
+
+        /// <summary>
+        ///     刪除回覆
+        /// </summary>
+        /// <param name="blogReplyId">遊記留言回覆Id</param>
+        /// <returns></returns>
+        [HttpPut]
+        [JwtAuthFilter]
+        [Route("replies/{blogReplyId}")]
+        public IHttpActionResult RemoveBlogCommentReplies([FromUri] int blogReplyId)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            var originReply = _db.BlogReplies.FirstOrDefault(b => b.BlogReplyId == blogReplyId && b.UserId == userId);
+
+            if (originReply != null)
+            {
+                if (originReply.Status == true)
+                {
+                    originReply.Status = false;
+                    _db.SaveChanges();
+
+                    return Ok("回覆刪除成功");
+                }
+                else
+                {
+                    return BadRequest("此回覆已刪除");
+                }
+            }
+            else
+            {
+                return BadRequest("無法刪除此回覆");
             }
         }
     }
