@@ -335,45 +335,24 @@ namespace TravelMaker.Controllers
             int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
             //依照頁數取得我的房間
-            List<object> result = new List<object>();
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
             int pageSize = 20;
 
-            var rooms = _db.RoomMembers.Where(r => r.UserId == userId && r.Room.Status == true)
-                         .Select(r => new
-                         {
-                             r.Room.RoomGuid,
-                             r.Room.RoomName,
-                             r.Room.RoomId
-                         }).OrderByDescending(r => r.RoomId)
-                         .Skip(pageSize * (page - 1)).Take(pageSize).ToList();
-
-
-
-            foreach (var room in rooms)
+            var rooms = _db.RoomMembers.Where(r => r.UserId == userId && r.Room.Status == true).OrderByDescending(r => r.RoomId).Skip(pageSize * (page - 1)).Take(pageSize).Select(r => new
             {
-                MyRoom myRoom = new MyRoom();
-                myRoom.RoomGuid = room.RoomGuid;
-                myRoom.RoomName = room.RoomName;
-                myRoom.CreaterName = _db.RoomMembers.Where(r => r.RoomId == room.RoomId && r.Permission == 1).Select(r => r.User.UserName).FirstOrDefault();
-                myRoom.AttrCounts = _db.RoomAttractions.Where(r => r.RoomId == room.RoomId).Count();
+                RoomGuid = r.Room.RoomGuid,
+                RoomName = r.Room.RoomName,
+                AttrCounts = _db.RoomAttractions.Where(a => a.RoomId == r.RoomId).Count(),
+                CreaterName = _db.RoomMembers.FirstOrDefault(u => u.RoomId == r.RoomId && u.Permission == 1).User.UserName,
+                ImageUrl=_db.RoomAttractions.Where(a=>a.RoomId==r.RoomId).SelectMany(a=>_db.Images.Where(i=>i.AttractionId==a.AttractionId).Take(1)).Take(3).Select(a=>imgPath+a.ImageName).ToList()
+            }).ToList();
 
-                myRoom.ImageUrl = new List<string>();
-
-                //每個景點一張圖片，最多三張
-                var attractionIds = _db.RoomAttractions.Where(r=>r.RoomId==room.RoomId)
-                                                       .Select(t => t.AttractionId).ToList();
-
-                for (int i = 0; i < Math.Min(attractionIds.Count, 3); i++)
-                {
-                    int attractionId = attractionIds[i];
-                    string img = _db.Images.Where(a => a.AttractionId == attractionId).Select(a => a.ImageName).FirstOrDefault();
-
-                    myRoom.ImageUrl.Add(imgPath + img);
-                }
-                result.Add(myRoom);
-            }
-
+            var result = new
+            {
+                TourCounts = _db.Tours.Where(t => t.UserId == userId).Count(),
+                RoomCounts = _db.RoomMembers.Where(r => r.UserId == userId && r.Room.Status == true).Count(),
+                RoomData = rooms
+            };
 
 
             if (rooms.Count != 0)
@@ -402,42 +381,31 @@ namespace TravelMaker.Controllers
             int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
             //依照頁數取得我的收藏景點
-            List<object> result = new List<object>();
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
             int pageSize = 20;
 
-            var attractions = _db.AttractionCollections.Where(a => a.UserId == userId)
-                                .OrderByDescending(a => a.AttractionCollectionId)
-                                .Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+            int attCounts = _db.AttractionCollections.Where(a => a.UserId == userId && a.Attraction.OpenStatus == true).Count();
 
-            foreach(var attraction in attractions)
+            var attractions = _db.AttractionCollections.Where(a => a.UserId == userId).OrderByDescending(a => a.AttractionCollectionId).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(a =>
             {
-                MyAttractionCollectionsView myAttraction = new MyAttractionCollectionsView();
-                myAttraction.AttractionId = attraction.AttractionId;
-                myAttraction.AttractionName = _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.AttractionName).FirstOrDefault();
-
-                myAttraction.CityDistrict = _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.District.City.CittyName).FirstOrDefault() 
-                    + " " + _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).Select(a => a.District.DistrictName).FirstOrDefault();
-
-                var scores = _db.AttractionComments.Where(c => c.Status == true && c.AttractionId == attraction.AttractionId).Select(c => c.Score);
+                var scores = _db.AttractionComments.Where(c => c.Status == true && c.AttractionId == a.AttractionId).Select(c => c.Score);
                 double averageScore = scores.Any() ? scores.Average() : 0;
-                myAttraction.AverageScore = (int)Math.Round(averageScore);
 
-                myAttraction.Category = _db.CategoryAttractions.Where(c => c.AttractionId == attraction.AttractionId && c.CategoryId != 8 && c.CategoryId != 9).Select(c => c.Category.CategoryName).ToList();
-                if (myAttraction.Category.Count == 0)
+
+                return new
                 {
-                    myAttraction.Category.Add("餐廳");
-                }
+                    AttractionId = a.AttractionId,
+                    AttractionName = a.Attraction.AttractionName,
+                    CityDistrict = a.Attraction.District.City.CittyName + " " + a.Attraction.District.DistrictName,
+                    AverageScore = (int)Math.Round(averageScore),
+                    Category = _db.CategoryAttractions.Where(c => c.AttractionId == a.AttractionId && c.CategoryId != 8 && c.CategoryId != 9).Select(c => c.Category.CategoryName).DefaultIfEmpty("餐廳").ToList(),
+                    ImageUrl = imgPath + _db.Images.FirstOrDefault(i => i.AttractionId == a.AttractionId).ImageName
+                };
+            }).ToList();
 
-                myAttraction.ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == attraction.AttractionId).Select(i => i.ImageName).FirstOrDefault();
-
-
-                result.Add(myAttraction);
-            }
-
-            if (attractions.Count != 0)
+            if (attractions.Any())
             {
-                return Ok(result);
+                return Ok(new { AttCounts = attCounts, AttractionData = attractions });
             }
             else
             {
@@ -574,7 +542,7 @@ namespace TravelMaker.Controllers
             int pageSize = 20;
 
             //依照頁數取得我的收藏遊記
-            var result = _db.BlogCollections.Where(b => b.UserId == userId && b.Blog.Status == 1).OrderByDescending(b => b.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(b => new
+            var blogs = _db.BlogCollections.Where(b => b.UserId == userId && b.Blog.Status == 1).OrderByDescending(b => b.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(b => new
             {
                 BlogGuid = b.Blog.BlogGuid,
                 Title = b.Blog.Title,
@@ -589,9 +557,12 @@ namespace TravelMaker.Controllers
                 Category = b.Blog.Category == null ? new string[0] : b.Blog.Category.Split(',')
             }).ToList();
 
-            if (result.Any())
+            int draftCounts = _db.Blogs.Where(b => b.UserId == userId && b.Status == 0).Count();
+            int collectCounts = _db.BlogCollections.Where(b => b.UserId == userId && b.Blog.Status == 1).Count();
+
+            if (blogs.Any())
             {
-                return Ok(result);
+                return Ok(new { DraftCounts = draftCounts, CollectCounts = collectCounts, BlogData = blogs });
             }
             else
             {
@@ -617,7 +588,7 @@ namespace TravelMaker.Controllers
             int pageSize = 20;
 
             //依照頁數取得我的草稿遊記
-            var result = _db.Blogs.Where(b => b.UserId == userId && b.Status == 0).OrderByDescending(b => b.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(b => new
+            var blogs = _db.Blogs.Where(b => b.UserId == userId && b.Status == 0).OrderByDescending(b => b.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(b => new
             {
                 BlogGuid = b.BlogGuid,
                 Title = b.Title,
@@ -625,9 +596,12 @@ namespace TravelMaker.Controllers
                 InitDate = b.InitDate.Value.ToString("yyyy-MM-dd HH:mm")
             }).ToList();
 
-            if (result.Any())
+            int draftCounts = _db.Blogs.Where(b => b.UserId == userId && b.Status == 0).Count();
+            int collectCounts = _db.BlogCollections.Where(b => b.UserId == userId && b.Blog.Status == 1).Count();
+
+            if (blogs.Any())
             {
-                return Ok(result);
+                return Ok(new { DraftCounts = draftCounts, CollectCounts = collectCounts, BlogData = blogs });
             }
             else
             {
@@ -652,7 +626,7 @@ namespace TravelMaker.Controllers
             string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
             int pageSize = 20;
 
-            int totalItem = _db.BlogFollowers.Where(f => f.FollowingUserId == myId).Count();
+            int followCounts = _db.BlogFollowers.Where(f => f.FollowingUserId == myId).Count();
             var result = _db.BlogFollowers.Where(f => f.FollowingUserId == myId).OrderByDescending(f=>f.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(f =>
             {
                 var blogger = _db.Users.FirstOrDefault(u => u.UserId == f.UserId);
@@ -669,7 +643,7 @@ namespace TravelMaker.Controllers
 
             if (result.Any())
             {
-                return Ok(new { TotalItem = totalItem, FollowData = result });
+                return Ok(new { FollowCounts = followCounts, FollowData = result });
             }
             else
             {

@@ -361,44 +361,6 @@ namespace TravelMaker.Models
 
 
     /// <summary>
-    ///     取得我的房間
-    /// </summary>
-    public class MyRoom
-    {
-        /// <summary>
-        ///     房間Guid
-        /// </summary>
-        [Display(Name = "房間Guid")]
-        public string RoomGuid { get; set; }
-
-        /// <summary>
-        ///     房間名稱
-        /// </summary>
-        [Display(Name = "房間名稱")]
-        public string RoomName { get; set; }
-
-
-        /// <summary>
-        ///     景點數量
-        /// </summary>
-        [Display(Name = "景點數量")]
-        public int AttrCounts { get; set; }
-
-
-        /// <summary>
-        ///     房主名字
-        /// </summary>
-        [Display(Name = "房主名字")]
-        public string CreaterName { get; set; }
-
-
-        /// <summary>
-        ///     景點圖片路徑
-        /// </summary>
-        [Display(Name = "景點圖片路徑")]
-        public List<string> ImageUrl { get; set; }
-    }
-    /// <summary>
     ///     修改房間名稱
     /// </summary>
     public class RoomNameView

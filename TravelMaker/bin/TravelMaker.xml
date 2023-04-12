@@ -1777,36 +1777,6 @@
                 房間景點
             </summary>
         </member>
-        <member name="T:TravelMaker.Models.MyRoom">
-            <summary>
-                取得我的房間
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.MyRoom.RoomGuid">
-            <summary>
-                房間Guid
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.MyRoom.RoomName">
-            <summary>
-                房間名稱
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.MyRoom.AttrCounts">
-            <summary>
-                景點數量
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.MyRoom.CreaterName">
-            <summary>
-                房主名字
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.MyRoom.ImageUrl">
-            <summary>
-                景點圖片路徑
-            </summary>
-        </member>
         <member name="T:TravelMaker.Models.RoomNameView">
             <summary>
                 修改房間名稱
