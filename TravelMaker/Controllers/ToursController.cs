@@ -1249,100 +1249,57 @@ namespace TravelMaker.Controllers
                 string userGuid = (string)userToken["UserGuid"];
                 myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
             }
-            HomePageView result = new HomePageView();
 
             //取得熱門行程*4 (固定四個景點、愛心數>100)          
-            var tours = _db.TourLikes.GroupBy(t => t.TourId).Where(t => _db.TourAttractions.Where(a => a.TourId == t.Key).Count() == 4 && t.Count() > 100).Select(t => new
+            var hottours = _db.TourLikes.GroupBy(t => t.TourId).Where(t => _db.TourAttractions.Where(a => a.TourId == t.Key).Count() == 4 && t.Count() > 100).Select(t => new
             {
                 TourId = t.Key,
                 Likes =t.Count()
-            }).OrderBy(x => Guid.NewGuid()).Take(4).ToList();
+            }).OrderBy(x => Guid.NewGuid()).Take(4).ToDictionary(t=>t.TourId,t=>t.Likes);
 
-            result.Tours = new List<HomePageTour>();
-            foreach (var t in tours)
+
+            var tours = _db.Tours.Where(t => hottours.Keys.Contains(t.TourId)).ToList().Select(t =>
             {
-                //行程資訊
-                HomePageTour tour = new HomePageTour();
-                tour.TourId = t.TourId;
-                tour.TourName = _db.Tours.Where(x => x.TourId == t.TourId).Select(x => x.TourName).FirstOrDefault();
-
-                tour.ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == _db.TourAttractions.Where(x => x.TourId == t.TourId).Select(x => x.AttractionId).FirstOrDefault()).Select(i => i.ImageName).FirstOrDefault();
-
                 var attractionIds = _db.TourAttractions.Where(x => x.TourId == t.TourId).Select(x => x.AttractionId).ToList();
-                tour.Category = _db.CategoryAttractions.Where(c => attractionIds.Contains(c.AttractionId) && c.CategoryId != 8 && c.CategoryId != 9).Select(c => c.Category.CategoryName).FirstOrDefault();
-                if(tour.Category==null)
-                {
-                    tour.Category = "吃貨行程";
-                }
 
-                tour.Likes = t.Likes;
-                if (myUserId != 0)
+                return new
                 {
-                    tour.IsLike = _db.TourLikes.Where(x => x.TourId == t.TourId).Any(x => x.UserId == myUserId) ? true : false;
-                }
-                else
-                {
-                    tour.IsLike = false;
-                }
-
-
-                //行程中的景點資訊
-                tour.Attractions = new List<HomePageTourAttraction>();
-
-                foreach (var id in attractionIds)
-                {
-                    HomePageTourAttraction attraction = new HomePageTourAttraction();
-                    var att = _db.Attractions.Where(a => a.AttractionId == id).FirstOrDefault();
-                    attraction.AttractionName = att.AttractionName;
-                    attraction.Elong = Convert.ToDouble(att.Elong);
-                    attraction.Nlat = Convert.ToDouble(att.Nlat);
-                    tour.Attractions.Add(attraction);
-                }
-                result.Tours.Add(tour);
-            }
+                    TourId = t.TourId,
+                    TourName = t.TourName,
+                    ImageUrl = imgPath + _db.Images.FirstOrDefault(i => i.AttractionId == _db.TourAttractions.FirstOrDefault(x => x.TourId == t.TourId).AttractionId).ImageName,
+                    Category = _db.CategoryAttractions.Where(c => attractionIds.Contains(c.AttractionId) && c.CategoryId != 8 && c.CategoryId != 9).Select(c => c.Category.CategoryName).FirstOrDefault() ?? "吃貨行程",
+                    Likes = hottours[t.TourId],
+                    IsLike = _db.TourLikes.FirstOrDefault(x => x.TourId == t.TourId && x.UserId == myUserId) == null ? false : true,
+                    Attractions = _db.Attractions.Where(a => attractionIds.Contains(a.AttractionId)).ToList().Select(a => new
+                    {
+                        AttractionName = a.AttractionName,
+                        Elong = Convert.ToDouble(a.Elong),
+                        Nlat = Convert.ToDouble(a.Nlat)
+                    })
+                };
+            });
 
 
             //取得熱門景點*3
-            var attractions = _db.AttractionComments.GroupBy(a => a.AttractionId).Where(a => a.Average(s => s.Score) > 4).Select(a => new
+            var hotAttractions = _db.AttractionComments.GroupBy(a => a.AttractionId).Where(a => a.Average(s => s.Score) > 4).Select(a => new
             {
                 AttractionId = a.Key,
                 AverageScore = a.Average(s => s.Score)
             })
-                .OrderBy(x => Guid.NewGuid()).Take(3).ToList();
+                .OrderBy(x => Guid.NewGuid()).Take(3).ToDictionary(a => a.AttractionId, a => a.AverageScore);
 
-            result.Attractions = new List<AttractionView>();
-            foreach(var att in attractions)
+            var attractions = _db.Attractions.Where(a => hotAttractions.Keys.Contains(a.AttractionId)).ToList().Select(a => new
             {
-                AttractionView attraction = new AttractionView();
-                attraction.AttractionId = att.AttractionId;
-                attraction.AttractionName = _db.Attractions.Where(a => a.AttractionId == att.AttractionId).Select(x => x.AttractionName).FirstOrDefault();
+                IsCollect = _db.AttractionCollections.Where(c => c.AttractionId == a.AttractionId).Any(c => c.UserId == myUserId) ? true : false,
+                AttractionId = a.AttractionId,
+                AttractionName = a.AttractionName,
+                CityDistrict = a.District.City.CittyName + " " + a.District.DistrictName,
+                AverageScore = Math.Round(hotAttractions[a.AttractionId], 1),
+                Category = _db.CategoryAttractions.Where(c => c.AttractionId == a.AttractionId && c.CategoryId != 8 && c.CategoryId != 9).Select(c => c.Category.CategoryName).DefaultIfEmpty("餐廳").ToList(),
+                ImageUrl = imgPath + _db.Images.FirstOrDefault(x => x.AttractionId == a.AttractionId).ImageName
+            });
 
-                attraction.CityDistrict = _db.Attractions.Where(x => x.AttractionId == att.AttractionId).Select(x => x.District.City.CittyName).FirstOrDefault()
-                    + " " + _db.Attractions.Where(x => x.AttractionId == att.AttractionId).Select(x => x.District.DistrictName).FirstOrDefault();
-                attraction.AverageScore = (int)Math.Round( att.AverageScore);
-
-                attraction.Category = _db.CategoryAttractions.Where(c => c.AttractionId == att.AttractionId && c.CategoryId != 8 && c.CategoryId != 9).Select(c => c.Category.CategoryName).ToList();
-                if (attraction.Category.Count == 0)
-                {
-                    attraction.Category.Add("餐廳");
-                }
-
-                attraction.ImageUrl = imgPath + _db.Images.Where(x => x.AttractionId == att.AttractionId).Select(x => x.ImageName).FirstOrDefault();
-
-                if (myUserId != 0)
-                {
-                    attraction.IsCollect = _db.AttractionCollections.Where(a => a.AttractionId == att.AttractionId).Any(a => a.UserId == myUserId) ? true : false;
-                }
-                else
-                {
-                    attraction.IsCollect = false;
-                }
-
-                result.Attractions.Add(attraction);
-            }
-
-
-            return Ok(result);
+            return Ok(new { Tours = tours, Attractions = attractions });
         }
 
 

@@ -127,7 +127,7 @@ namespace TravelMaker.Controllers
                 // 景點評分計算
                 var scores = _db.AttractionComments.Where(c => c.Status == true && c.AttractionId == a.AttractionId).Select(c => c.Score);
                 double averageScore = scores.Any() ? scores.Average() : 0;
-                int averageScoreRound = (int)Math.Round(averageScore);
+                int averageScoreRound = (int)Math.Round(averageScore,1);
 
                 return new
                 {
@@ -225,7 +225,7 @@ namespace TravelMaker.Controllers
 
                 if (hadComment!=null)
                 {
-                    comment.AverageScore = (int)Math.Round(_db.AttractionComments.Where(c => c.AttractionId == attractionId && c.Status == true).Select(c => c.Score).Average());
+                    comment.AverageScore = (int)Math.Round(_db.AttractionComments.Where(c => c.AttractionId == attractionId && c.Status == true).Select(c => c.Score).Average(),1);
                     comment.Comments = new List<Comments>();
 
 
