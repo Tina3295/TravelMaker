@@ -81,54 +81,8 @@ namespace TravelMaker.Controllers
             {
                 if(hadRoom.Status==true)
                 {
-                    RoomContentView roomContent = new RoomContentView();
-                    roomContent.RoomGuid = roomGuid;
-                    roomContent.RoomName = hadRoom.RoomName;
-
-                    int createrId = _db.RoomMembers.Where(r => r.RoomId == hadRoom.RoomId && r.Permission == 1).Select(r => r.UserId).FirstOrDefault();
-                    roomContent.CreaterGuid = _db.Users.Where(u => u.UserId == createrId).Select(u => u.UserGuid).FirstOrDefault();
-
-                    //房間用戶
-                    string savePath= "https://" + Request.RequestUri.Host + "/upload/profile/";
-                    var userIds = _db.RoomMembers.Where(r => r.RoomId == hadRoom.RoomId).Select(r => r.UserId).ToList();
-
-                    roomContent.Users = new List<object>();
-                    foreach (var userId in userIds)
-                    {
-                        var userTemp = _db.Users.Where(u => u.UserId == userId).FirstOrDefault();
-
-                        UsersData user = new UsersData();
-                        user.UserGuid = userTemp.UserGuid;
-                        user.UserName = userTemp.UserName;
-                        user.ProfilePicture = userTemp.ProfilePicture == null ? "" : savePath + userTemp.ProfilePicture;
-
-                        roomContent.Users.Add(user);
-                    }
-
-                    //房間景點
+                    string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
                     string attrPath = "https://" + Request.RequestUri.Host + "/upload/attractionImage/";
-
-                    roomContent.AttrationsData = new List<object>();
-                    var attractions = _db.RoomAttractions.Where(r => r.RoomId == hadRoom.RoomId).ToList();
-
-                    foreach(var attraction in attractions)
-                    {
-                        var attTemp = _db.Attractions.Where(a => a.AttractionId == attraction.AttractionId).FirstOrDefault();
-
-                        AttrationsData attrationsData = new AttrationsData();
-                        attrationsData.AttractionId = attraction.AttractionId;
-                        attrationsData.UserGuid = _db.Users.Where(u => u.UserId == attraction.UserId).Select(u => u.UserGuid).FirstOrDefault();
-                        attrationsData.AttractionName = attTemp.AttractionName;
-                        attrationsData.Elong = attTemp.Elong;
-                        attrationsData.Nlat = attTemp.Nlat;
-                        attrationsData.ImageUrl = attrPath + _db.Images.Where(i => i.AttractionId == attraction.AttractionId).Select(i => i.ImageName).FirstOrDefault();
-                        attrationsData.Order = attraction.AttrOrder;
-
-                        roomContent.AttrationsData.Add(attrationsData);
-                    }
-
-
-                    //投票日期
                     int myUserId = 0;
                     if (Request.Headers.Authorization != null)
                     {
@@ -137,21 +91,41 @@ namespace TravelMaker.Controllers
                         myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
                     }
 
-                    roomContent.VoteDates = new List<object>();
-                    var voteDates = _db.VoteDates.Where(d => d.RoomId == hadRoom.RoomId).OrderBy(d=>d.Date).ToList();
-
-                    foreach (var voteDate in voteDates)
+                    var room = new
                     {
-                        VoteDatesData voteDatesData = new VoteDatesData();
-                        voteDatesData.VoteDateId = voteDate.VoteDateId;
-                        voteDatesData.Date = voteDate.Date.Year+"-"+ voteDate.Date.Month+"-"+ voteDate.Date.Day;
-                        voteDatesData.Count = _db.Votes.Where(v => v.VoteDateId == voteDate.VoteDateId).Count();
-                        voteDatesData.IsVoted = _db.Votes.Where(v => v.VoteDateId == voteDate.VoteDateId).Any(v => v.UserId == myUserId) ? true : false;
+                        RoomGuid = roomGuid,
+                        RoomName = hadRoom.RoomName,
+                        CreaterGuid = _db.RoomMembers.FirstOrDefault(r => r.RoomId == hadRoom.RoomId && r.Permission == 1).User.UserGuid,
 
-                        roomContent.VoteDates.Add(voteDatesData);
-                    }
+                        Users = _db.RoomMembers.Where(r => r.RoomId == hadRoom.RoomId).Select(r => new
+                        {
+                            UserGuid = r.User.UserGuid,
+                            UserName = r.User.UserName,
+                            ProfilePicture = r.User.ProfilePicture == null ? "" : profilePath + r.User.ProfilePicture
+                        }),
 
-                    return Ok(roomContent);
+                        VoteDates = _db.VoteDates.Where(d => d.RoomId == hadRoom.RoomId).OrderBy(d => d.Date).Select(d => new
+                        {
+                            VoteDateId = d.VoteDateId,
+
+                            Date = d.Date.Year + "-" + d.Date.Month + "-" + d.Date.Day,
+                            Count = _db.Votes.Where(v => v.VoteDateId == d.VoteDateId).Count(),
+                            IsVoted = _db.Votes.Where(v => v.VoteDateId == d.VoteDateId).Any(v => v.UserId == myUserId) ? true : false
+                        }),
+
+                        AttrationsData = _db.RoomAttractions.Where(r => r.RoomId == hadRoom.RoomId).Select(a => new
+                        {
+                            AttractionId = a.AttractionId,
+                            UserGuid = _db.Users.FirstOrDefault(u => u.UserId == a.UserId).UserGuid,
+                            AttractionName = a.Attraction.AttractionName,
+                            Elong = a.Attraction.Elong,
+                            Nlat = a.Attraction.Nlat,
+                            ImageUrl = attrPath + _db.Images.FirstOrDefault(i => i.AttractionId == a.AttractionId).ImageName,
+                            Order = a.AttrOrder
+                        })
+                    };
+
+                    return Ok(room);
                 }
                 else
                 {

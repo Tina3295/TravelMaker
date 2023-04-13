@@ -1763,31 +1763,6 @@
                 行程景點
             </summary>
         </member>
-        <member name="T:TravelMaker.Models.TourView">
-            <summary>
-                取得單一用戶收藏行程頁面
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.TourView.TourId">
-            <summary>
-                行程Id
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.TourView.TourName">
-            <summary>
-                行程名稱
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.TourView.UserGuid">
-            <summary>
-                行程擁有者
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.TourView.Attractions">
-            <summary>
-                行程景點
-            </summary>
-        </member>
         <member name="T:TravelMaker.Models.RoomAddView">
             <summary>
                 新增房間
