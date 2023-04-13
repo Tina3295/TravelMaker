@@ -652,6 +652,34 @@
             <param name="blogReplyId">遊記留言回覆Id</param>
             <returns></returns>
         </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogCollectAdd(System.String)">
+            <summary>
+                收藏遊記
+            </summary>
+            <param name="blogGuid">遊記Guid</param>
+            <returns></returns>
+        </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogCollectRemove(System.String)">
+            <summary>
+                取消收藏遊記
+            </summary>
+            <param name="blogGuid">遊記Guid</param>
+            <returns></returns>
+        </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogLike(System.String)">
+            <summary>
+                按遊記愛心
+            </summary>
+            <param name="blogGuid">遊記Guid</param>
+            <returns></returns>
+        </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogUnlike(System.String)">
+            <summary>
+                 取消遊記愛心
+            </summary>
+            <param name="blogGuid">遊記Guid</param>
+            <returns></returns>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關

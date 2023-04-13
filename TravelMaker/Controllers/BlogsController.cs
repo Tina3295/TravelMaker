@@ -1095,8 +1095,120 @@ namespace TravelMaker.Controllers
 
 
 
+        /// <summary>
+        ///     收藏遊記
+        /// </summary>
+        /// <param name="blogGuid">遊記Guid</param>
+        /// <returns></returns>
+        [HttpPost]
+        [JwtAuthFilter]
+        [Route("{blogGuid}/collect")]
+        public IHttpActionResult BlogCollectAdd([FromUri] string blogGuid)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            Blog blog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blogGuid && b.Status == 1);
+            if (blog != null)
+            {
+                BlogCollection blogCollection = new BlogCollection();
+                blogCollection.BlogId = blog.BlogId;
+                blogCollection.UserId = userId;
+                blogCollection.InitDate = DateTime.Now;
+                _db.BlogCollections.Add(blogCollection);
+                _db.SaveChanges();
+
+                return Ok(new { Message = "收藏遊記成功" });
+            }
+            else
+            {
+                return BadRequest("此遊記不存在");
+            }
+        }
+
+
+        /// <summary>
+        ///     取消收藏遊記
+        /// </summary>
+        /// <param name="blogGuid">遊記Guid</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [JwtAuthFilter]
+        [Route("{blogGuid}/collect")]
+        public IHttpActionResult BlogCollectRemove([FromUri] string blogGuid)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            var collection = _db.BlogCollections.FirstOrDefault(a => a.UserId == userId && a.Blog.BlogGuid == blogGuid);
+            if (collection != null)
+            {
+                _db.BlogCollections.Remove(collection);
+                _db.SaveChanges();
+            }
+            return Ok(new { Message = "已取消收藏" });
+        }
 
 
 
+
+        /// <summary>
+        ///     按遊記愛心
+        /// </summary>
+        /// <param name="blogGuid">遊記Guid</param>
+        /// <returns></returns>
+        [HttpPost]
+        [JwtAuthFilter]
+        [Route("{blogGuid}/like")]
+        public IHttpActionResult BlogLike([FromUri] string blogGuid)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            Blog blog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blogGuid && b.Status == 1);
+            if (blog != null)
+            {
+                BlogLike blogLike = new BlogLike();
+                blogLike.BlogId = blog.BlogId;
+                blogLike.UserId = userId;
+                _db.BlogLikes.Add(blogLike);
+                _db.SaveChanges();
+
+                return Ok(new { Message = "按喜歡成功" });
+            }
+            else
+            {
+                return BadRequest("此遊記不存在");
+            }
+        }
+
+
+
+
+        /// <summary>
+        ///      取消遊記愛心
+        /// </summary>
+        /// <param name="blogGuid">遊記Guid</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [JwtAuthFilter]
+        [Route("{blogGuid}/like")]
+        public IHttpActionResult BlogUnlike([FromUri] string blogGuid)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+
+            var like = _db.BlogLikes.FirstOrDefault(a => a.UserId == userId && a.Blog.BlogGuid == blogGuid);
+            if (like != null)
+            {
+                _db.BlogLikes.Remove(like);
+                _db.SaveChanges();
+            }
+            return Ok(new { Message = "已取消喜歡" });
+        }
     }
 }
