@@ -73,6 +73,7 @@ namespace TravelMaker.Controllers
                 blog.UserId = userId;
                 blog.Title = hadTour.TourName;
                 blog.Status = 0;
+                blog.PageViewCounts = 0;
                 blog.InitDate = DateTime.Now;
 
                 _db.Blogs.Add(blog);
@@ -396,18 +397,37 @@ namespace TravelMaker.Controllers
             string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
             string blogPath = "https://" + Request.RequestUri.Host + "/upload/blogImage/";
             int myUserId = 0;
-            if (Request.Headers.Authorization != null)
-            {
-                var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-                string userGuid = (string)userToken["UserGuid"];
-                myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
-            }
-
 
             var blog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == blogGuid && b.Status == 1);
 
             if (blog != null)
             {
+                if (Request.Headers.Authorization != null)
+                {
+                    var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+                    string userGuid = (string)userToken["UserGuid"];
+                    myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+
+                    //10分鐘內沒有瀏覽過，瀏覽量+1
+                    var hadbrowse = _db.BlogBrowses.Where(b => b.UserId == myUserId && b.Blog.BlogGuid == blogGuid).Max(b => b.InitDate);
+
+                    if (hadbrowse == null || DateTime.Now.Subtract((DateTime)hadbrowse).Minutes > 10)
+                    {
+                        blog.PageViewCounts++;
+                        _db.SaveChanges();
+                    }
+
+                    //記錄此次瀏覽
+                    BlogBrowse blogBrowse = new BlogBrowse();
+                    blogBrowse.BlogId = blog.BlogId;
+                    blogBrowse.UserId = myUserId;
+                    blogBrowse.InitDate = DateTime.Now;
+                    _db.BlogBrowses.Add(blogBrowse);
+                    _db.SaveChanges();
+                }
+                
+
+
                 //一市多區
                 var attractions = _db.Attractions.Where(a => _db.BlogAttractions.Where(b => b.Blog.BlogGuid == blogGuid).Select(b => b.AttractionId).Contains(a.AttractionId)).Select(a => new
                 {
@@ -496,8 +516,9 @@ namespace TravelMaker.Controllers
                     UserName = blog.User.UserName,
                     ProfilePicture = blog.User.ProfilePicture == null ? "" : profilePath + blog.User.ProfilePicture,
                     InitDate = blog.InitDate.Value.ToString("yyyy-MM-dd HH:mm") + (blog.EditDate == null ? "" : " (已編輯)"),
+                    Sees = blog.PageViewCounts,
                     Likes = _db.BlogLikes.Where(l => l.BlogId == blog.BlogId).Count(),
-                    CommentCount = _db.BlogComments.Where(c => c.Blog.BlogGuid == blogGuid && c.Status == true).Count() + _db.BlogReplies.Where(r => r.BlogComment.Blog.BlogGuid == blogGuid && r.Status == true).Count(),
+                    CommentCounts = _db.BlogComments.Where(c => c.Blog.BlogGuid == blogGuid && c.Status == true).Count() + _db.BlogReplies.Where(r => r.BlogComment.Blog.BlogGuid == blogGuid && r.Status == true).Count(),
                     AttractionData = _db.BlogAttractions.Where(a => a.Blog.BlogGuid == blogGuid).Select(a => new
                     {
                         AttractionId = a.AttractionId,
@@ -658,7 +679,7 @@ namespace TravelMaker.Controllers
                 UserName = b.User.UserName,
                 ProfilePicture = b.User.ProfilePicture == null ? "" : profilePath + b.User.ProfilePicture,
                 InitDate = b.InitDate.Value.ToString("yyyy-MM-dd HH:mm"),
-                Sees = 0,
+                Sees = b.PageViewCounts,
                 Likes = searchBlogs[b.BlogGuid],
                 Comments = _db.BlogComments.Where(c => c.BlogId == b.BlogId && c.Status == true).Count() + _db.BlogReplies.Where(c => c.BlogComment.BlogId == b.BlogId && c.Status == true).Count(),
                 Category = b.Category == null ? new string[0] : b.Category.Split(',')
@@ -782,7 +803,7 @@ namespace TravelMaker.Controllers
                         Profile = blogger.ProfilePicture == null ? "" : profilePath + blogger.ProfilePicture,
                         UserName = blogger.UserName,
                         InitDate = b.InitDate.Value.ToString("yyyy-MM-dd HH:mm"),
-                        Sees = 0,
+                        Sees = b.PageViewCounts,
                         Likes = _db.BlogLikes.Where(l => l.BlogId == b.BlogId).Count(),
                         Comments = _db.BlogComments.Where(c => c.BlogId == b.BlogId).Count() + _db.BlogReplies.Where(l => l.BlogComment.BlogId == b.BlogId).Count(),
                         Category = b.Category == null ? new string[0] : b.Category.Split(',')
@@ -828,7 +849,7 @@ namespace TravelMaker.Controllers
                     Profile = blogger.ProfilePicture == null ? "" : profilePath + blogger.ProfilePicture,
                     UserName = blogger.UserName,
                     InitDate = b.InitDate.Value.ToString("yyyy-MM-dd HH:mm"),
-                    Sees = 0,
+                    Sees = b.PageViewCounts,
                     Likes = _db.BlogLikes.Where(l => l.BlogId == b.BlogId).Count(),
                     Comments = _db.BlogComments.Where(c => c.BlogId == b.BlogId).Count() + _db.BlogReplies.Where(l => l.BlogComment.BlogId == b.BlogId).Count(),
                     Category = b.Category == null ? new string[0] : b.Category.Split(',')

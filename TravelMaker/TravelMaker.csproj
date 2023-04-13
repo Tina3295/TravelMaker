@@ -398,12 +398,17 @@
     <Compile Include="Migrations\202304121517078_addEditDateInAttractionComment.Designer.cs">
       <DependentUpon>202304121517078_addEditDateInAttractionComment.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304130935288_addBlogBrowseTable.cs" />
+    <Compile Include="Migrations\202304130935288_addBlogBrowseTable.Designer.cs">
+      <DependentUpon>202304130935288_addBlogBrowseTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\AttractionCollection.cs" />
     <Compile Include="Models\AttractionComment.cs" />
     <Compile Include="Models\Blog.cs" />
     <Compile Include="Models\BlogAttraction.cs" />
+    <Compile Include="Models\BlogBrowse.cs" />
     <Compile Include="Models\BlogCollection.cs" />
     <Compile Include="Models\BlogComment.cs" />
     <Compile Include="Models\BlogFollower.cs" />
@@ -645,6 +650,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304121517078_addEditDateInAttractionComment.resx">
       <DependentUpon>202304121517078_addEditDateInAttractionComment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304130935288_addBlogBrowseTable.resx">
+      <DependentUpon>202304130935288_addBlogBrowseTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

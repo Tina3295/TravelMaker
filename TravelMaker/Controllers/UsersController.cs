@@ -551,7 +551,7 @@ namespace TravelMaker.Controllers
                 UserName = b.Blog.User.UserName,
                 ProfilePicture = b.Blog.User.ProfilePicture == null ? "" : profilePath + b.Blog.User.ProfilePicture,
                 InitDate = b.Blog.InitDate.Value.ToString("yyyy-MM-dd HH:mm"),
-                Sees = 0,
+                Sees = b.Blog.PageViewCounts,
                 Likes = _db.BlogLikes.Where(l => l.BlogId == b.BlogId).Count(),
                 Comments = _db.BlogComments.Where(c => c.BlogId == b.BlogId && c.Status == true).Count() + _db.BlogReplies.Where(c => c.BlogComment.BlogId == b.BlogId && c.Status == true).Count(),
                 Category = b.Blog.Category == null ? new string[0] : b.Blog.Category.Split(',')

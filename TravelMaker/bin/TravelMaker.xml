@@ -1128,6 +1128,11 @@
                 遊記編輯日期
             </summary>
         </member>
+        <member name="P:TravelMaker.Models.Blog.PageViewCounts">
+            <summary>
+                遊記瀏覽數
+            </summary>
+        </member>
         <member name="T:TravelMaker.Models.BlogAttraction">
             <summary>
                 遊記中的景點
@@ -1156,6 +1161,31 @@
         <member name="P:TravelMaker.Models.BlogAttraction.InitDate">
             <summary>
                 遊記景點建立日期
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.BlogBrowse">
+            <summary>
+                遊記瀏覽記錄
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogBrowse.BlogBrowseId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogBrowse.BlogId">
+            <summary>
+                對應遊記
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogBrowse.UserId">
+            <summary>
+                用戶ID
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogBrowse.InitDate">
+            <summary>
+                瀏覽時間
             </summary>
         </member>
         <member name="T:TravelMaker.Models.BlogCollection">

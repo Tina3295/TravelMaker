@@ -88,10 +88,19 @@ namespace TravelMaker.Models
         public DateTime? EditDate { get; set; }
 
 
+        /// <summary>
+        ///     遊記瀏覽數
+        /// </summary>
+        [Display(Name = "遊記瀏覽數")]
+        public int PageViewCounts { get; set; }
+
+
+
 
         public virtual ICollection<BlogAttraction> BlogAttractions { get; set; }
         public virtual ICollection<BlogCollection> BlogCollections { get; set; }
         public virtual ICollection<BlogLike> BlogLikes { get; set; }
         public virtual ICollection<BlogComment> BlogComments { get; set; }
+        public virtual ICollection<BlogBrowse> BlogBrowses { get; set; }
     }
 }
