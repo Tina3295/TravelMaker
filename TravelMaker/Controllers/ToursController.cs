@@ -787,35 +787,25 @@ namespace TravelMaker.Controllers
         [Route("{tourId}")]
         public IHttpActionResult TourContent([FromUri] int tourId)
         {
+            string imgPath = "https://" + Request.RequestUri.Host + "/upload/attractionImage/";
             var tour= _db.Tours.Where(a => a.TourId == tourId).FirstOrDefault();
 
             if (tour!=null)
             {
-                TourView result = new TourView();
-
-                result.TourId = tourId;
-                result.TourName = tour.TourName;
-                result.UserGuid = _db.Users.Where(u => u.UserId == tour.UserId).Select(u => u.UserGuid).FirstOrDefault();//用戶識別碼
-                    
-
-                var attractions = _db.TourAttractions.Where(a => a.TourId == tourId).OrderBy(a => a.OrderNum).ToList();
-                result.Attractions = new List<object>();
-                string imgPath = "https://" + Request.RequestUri.Host + "/upload/attractionImage/";
-
-                foreach (var attraction in attractions)
+                var result = new
                 {
-                    var temp = _db.Images.Where(a => a.Attraction.AttractionId == attraction.AttractionId)
-                                 .Select(a => new
-                                 {
-                                     AttractionId = attraction.AttractionId,
-                                     AttractionName = a.Attraction.AttractionName,
-                                     Elong = a.Attraction.Elong,
-                                     Nlat = a.Attraction.Nlat,
-                                     ImageUrl = imgPath + a.ImageName
-                                 }).FirstOrDefault();
-
-                    result.Attractions.Add(temp);
-                }
+                    TourId = tourId,
+                    TourName = tour.TourName,
+                    UserGuid = _db.Users.FirstOrDefault(u => u.UserId == tour.UserId).UserGuid,
+                    Attractions = _db.TourAttractions.Where(a => a.TourId == tourId).OrderBy(a => a.OrderNum).Select(a => new
+                    {
+                        AttractionId = a.AttractionId,
+                        AttractionName = a.Attraction.AttractionName,
+                        Elong = a.Attraction.Elong,
+                        Nlat = a.Attraction.Nlat,
+                        ImageUrl = imgPath + _db.Images.FirstOrDefault(i => i.AttractionId == a.AttractionId).ImageName
+                    })
+                };
 
                 return Ok(result);
             }

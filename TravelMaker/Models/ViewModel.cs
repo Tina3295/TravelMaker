@@ -177,41 +177,6 @@ namespace TravelMaker.Models
     }
 
 
-    
-
-    /// <summary>
-    ///     取得單一用戶收藏行程頁面
-    /// </summary>
-    public class TourView
-    {
-        /// <summary>
-        ///     行程Id
-        /// </summary>
-        [Display(Name = "行程Id")]
-        public int TourId { get; set; }
-
-        /// <summary>
-        ///     行程名稱
-        /// </summary>
-        [Display(Name = "行程名稱")]
-        public string TourName { get; set; }
-
-        /// <summary>
-        ///     行程擁有者
-        /// </summary>
-        [Display(Name = "行程擁有者")]
-        public string UserGuid { get; set; }
-
-        /// <summary>
-        ///     行程景點
-        /// </summary>
-        [Display(Name = "行程景點")]
-        public List<object> Attractions { get; set; }
-    }
-
-
-
-
 
     //-------------------房間View-------------------
 
