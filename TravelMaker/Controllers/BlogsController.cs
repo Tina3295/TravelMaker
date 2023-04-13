@@ -1210,5 +1210,131 @@ namespace TravelMaker.Controllers
             }
             return Ok(new { Message = "已取消喜歡" });
         }
+
+
+
+
+        /// <summary>
+        ///     顯示粉絲
+        /// </summary>
+        /// <param name="userGuid">用戶Guid</param>
+        /// <param name="page">頁數</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{userGuid}/fans/{page}")]
+        public IHttpActionResult BlogFans([FromUri] string userGuid, int page)
+        {
+            string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
+            int pageSize = 20;
+            int myUserId = 0;
+            if (Request.Headers.Authorization != null)
+            {
+                var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+                string myGuid = (string)userToken["UserGuid"];
+                myUserId = _db.Users.FirstOrDefault(u => u.UserGuid == myGuid).UserId;
+            }
+
+            User blogger = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid);
+
+            if (blogger != null)
+            {
+                var result = new
+                {
+                    UserName = blogger.UserName,
+                    ProfilePicture = blogger.ProfilePicture == null ? "" : profilePath + blogger.ProfilePicture,
+                    BlogCounts = _db.Blogs.Where(b => b.UserId == blogger.UserId && b.Status == 1).Count(),
+                    Fans = _db.BlogFollowers.Where(f => f.UserId == blogger.UserId).Count(),
+                    Followers = _db.BlogFollowers.Where(f => f.BlogFollowerId == blogger.UserId).Count(),
+
+                    FanData = _db.BlogFollowers.Where(f => f.UserId == blogger.UserId).OrderByDescending(f => f.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(f =>
+                    {
+                        User user = _db.Users.FirstOrDefault(u => u.UserId == f.FollowingUserId);
+                        return new
+                        {
+                            UserGuid=user.UserGuid,
+                            UserName = user.UserName,
+                            ProfilePicture=user.ProfilePicture==null?"":profilePath+user.ProfilePicture,
+                            IsFollow=_db.BlogFollowers.FirstOrDefault(x=>x.UserId==user.UserId&&x.FollowingUserId==myUserId)==null?false:true
+                        };
+                    })
+                };
+
+                if(result.FanData.Any())
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return BadRequest("無更多粉絲");
+                }
+            }
+            else
+            {
+                return BadRequest("沒有此用戶頁面");
+            }
+        }
+
+
+
+
+        /// <summary>
+        ///     顯示追蹤
+        /// </summary>
+        /// <param name="userGuid">用戶Guid</param>
+        /// <param name="page">頁數</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{userGuid}/follows/{page}")]
+        public IHttpActionResult BlogFollows([FromUri] string userGuid, int page)
+        {
+            string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
+            int pageSize = 20;
+            int myUserId = 0;
+            if (Request.Headers.Authorization != null)
+            {
+                var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+                string myGuid = (string)userToken["UserGuid"];
+                myUserId = _db.Users.FirstOrDefault(u => u.UserGuid == myGuid).UserId;
+            }
+
+            User blogger = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid);
+
+            if (blogger != null)
+            {
+                var result = new
+                {
+                    UserName = blogger.UserName,
+                    ProfilePicture = blogger.ProfilePicture == null ? "" : profilePath + blogger.ProfilePicture,
+                    BlogCounts = _db.Blogs.Where(b => b.UserId == blogger.UserId && b.Status == 1).Count(),
+                    Fans = _db.BlogFollowers.Where(f => f.UserId == blogger.UserId).Count(),
+                    Followers = _db.BlogFollowers.Where(f => f.BlogFollowerId == blogger.UserId).Count(),
+
+                    FollowData = _db.BlogFollowers.Where(f => f.FollowingUserId == blogger.UserId).OrderByDescending(f => f.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(f =>
+                    {
+                        User user = _db.Users.FirstOrDefault(u => u.UserId == f.FollowingUserId);
+                        return new
+                        {
+                            UserGuid = user.UserGuid,
+                            UserName = user.UserName,
+                            ProfilePicture = user.ProfilePicture == null ? "" : profilePath + user.ProfilePicture,
+                            IsFollow = _db.BlogFollowers.FirstOrDefault(x => x.UserId == user.UserId && x.FollowingUserId == myUserId) == null ? false : true
+                        };
+                    })
+                };
+
+                if (result.FollowData.Any())
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return BadRequest("無更多追蹤者");
+                }
+            }
+            else
+            {
+                return BadRequest("沒有此用戶頁面");
+            }
+        }
     }
 }

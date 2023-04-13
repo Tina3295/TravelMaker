@@ -680,6 +680,22 @@
             <param name="blogGuid">遊記Guid</param>
             <returns></returns>
         </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogFans(System.String,System.Int32)">
+            <summary>
+                顯示粉絲
+            </summary>
+            <param name="userGuid">用戶Guid</param>
+            <param name="page">頁數</param>
+            <returns></returns>
+        </member>
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogFollows(System.String,System.Int32)">
+            <summary>
+                顯示追蹤
+            </summary>
+            <param name="userGuid">用戶Guid</param>
+            <param name="page">頁數</param>
+            <returns></returns>
+        </member>
         <member name="T:TravelMaker.Controllers.RoomsController">
             <summary>
                 房間相關
