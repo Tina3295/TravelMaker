@@ -359,161 +359,8 @@ namespace TravelMaker.Models
 
 
 
-    /// <summary>
-    ///     首頁-取得熱門行程*4、取得熱門景點*3
-    /// </summary>
-    public class HomePageView
-    {
-        /// <summary>
-        ///     熱門行程*4
-        /// </summary>
-        [Display(Name = "熱門行程*4")]
-        public List<HomePageTour> Tours { get; set; }
-
-        /// <summary>
-        ///     熱門景點*3
-        /// </summary>
-        [Display(Name = "熱門景點*3")]
-        public List<AttractionView> Attractions { get; set; }
-    }
-
-    public class HomePageTour
-    {
-        public int TourId { get; set; }
-        public string TourName { get; set; }
-        public string ImageUrl { get; set; }
-        public string Category { get; set; }
-        public int Likes { get; set; }
-        public bool IsLike { get; set; }
-        public List<HomePageTourAttraction> Attractions { get; set; }
-    }
-    public class HomePageTourAttraction
-    {
-        public string AttractionName { get; set; }
-        public double Elong { get; set; }
-        public double Nlat { get; set; }
-    }
-
-
-
-
-
-
     //-------------------景點View-------------------
-    /// <summary>
-    ///     取得我的收藏景點
-    /// </summary>
-    public class MyAttractionCollectionsView
-    {
-        /// <summary>
-        ///     景點id
-        /// </summary>
-        [Display(Name = "景點id")]
-        public int AttractionId { get; set; }
-
-        /// <summary>
-        ///     景點名稱
-        /// </summary>
-        [Display(Name = "景點名稱")]
-        public string AttractionName { get; set; }
-
-        /// <summary>
-        ///     景點地點
-        /// </summary>
-        [Display(Name = "景點地點")]
-        public string CityDistrict { get; set; }
-
-        /// <summary>
-        ///     平均評分星數
-        /// </summary>
-        [Display(Name = "平均評分星數")]
-        public int AverageScore { get; set; }
-
-        /// <summary>
-        ///     類別
-        /// </summary>
-        [Display(Name = "類別")]
-        public List<string> Category { get; set; }
-
-
-        /// <summary>
-        ///     圖片
-        /// </summary>
-        [Display(Name = "圖片")]
-        public string ImageUrl { get; set; }
-    }
-
-    /// <summary>
-    ///     給參數搜尋景點(熱門話題取得所有景點)
-    /// </summary>
-    public class AttractionView:MyAttractionCollectionsView
-    {
-        /// <summary>
-        ///     是否收藏
-        /// </summary>
-        [Display(Name = "是否收藏")]
-        public bool IsCollect { get; set; }
-    }
-
-
-
-
-
-
-    /// <summary>
-    ///     取得單一景點資訊
-    /// </summary>
-    public class AttractionInfoView 
-    {
-        /// <summary>
-        ///     景點資訊
-        /// </summary>
-        public AttractionData AttractionData { get; set; }
-        /// <summary>
-        ///     評論資訊
-        /// </summary>
-        public CommentData CommentData { get; set; }
-        /// <summary>
-        ///     更多景點*3
-        /// </summary>
-        public List<object> MoreAttractions { get; set; }
-    }
-    public class AttractionData
-    {
-        public bool IsCollect { get; set; }
-        public int AttractionId { get; set; }
-        public string AttractionName { get; set; }
-        public string Introduction { get; set; }
-        public string Address { get; set; }
-        public string Tel { get; set; }
-        public string Email { get; set; }
-        public string OfficialSite { get; set; }
-        public string Facebook { get; set; }
-        public string OpenTime { get; set; }
-        public List<string> ImageUrl { get; set; }
-    }
-
-
-
-
-    public class CommentData
-    {
-        public int AverageScore { get; set; }
-        public List<Comments> Comments { get; set; }
-    }
-    public class Comments
-    {
-        public int AttractionCommentId { get; set; }
-        public bool IsMyComment { get; set; }
-        public string UserGuid { get; set; }
-        public string UserName { get; set; }
-        public string ProfilePicture { get; set; }
-        public int Score { get; set; }
-        public string Comment { get; set; }
-        public string InitDate { get; set; }
-    }
-
-
+ 
 
     /// <summary>
     ///     取得更多景點評論
@@ -550,8 +397,17 @@ namespace TravelMaker.Models
     /// </summary>
     public class EditAttractionCommentsView
     {
+        /// <summary>
+        ///     景點評論Id
+        /// </summary>
         public int AttractionCommentId { get; set; }
+        /// <summary>
+        ///     評論
+        /// </summary>
         public string Comment { get; set; }
+        /// <summary>
+        ///     星數
+        /// </summary>
         public int Score { get; set; }
     }
 
@@ -559,20 +415,47 @@ namespace TravelMaker.Models
 
 
     /// <summary>
-    ///     
+    ///     編輯遊記
     /// </summary>
     public class BlogEditView
     {
+        /// <summary>
+        ///     遊記Guid
+        /// </summary>
         public string BlogGuid { get; set; }
+        /// <summary>
+        ///     標題
+        /// </summary>
         public string Title { get; set; }
+        /// <summary>
+        ///     封面
+        /// </summary>
         public string Cover { get; set; }
+        /// <summary>
+        ///     類別
+        /// </summary>
         public string[] Category { get; set; }
+        /// <summary>
+        ///     遊記景點List
+        /// </summary>
         public List<BlogAttractionList> BlogAttractionList { get; set; }
     }
+    /// <summary>
+    ///     遊記景點List
+    /// </summary>
     public class BlogAttractionList
     {
+        /// <summary>
+        ///     景點Id
+        /// </summary>
         public int AttractionId { get; set; }
+        /// <summary>
+        ///     心得描述
+        /// </summary>
         public string Description { get; set; }
+        /// <summary>
+        ///     圖片
+        /// </summary>
         public string[] ImageUrl { get; set; }
     }
 
@@ -584,7 +467,13 @@ namespace TravelMaker.Models
     /// </summary>
     public class AddBlogCommentsView
     {
+        /// <summary>
+        ///     遊記Guid
+        /// </summary>
         public string BlogGuid { get; set; }
+        /// <summary>
+        ///     留言內容
+        /// </summary>
         public string Comment { get; set; }
     }
     /// <summary>
@@ -592,7 +481,13 @@ namespace TravelMaker.Models
     /// </summary>
     public class EditBlogCommentsView
     {
+        /// <summary>
+        ///     遊記留言Id
+        /// </summary>
         public int BlogCommentId { get; set; }
+        /// <summary>
+        ///     留言內容
+        /// </summary>
         public string Comment { get; set; }
     }
 
@@ -602,7 +497,13 @@ namespace TravelMaker.Models
     /// </summary>
     public class AddBlogCommentRepliesView
     {
+        /// <summary>
+        ///     遊記留言Id
+        /// </summary>
         public int BlogCommentId { get; set; }
+        /// <summary>
+        ///     回覆內容
+        /// </summary>
         public string Reply { get; set; }
     }
     /// <summary>
@@ -610,7 +511,13 @@ namespace TravelMaker.Models
     /// </summary>
     public class EditBlogCommentRepliesView
     {
+        /// <summary>
+        ///     遊記回覆Id
+        /// </summary>
         public int BlogReplyId { get; set; }
+        /// <summary>
+        ///     回覆內容
+        /// </summary>
         public string Reply { get; set; }
     }
 
@@ -622,7 +529,12 @@ namespace TravelMaker.Models
     /// </summary>
     public class Tool
     {
-        public static string CommentTime(DateTime dateTime) //處理評論時間顯示 分鐘 小時 日 週 月
+        /// <summary>
+        ///     處理評論時間顯示 分鐘 小時 日 週 月
+        /// </summary>
+        /// <param name="dateTime">日期時間</param>
+        /// <returns></returns>
+        public static string CommentTime(DateTime dateTime)
         {
             TimeSpan timeSince = DateTime.Now.Subtract(dateTime);
 

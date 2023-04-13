@@ -182,33 +182,17 @@ namespace TravelMaker.Controllers
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/attractionImage/";
             string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
 
-            var hadAttraction = _db.Attractions.Where(a => a.AttractionId == attractionId && a.OpenStatus == true).FirstOrDefault();
+            var attraction = _db.Attractions.FirstOrDefault(a => a.AttractionId == attractionId && a.OpenStatus == true);
 
-            if (hadAttraction != null)
+            if (attraction != null)
             {
-                AttractionInfoView attractionInfo = new AttractionInfoView();
-
-                //景點資訊
-                var attraction = _db.Attractions.FirstOrDefault(a => a.AttractionId == attractionId);
-
-                bool isCollect;
-                if (myUserId != 0)
+                var attractionData = new
                 {
-                    isCollect = _db.AttractionCollections
-                        .Any(c => c.AttractionId == attraction.AttractionId && c.UserId == myUserId);
-                }
-                else
-                {
-                    isCollect = false;
-                }
-
-                attractionInfo.AttractionData = new AttractionData
-                {
-                    IsCollect = isCollect,
+                    IsCollect = _db.AttractionCollections.Where(c => c.AttractionId == attraction.AttractionId).Any(c => c.UserId == myUserId) ? true : false,
                     AttractionId = attraction.AttractionId,
                     AttractionName = attraction.AttractionName,
                     Introduction = attraction.Introduction,
-                    Address = attraction.Address,
+                    Address=attraction.Address,
                     Tel = attraction.Tel,
                     Email = attraction.Email,
                     OfficialSite = attraction.OfficialSite,
@@ -218,106 +202,58 @@ namespace TravelMaker.Controllers
                 };
 
 
-
-                //10則高->低評論
-                var hadComment = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.Status == true).FirstOrDefault();
-                CommentData comment = new CommentData();
-
-                if (hadComment!=null)
+                //10則高->低評論，若有登入自己評論置頂
+                if (Request.Headers.Authorization != null)
                 {
-                    comment.AverageScore = (int)Math.Round(_db.AttractionComments.Where(c => c.AttractionId == attractionId && c.Status == true).Select(c => c.Score).Average(),1);
-                    comment.Comments = new List<Comments>();
-
-
-                    if (myUserId != 0)//如果有登入，自己的評論要在最上面
-                    {
-                        //用戶自己評論數
-                        int myCommentCount = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.UserId == myUserId && c.Status == true).Count();
-
-                        if (myCommentCount != 0)
-                        {
-                            var myComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.UserId == myUserId && c.Status == true).OrderByDescending(c => c.Score).ThenByDescending(c => c.InitDate).ToList().Select(c => new Comments
-                            {
-                                AttractionCommentId = c.AttractionCommentId,
-                                IsMyComment = true,
-                                UserGuid=c.User.UserGuid,
-                                UserName = c.User.UserName,
-                                ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
-                                Score = c.Score,
-                                Comment = c.Comment,
-                                InitDate = Tool.CommentTime((DateTime)c.InitDate)
-                            }).ToList();
-
-                            comment.Comments.AddRange(myComments);
-                        }
-
-
-                        //其他評論數
-                        var otherComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.UserId != myUserId && c.Status == true).OrderByDescending(c => c.Score).ThenByDescending(c => c.InitDate).Take(10 - myCommentCount).ToList().Select(c => new Comments
-                        {
-                            AttractionCommentId = c.AttractionCommentId,
-                            IsMyComment=false,
-                            UserGuid = c.User.UserGuid,
-                            UserName = c.User.UserName,
-                            ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
-                            Score = c.Score,
-                            Comment = c.Comment,
-                            InitDate = Tool.CommentTime((DateTime)c.InitDate)
-                        }).ToList();
-                        comment.Comments.AddRange(otherComments);
-                    }
-                    else //無登入
-                    {
-                        var allComments = _db.AttractionComments.Where(c => c.AttractionId == attractionId && c.Status == true).OrderByDescending(c => c.Score).ThenByDescending(c=>c.InitDate).Take(10).ToList().Select(c => new Comments
-                        {
-                            AttractionCommentId = c.AttractionCommentId,
-                            IsMyComment = false,
-                            UserGuid = c.User.UserGuid,
-                            UserName = c.User.UserName,
-                            ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
-                            Score = c.Score,
-                            Comment = c.Comment,
-                            InitDate = Tool.CommentTime((DateTime)c.InitDate)
-                        }).ToList();
-                        comment.Comments.AddRange(allComments);
-                    }
-                }
-                else
-                {
-                    comment.AverageScore = 0;
+                    var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+                    string userGuid = (string)userToken["UserGuid"];
+                    myUserId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
                 }
 
-                attractionInfo.CommentData = comment ;
+                var comments = _db.AttractionComments
+                    .Where(c => c.AttractionId == attraction.AttractionId && c.Status == true)
+                    .OrderByDescending(c => c.UserId == myUserId)
+                    .ThenByDescending(c => c.Score)
+                    .ThenByDescending(c => c.InitDate).Take(10).ToList().Select(c => new
+                    {
+                        AttractionCommentId = c.AttractionCommentId,
+                        IsMyComment = c.UserId == myUserId,
+                        UserGuid = c.User.UserGuid,
+                        UserName = c.User.UserName,
+                        ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
+                        Score = c.Score,
+                        Comment = c.Comment,
+                        InitDate = Tool.CommentTime((DateTime)c.InitDate) + (c.EditDate == null ? "" : " (已編輯)")
+                    });
+
+                //平均星數
+                double averageScore = comments.Any() ? Math.Round(_db.AttractionComments.Where(c => c.AttractionId == attraction.AttractionId && c.Status == true).Select(c => c.Score).Average(), 1) : 0;
 
 
                 //更多附近景點*3
-                DbGeography location = _db.Attractions.Where(a => a.AttractionId == attractionId).Select(a => a.Location).FirstOrDefault();
+                DbGeography location = _db.Attractions.FirstOrDefault(a => a.AttractionId == attractionId).Location;
 
-                var moreAttractions = _db.Attractions.Where(a => a.Location.Distance(location) < 1000 && a.AttractionId != attractionId).Take(3).ToList().Select(a =>
-                    {
-                        if (myUserId != 0)
-                        {
-                            isCollect = _db.AttractionCollections.Where(c => c.AttractionId == a.AttractionId).Any(c => c.UserId == myUserId) ? true : false;
-                        }
-                        else
-                        {
-                            isCollect = false;
-                        }
+                var moreAttractions = _db.Attractions.Where(a => a.Location.Distance(location) < 1000 && a.AttractionId != attractionId).Take(3).ToList().Select(a => new
+                {
+                    AttractionId = a.AttractionId,
+                    AttractionName = a.AttractionName,
+                    City = a.District.City.CittyName + "  距離" + Math.Round((double)a.Location.Distance(location)) + "公尺",
+                    ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == a.AttractionId).Select(i => i.ImageName).FirstOrDefault(),
+                    IsColeect = _db.AttractionCollections.Where(c => c.AttractionId == a.AttractionId).Any(c => c.UserId == myUserId) ? true : false
+                });
 
 
-                        return new
-                        {
-                            AttractionId = a.AttractionId,
-                            AttractionName = a.AttractionName,
-                            City = a.District.City.CittyName+"  距離"+Math.Round((double)a.Location.Distance(location))+"公尺",
-                            ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == a.AttractionId).Select(i => i.ImageName).FirstOrDefault(),
-                            IsColeect = isCollect
-                        };
-                    });
+                var result = new
+                {
+                    AttractionData = attractionData,
+                    CommentData = new {
+                        AverageScore=averageScore,
+                        Comments=comments
+                    },
+                    MoreAttractions= moreAttractions
+                };
 
-                attractionInfo.MoreAttractions =  moreAttractions.ToList<object>();
-
-                return Ok(attractionInfo);
+                return Ok(result);
             }
             else
             {
@@ -377,7 +313,7 @@ namespace TravelMaker.Controllers
                     ProfilePicture = c.User.ProfilePicture == null ? "" : profilePath + c.User.ProfilePicture,
                     Score = c.Score,
                     Comment = c.Comment,
-                    InitDate = Tool.CommentTime((DateTime)c.InitDate) + c.EditDate == null ? "" : " (已編輯)"
+                    InitDate = Tool.CommentTime((DateTime)c.InitDate) + (c.EditDate == null ? "" : " (已編輯)")
                 }).ToList();
 
                 if (result.Any())

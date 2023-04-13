@@ -152,13 +152,11 @@ namespace TravelMaker.Controllers
             //房客才可以修改名字
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
-            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
-            int roomId = _db.Rooms.Where(r => r.RoomGuid == roomNameView.RoomGuid).Select(r => r.RoomId).FirstOrDefault();
-            var inRoom = _db.RoomMembers.Where(r => r.UserId == userId && r.RoomId == roomId).FirstOrDefault();
+            var inRoom = _db.RoomMembers.FirstOrDefault(r => r.User.UserGuid == userGuid && r.Room.RoomGuid == roomNameView.RoomGuid);
 
             if (inRoom != null)
             {
-                var room = _db.Rooms.Where(r => r.RoomId == roomId).FirstOrDefault();
+                var room = _db.Rooms.FirstOrDefault(r => r.RoomGuid == roomNameView.RoomGuid);
                 room.RoomName = roomNameView.RoomName;
                 _db.SaveChanges();
 

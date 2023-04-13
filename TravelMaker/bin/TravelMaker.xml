@@ -1778,41 +1778,6 @@
                 景點Id
             </summary>
         </member>
-        <member name="T:TravelMaker.Models.RoomContentView">
-            <summary>
-                房間資訊
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.RoomContentView.RoomGuid">
-            <summary>
-                房間Guid
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.RoomContentView.RoomName">
-            <summary>
-                房間名稱
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.RoomContentView.CreaterGuid">
-            <summary>
-                房主Guid
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.RoomContentView.Users">
-            <summary>
-                房客
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.RoomContentView.VoteDates">
-            <summary>
-                投票日期
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.RoomContentView.AttrationsData">
-            <summary>
-                房間景點
-            </summary>
-        </member>
         <member name="T:TravelMaker.Models.RoomNameView">
             <summary>
                 修改房間名稱
@@ -1918,86 +1883,6 @@
                 四個景點
             </summary>
         </member>
-        <member name="T:TravelMaker.Models.HomePageView">
-            <summary>
-                首頁-取得熱門行程*4、取得熱門景點*3
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.HomePageView.Tours">
-            <summary>
-                熱門行程*4
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.HomePageView.Attractions">
-            <summary>
-                熱門景點*3
-            </summary>
-        </member>
-        <member name="T:TravelMaker.Models.MyAttractionCollectionsView">
-            <summary>
-                取得我的收藏景點
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.MyAttractionCollectionsView.AttractionId">
-            <summary>
-                景點id
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.MyAttractionCollectionsView.AttractionName">
-            <summary>
-                景點名稱
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.MyAttractionCollectionsView.CityDistrict">
-            <summary>
-                景點地點
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.MyAttractionCollectionsView.AverageScore">
-            <summary>
-                平均評分星數
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.MyAttractionCollectionsView.Category">
-            <summary>
-                類別
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.MyAttractionCollectionsView.ImageUrl">
-            <summary>
-                圖片
-            </summary>
-        </member>
-        <member name="T:TravelMaker.Models.AttractionView">
-            <summary>
-                給參數搜尋景點(熱門話題取得所有景點)
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.AttractionView.IsCollect">
-            <summary>
-                是否收藏
-            </summary>
-        </member>
-        <member name="T:TravelMaker.Models.AttractionInfoView">
-            <summary>
-                取得單一景點資訊
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.AttractionInfoView.AttractionData">
-            <summary>
-                景點資訊
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.AttractionInfoView.CommentData">
-            <summary>
-                評論資訊
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.AttractionInfoView.MoreAttractions">
-            <summary>
-                更多景點*3
-            </summary>
-        </member>
         <member name="T:TravelMaker.Models.MoreCommentView">
             <summary>
                 取得更多景點評論
@@ -2028,9 +1913,69 @@
                 編輯評論
             </summary>
         </member>
+        <member name="P:TravelMaker.Models.EditAttractionCommentsView.AttractionCommentId">
+            <summary>
+                景點評論Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.EditAttractionCommentsView.Comment">
+            <summary>
+                評論
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.EditAttractionCommentsView.Score">
+            <summary>
+                星數
+            </summary>
+        </member>
         <member name="T:TravelMaker.Models.BlogEditView">
             <summary>
-                
+                編輯遊記
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogEditView.BlogGuid">
+            <summary>
+                遊記Guid
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogEditView.Title">
+            <summary>
+                標題
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogEditView.Cover">
+            <summary>
+                封面
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogEditView.Category">
+            <summary>
+                類別
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogEditView.BlogAttractionList">
+            <summary>
+                遊記景點List
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.BlogAttractionList">
+            <summary>
+                遊記景點List
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogAttractionList.AttractionId">
+            <summary>
+                景點Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogAttractionList.Description">
+            <summary>
+                心得描述
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.BlogAttractionList.ImageUrl">
+            <summary>
+                圖片
             </summary>
         </member>
         <member name="T:TravelMaker.Models.AddBlogCommentsView">
@@ -2038,9 +1983,29 @@
                 新增留言
             </summary>
         </member>
+        <member name="P:TravelMaker.Models.AddBlogCommentsView.BlogGuid">
+            <summary>
+                遊記Guid
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AddBlogCommentsView.Comment">
+            <summary>
+                留言內容
+            </summary>
+        </member>
         <member name="T:TravelMaker.Models.EditBlogCommentsView">
             <summary>
                 編輯留言
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.EditBlogCommentsView.BlogCommentId">
+            <summary>
+                遊記留言Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.EditBlogCommentsView.Comment">
+            <summary>
+                留言內容
             </summary>
         </member>
         <member name="T:TravelMaker.Models.AddBlogCommentRepliesView">
@@ -2048,15 +2013,42 @@
                 新增回覆
             </summary>
         </member>
+        <member name="P:TravelMaker.Models.AddBlogCommentRepliesView.BlogCommentId">
+            <summary>
+                遊記留言Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AddBlogCommentRepliesView.Reply">
+            <summary>
+                回覆內容
+            </summary>
+        </member>
         <member name="T:TravelMaker.Models.EditBlogCommentRepliesView">
             <summary>
                 編輯留言
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.EditBlogCommentRepliesView.BlogReplyId">
+            <summary>
+                遊記回覆Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.EditBlogCommentRepliesView.Reply">
+            <summary>
+                回覆內容
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Tool">
             <summary>
                 funtion
             </summary>
+        </member>
+        <member name="M:TravelMaker.Models.Tool.CommentTime(System.DateTime)">
+            <summary>
+                處理評論時間顯示 分鐘 小時 日 週 月
+            </summary>
+            <param name="dateTime">日期時間</param>
+            <returns></returns>
         </member>
         <member name="T:TravelMaker.Models.Vote">
             <summary>
