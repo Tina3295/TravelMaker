@@ -177,61 +177,7 @@ namespace TravelMaker.Models
     }
 
 
-    /// <summary>
-    ///     取得我的收藏行程
-    /// </summary>
-    public class FavoriteTour
-    {
-        /// <summary>
-        ///     行程Id
-        /// </summary>
-        [Display(Name = "行程Id")]
-        public int TourId { get; set; }
-
-        /// <summary>
-        ///     行程名稱
-        /// </summary>
-        [Display(Name = "行程名稱")]
-        public string TourName { get; set; }
-
-
-        /// <summary>
-        ///     景點數量
-        /// </summary>
-        [Display(Name = "景點數量")]
-        public int AttrCounts { get; set; }
-
-
-        /// <summary>
-        ///     愛心數
-        /// </summary>
-        [Display(Name = "愛心數")]
-        public int Likes { get; set; }
-
-
-        /// <summary>
-        ///     景點圖片路徑
-        /// </summary>
-        [Display(Name = "景點圖片路徑")]
-        public List<string> ImageUrl { get; set; } 
-    }
-
-
-    /// <summary>
-    ///     給參數搜尋行程(熱門話題取得所有行程)
-    /// </summary>
-    public class TourSearch : FavoriteTour
-    {
-        /// <summary>
-        ///     是否按愛心
-        /// </summary>
-        [Display(Name = "是否按愛心")]
-        public bool IsLike { get; set; }
-    }
-
-
-
-
+    
 
     /// <summary>
     ///     取得單一用戶收藏行程頁面
