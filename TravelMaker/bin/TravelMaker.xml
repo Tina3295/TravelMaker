@@ -743,7 +743,7 @@
         </member>
         <member name="M:TravelMaker.Controllers.RoomsController.RoomMemberAdd(TravelMaker.Models.RoomMemberAddView)">
             <summary>
-                主揪新增被揪
+                新增被揪
             </summary>
         </member>
         <member name="M:TravelMaker.Controllers.RoomsController.RoomMemberDelete(TravelMaker.Models.RoomMemberDelView)">

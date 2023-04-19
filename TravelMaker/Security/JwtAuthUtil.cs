@@ -36,7 +36,7 @@ namespace TravelMaker.Security
                 { "Account", Account },
                 { "UserName", UserName },
                 { "ProfilePicture", ProfilePicture },
-                { "Exp", DateTime.Now.AddHours(2).ToString() } // JwtToken 時效設定 2 小時
+                { "Exp", DateTime.Now.AddHours(6).ToString() } // JwtToken 時效設定 6 小時
             };
 
             // 產生 JwtToken

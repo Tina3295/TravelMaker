@@ -189,77 +189,34 @@ namespace TravelMaker.Controllers
             string userGuid = (string)userToken["UserGuid"];
             
             //是否為該房間成員
-            int roomId = _db.Rooms.Where(r => r.RoomGuid == roomModify.RoomGuid).Select(r=>r.RoomId).FirstOrDefault();
-            var inRoom = _db.RoomMembers.Where(r => r.RoomId==roomId && r.User.UserGuid == userGuid).FirstOrDefault();
+            var inRoom = _db.RoomMembers.Where(r => r.Room.RoomGuid== roomModify.RoomGuid && r.User.UserGuid == userGuid).FirstOrDefault();
 
             if (inRoom!=null)
             {
-                //原本正式景點數
-                int originCount = _db.RoomAttractions.Where(r => r.RoomId==roomId).Select(r => r.AttrOrder).Max();
-                int x=-1;
+                //刪掉原本的景點
+                var originAtts = _db.RoomAttractions.Where(r => r.Room.RoomGuid == roomModify.RoomGuid);
 
-                //先刪掉原本的備用景點
-                var originAtts = _db.RoomAttractions.Where(r => r.RoomId == roomId && r.AttrOrder == 0);
-                foreach (var originAtt in originAtts)
+                if (originAtts.Any())
                 {
-                    _db.RoomAttractions.Remove(originAtt);
+                    foreach (var originAtt in originAtts)
+                    {
+                        _db.RoomAttractions.Remove(originAtt);
+                    }
+                    _db.SaveChanges();
                 }
-                _db.SaveChanges();
 
-                //一一更改正式景點
+                //儲存更新的景點
+                int roomId = _db.Rooms.FirstOrDefault(r => r.RoomGuid == roomModify.RoomGuid).RoomId;
+
                 foreach (var newAttraction in roomModify.AttrationsData)
                 {
-                    if (newAttraction.Order != 0) //正式景點
-                    {
-                        var originAttraction = _db.RoomAttractions.Where(r => r.RoomId==roomId && r.AttrOrder == newAttraction.Order).FirstOrDefault();
+                    RoomAttraction roomAttraction = new RoomAttraction();
+                    roomAttraction.RoomId = roomId;
+                    roomAttraction.AttractionId = newAttraction.AttractionId;
+                    roomAttraction.UserId = _db.Users.FirstOrDefault(u => u.UserGuid == newAttraction.UserGuid).UserId;
+                    roomAttraction.AttrOrder = newAttraction.Order;
 
-                        if(originAttraction!=null) //原本有此次序-修改
-                        {
-                            originAttraction.AttractionId = newAttraction.AttractionId;
-                            originAttraction.UserId = _db.Users.Where(u => u.UserGuid == newAttraction.UserGuid).Select(u => u.UserId).FirstOrDefault();
-                        }
-                        else //原本無此次序-新增
-                        {
-                            RoomAttraction roomAttraction = new RoomAttraction();
-                            roomAttraction.RoomId = roomId;
-                            roomAttraction.AttractionId = newAttraction.AttractionId;
-                            roomAttraction.UserId = _db.Users.Where(u => u.UserGuid == newAttraction.UserGuid).Select(u => u.UserId).FirstOrDefault();
-                            roomAttraction.AttrOrder = newAttraction.Order;
-                            _db.RoomAttractions.Add(roomAttraction);
-                        }
-                        _db.SaveChanges();
-
-
-                        //記錄正式景點數 後是否<前
-                        if (newAttraction.Order>x)
-                        {
-                            x = newAttraction.Order;
-                        }
-                    }
-                    else //加入備用景點
-                    {
-                        RoomAttraction roomAttraction = new RoomAttraction();
-                        roomAttraction.RoomId = roomId;
-                        roomAttraction.AttractionId = newAttraction.AttractionId;
-                        roomAttraction.UserId = _db.Users.Where(u => u.UserGuid == newAttraction.UserGuid).Select(u => u.UserId).FirstOrDefault();
-                        roomAttraction.AttrOrder = 0;
-                        _db.RoomAttractions.Add(roomAttraction);
-
-                        _db.SaveChanges();
-                    } 
-                }
-
-
-
-                //正式景點數前>後 需刪除!
-                if (originCount>x)
-                {
-                    for(int i=x+1;i<=originCount ;i++)
-                    {
-                        var deleteAtt = _db.RoomAttractions.Where(r => r.Room.RoomGuid == roomModify.RoomGuid && r.AttrOrder == i).FirstOrDefault();
-
-                        _db.RoomAttractions.Remove(deleteAtt);
-                    }
+                    _db.RoomAttractions.Add(roomAttraction);
                 }
                 _db.SaveChanges();
 
@@ -437,7 +394,7 @@ namespace TravelMaker.Controllers
 
 
         /// <summary>
-        ///     主揪新增被揪
+        ///     新增被揪
         /// </summary>
         [HttpPost]
         [JwtAuthFilter]
@@ -447,8 +404,8 @@ namespace TravelMaker.Controllers
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
 
-            //房主才有權限新增被揪
-            var roomOwner = _db.RoomMembers.Where(r => r.User.UserGuid == userGuid && r.Room.RoomGuid == memberView.RoomGuid && r.Permission == 1).FirstOrDefault();
+            //房間內的用戶才有權限新增被揪
+            var roomOwner = _db.RoomMembers.Where(r => r.User.UserGuid == userGuid && r.Room.RoomGuid == memberView.RoomGuid).FirstOrDefault();
 
             if(roomOwner!=null)
             {
@@ -490,7 +447,7 @@ namespace TravelMaker.Controllers
             }
             else
             {
-                return BadRequest("權限不足");
+                return BadRequest("您不在此房間內，無法新增被揪");
             }
         }
 
@@ -555,7 +512,7 @@ namespace TravelMaker.Controllers
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
 
-            //房主才有權限新增被揪
+            //房主才有權限刪房間
             var roomOwner = _db.RoomMembers.Where(r => r.User.UserGuid == userGuid && r.Room.RoomGuid == roomGuid && r.Permission == 1).FirstOrDefault();
 
             if (roomOwner != null)
