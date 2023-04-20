@@ -482,7 +482,7 @@ namespace TravelMaker.Controllers
             string userGuid = userToken["UserGuid"].ToString();
             var user = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid);
 
-            if (user != null && user.Permission == true)
+            if (user != null && (user.Permission == 1 || user.Permission == 2))
             {
                 var attraction = _db.Attractions.FirstOrDefault(a => a.AttractionId == attractionId);
                 if (attraction != null)

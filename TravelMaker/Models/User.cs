@@ -72,7 +72,7 @@ namespace TravelMaker.Models
         ///     管理權限
         /// </summary>
         [Display(Name = "管理權限")]
-        public bool Permission { get; set; }
+        public int Permission { get; set; }
 
 
 

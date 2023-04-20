@@ -686,5 +686,51 @@ namespace TravelMaker.Controllers
                 return BadRequest("已無我的景點評論");
             }
         }
+
+
+
+
+        /// <summary>
+        ///     【維護】變更管理權限
+        /// </summary>
+        /// <param name="userGuid">userGuid</param>
+        /// <returns></returns>
+        [HttpPut]
+        [JwtAuthFilter]
+        [Route("permission/{userGuid}")]
+        public IHttpActionResult ChangePermission([FromUri] string userGuid)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string myGuid = userToken["UserGuid"].ToString();
+            var user = _db.Users.FirstOrDefault(u => u.UserGuid == myGuid);
+
+            if (user != null && user.Permission == 2)
+            {
+                var person = _db.Users.FirstOrDefault(u => u.UserGuid==userGuid);
+                if (person != null)
+                {
+                    if (person.Permission == 0)
+                    {
+                        person.Permission = 1;
+                        _db.SaveChanges();
+                        return Ok(person.Account + " " + person.UserName + " 授權成功");
+                    }
+                    else
+                    {
+                        person.Permission = 0;
+                        _db.SaveChanges();
+                        return Ok(person.Account + " " + person.UserName + " 權限移除");
+                    }
+                }
+                else
+                {
+                    return BadRequest("查無此用戶");
+                }
+            }
+            else
+            {
+                return BadRequest("權限不足");
+            }
+        }
     }
 }

@@ -929,6 +929,13 @@
                 取得我的景點評論
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.UsersController.ChangePermissin(System.String)">
+            <summary>
+                【維護】變更管理權限
+            </summary>
+            <param name="userGuid">userGuid</param>
+            <returns></returns>
+        </member>
         <member name="M:TravelMaker.Controllers.ValuesController.Test">
             <summary>
             跨域測試用
