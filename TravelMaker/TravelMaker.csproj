@@ -402,6 +402,10 @@
     <Compile Include="Migrations\202304130935288_addBlogBrowseTable.Designer.cs">
       <DependentUpon>202304130935288_addBlogBrowseTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304201744007_addUserPermission.cs" />
+    <Compile Include="Migrations\202304201744007_addUserPermission.Designer.cs">
+      <DependentUpon>202304201744007_addUserPermission.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\AttractionCollection.cs" />
@@ -653,6 +657,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304130935288_addBlogBrowseTable.resx">
       <DependentUpon>202304130935288_addBlogBrowseTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304201744007_addUserPermission.resx">
+      <DependentUpon>202304201744007_addUserPermission.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

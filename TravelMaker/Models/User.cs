@@ -68,6 +68,13 @@ namespace TravelMaker.Models
 
 
 
+        /// <summary>
+        ///     管理權限
+        /// </summary>
+        [Display(Name = "管理權限")]
+        public bool Permission { get; set; }
+
+
 
         /// <summary>
         ///     帳號建立日期

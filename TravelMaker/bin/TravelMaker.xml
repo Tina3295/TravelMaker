@@ -534,6 +534,13 @@
             <param name="attractionCommentId">要刪除的評論Id</param>
             <returns></returns>
         </member>
+        <member name="M:TravelMaker.Controllers.AttractionsController.ChangeStatus(System.Int32)">
+            <summary>
+                【維護】變更景點營業狀態
+            </summary>
+            <param name="attractionId">景點Id</param>
+            <returns></returns>
+        </member>
         <member name="T:TravelMaker.Controllers.BlogsController">
             <summary>
                 遊記相關
@@ -1651,6 +1658,11 @@
         <member name="P:TravelMaker.Models.User.UserGuid">
             <summary>
                 全域唯一識別碼
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.User.Permission">
+            <summary>
+                管理權限
             </summary>
         </member>
         <member name="P:TravelMaker.Models.User.InitDate">

@@ -463,5 +463,52 @@ namespace TravelMaker.Controllers
                 return BadRequest("無法刪除此評論");
             }
         }
+
+
+
+
+
+        /// <summary>
+        ///     【維護】變更景點營業狀態
+        /// </summary>
+        /// <param name="attractionId">景點Id</param>
+        /// <returns></returns>
+        [HttpPut]
+        [JwtAuthFilter]
+        [Route("status/{attractionId}")]
+        public IHttpActionResult ChangeStatus([FromUri] int attractionId)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            var user = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid);
+
+            if (user != null && user.Permission == true)
+            {
+                var attraction = _db.Attractions.FirstOrDefault(a => a.AttractionId == attractionId);
+                if (attraction != null)
+                {
+                    if (attraction.OpenStatus == true)
+                    {
+                        attraction.OpenStatus = false;
+                        _db.SaveChanges();
+                        return Ok(attraction.AttractionName + " 營業狀態已關閉");
+                    }
+                    else
+                    {
+                        attraction.OpenStatus = true;
+                        _db.SaveChanges();
+                        return Ok(attraction.AttractionName + " 營業狀態已開啟");
+                    }
+                }
+                else
+                {
+                    return BadRequest("無此景點");
+                }
+            }
+            else
+            {
+                return BadRequest("您沒有管理權限");
+            }
+        }
     }
 }
