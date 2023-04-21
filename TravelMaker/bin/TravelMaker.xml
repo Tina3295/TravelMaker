@@ -929,7 +929,7 @@
                 取得我的景點評論
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.UsersController.ChangePermissin(System.String)">
+        <member name="M:TravelMaker.Controllers.UsersController.ChangePermission(System.String)">
             <summary>
                 【維護】變更管理權限
             </summary>

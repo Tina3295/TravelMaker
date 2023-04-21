@@ -107,7 +107,7 @@ namespace TravelMaker.Controllers
                         VoteDates = _db.VoteDates.Where(d => d.RoomId == hadRoom.RoomId).OrderBy(d => d.Date).Select(d => new
                         {
                             VoteDateId = d.VoteDateId,
-
+                            UserGuid = d.User.UserGuid,
                             Date = d.Date.Year + "-" + d.Date.Month + "-" + d.Date.Day,
                             Count = _db.Votes.Where(v => v.VoteDateId == d.VoteDateId).Count(),
                             IsVoted = _db.Votes.Where(v => v.VoteDateId == d.VoteDateId).Any(v => v.UserId == myUserId) ? true : false
