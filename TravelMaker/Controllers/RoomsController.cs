@@ -266,7 +266,11 @@ namespace TravelMaker.Controllers
                     _db.VoteDates.Add(voteDate);
                     _db.SaveChanges();
 
-                    return Ok(new { Message = "日期新增成功" });
+                    return Ok(new
+                    {
+                        Message = "日期新增成功",
+                        VoteDateId = voteDate.VoteDateId
+                    });
                 }
                 else
                 {
@@ -535,19 +539,20 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpGet]
         [JwtAuthFilter]
-        [Route("getRooms")]
-        public IHttpActionResult GetRooms()
+        [Route("getRooms/{attractionId}")]
+        public IHttpActionResult GetRooms([FromUri]int attractionId)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
 
             var result = _db.RoomMembers.Where(r => r.User.UserGuid == userGuid && r.Room.Status == true).Select(r => new
             {
-                r.RoomId,
-                r.Room.RoomName
+                r.Room.RoomGuid,
+                r.Room.RoomName,
+                IsExisted = _db.RoomAttractions.FirstOrDefault(a => a.RoomId == r.RoomId && a.AttractionId == attractionId) != null ? true : false
             }).ToList();
 
-            if(result.Any())
+            if (result.Any())
             {
                 return Ok(result);
             }
@@ -590,7 +595,13 @@ namespace TravelMaker.Controllers
                     _db.RoomAttractions.Add(roomAttraction);
                     _db.SaveChanges();
 
-                    return Ok(new { Message = "景點新增成功" });
+                    var result = new
+                    {
+                        Message = "景點新增成功",
+                        AttractionId = addView.AttractionId
+                    };
+
+                    return Ok(result);
                 }
                 else
                 {

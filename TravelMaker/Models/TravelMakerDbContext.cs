@@ -16,7 +16,13 @@ namespace TravelMaker.Models
             : base("name=TravelMakerDbContext")
         {
         }
+        protected override void OnModelCreating(System.Data.Entity.DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Attraction>().Property(a => a.Elong).HasPrecision(11, 8);
+            modelBuilder.Entity<Attraction>().Property(a => a.Nlat).HasPrecision(10, 8);
 
+            base.OnModelCreating(modelBuilder);
+        }
         // 針對您要包含在模型中的每種實體類型新增 DbSet。如需有關設定和使用
         // Code First 模型的詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkId=390109。
 

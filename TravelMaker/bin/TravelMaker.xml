@@ -541,6 +541,11 @@
             <param name="attractionId">景點Id</param>
             <returns></returns>
         </member>
+        <member name="M:TravelMaker.Controllers.AttractionsController.AttractionEdit">
+            <summary>
+                【維護】修改景點資訊
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.BlogsController">
             <summary>
                 遊記相關
@@ -765,7 +770,7 @@
             <param name="roomGuid">房間Guid</param>
             <returns></returns>
         </member>
-        <member name="M:TravelMaker.Controllers.RoomsController.GetRooms">
+        <member name="M:TravelMaker.Controllers.RoomsController.GetRooms(System.Int32)">
             <summary>
                 主揪,被揪加景點進房間前需要get所在的房間
             </summary>
@@ -1782,6 +1787,81 @@
                 行程景點
             </summary>
         </member>
+        <member name="T:TravelMaker.Models.AttEditView">
+            <summary>
+                編輯景點
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.AttractionId">
+            <summary>
+                景點Id
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.AttractionName">
+            <summary>
+                景點名稱
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.Introduction">
+            <summary>
+                景點介紹
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.District">
+            <summary>
+                地區
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.Address">
+            <summary>
+                地址
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.Tel">
+            <summary>
+                電話
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.Email">
+            <summary>
+                Email
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.Elong">
+            <summary>
+                經度
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.Nlat">
+            <summary>
+                緯度
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.OfficialSite">
+            <summary>
+                官網
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.Facebook">
+            <summary>
+                Facebook
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.OpenTime">
+            <summary>
+                開放時間
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.Category">
+            <summary>
+                類別
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.AttEditView.ImageNames">
+            <summary>
+                圖片
+            </summary>
+        </member>
         <member name="T:TravelMaker.Models.RoomAddView">
             <summary>
                 新增房間
@@ -2067,6 +2147,13 @@
                 處理評論時間顯示 分鐘 小時 日 週 月
             </summary>
             <param name="dateTime">日期時間</param>
+            <returns></returns>
+        </member>
+        <member name="M:TravelMaker.Models.Tool.IsImage(System.String)">
+            <summary>
+                檢查是否為圖片檔
+            </summary>
+            <param name="fileName">檔案名稱</param>
             <returns></returns>
         </member>
         <member name="T:TravelMaker.Models.Vote">

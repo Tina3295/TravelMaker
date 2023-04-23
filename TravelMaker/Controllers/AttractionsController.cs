@@ -1,9 +1,14 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using TravelMaker.Models;
 using TravelMaker.Security;
@@ -508,6 +513,188 @@ namespace TravelMaker.Controllers
             else
             {
                 return BadRequest("您沒有管理權限");
+            }
+        }
+
+
+
+
+
+        /// <summary>
+        ///     【維護】修改景點資訊
+        /// </summary>
+        [HttpPost]
+        [JwtAuthFilter]
+        [Route("edit")]
+        public async Task<IHttpActionResult> AttractionEdit()
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = userToken["UserGuid"].ToString();
+            var user = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid);
+
+            if (user != null && (user.Permission == 1 || user.Permission == 2))
+            {
+                try
+                {
+                    var provider = new MultipartMemoryStreamProvider();
+                    try
+                    {
+                        await Request.Content.ReadAsMultipartAsync(provider);
+                    }
+                    catch
+                    {
+                        return BadRequest("檔案超過限制大小");
+                    }
+
+                    //檢查非圖檔
+                    var images = provider.Contents.Where(c => c.Headers.ContentDisposition.Name == "\"Image\""); ;
+                    if (images.Any())
+                    {
+                        foreach (var image in images)
+                        {
+                            try
+                            {
+                                string fileName = image.Headers.ContentDisposition.FileName.Trim('"');
+
+                                if (!Tool.IsImage(fileName))
+                                {
+                                    return BadRequest("上傳的檔案必須為圖片檔");
+                                }
+                            }
+                            catch
+                            {
+                                return BadRequest("圖片上傳失敗");
+                            }
+                        }
+                    }
+
+
+                    // 取出json
+                    var attData = provider.Contents.FirstOrDefault(c => c.Headers.ContentDisposition.Name == "\"AttractionData\"");
+                    if (attData == null)
+                    {
+                        return BadRequest("景點更新內容缺失");
+                    }
+                    var attJson = await attData.ReadAsStringAsync();
+                    var attraction = JsonConvert.DeserializeObject<AttEditView>(attJson);
+
+
+                    var originAtt = _db.Attractions.FirstOrDefault(a => a.AttractionId == attraction.AttractionId);
+
+                    //檢查是否有此景點
+                    if (originAtt == null)
+                    {
+                        return BadRequest("無此景點Id");
+                    }
+                    else if (!ModelState.IsValid)
+                    {
+                        var errorMessages = string.Join(";", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                        return BadRequest(errorMessages);
+                    }
+
+                    //修改景點內容
+                    originAtt.AttractionName = attraction.AttractionName;
+                    originAtt.Introduction = attraction.Introduction;
+
+                    string [] cityDistrict = attraction.District.Split(' ');
+                    string city = cityDistrict[0];
+                    string district = cityDistrict[1];
+                    int districtId = _db.Districts.FirstOrDefault(d => d.DistrictName == district && d.City.CittyName == city).DistrictId;
+
+                    if(districtId==0)
+                    {
+                        return BadRequest("城市區域錯誤");
+                    }
+
+                    originAtt.DistrictId = districtId;
+                    originAtt.Address = attraction.Address;
+                    originAtt.Tel = attraction.Tel;
+                    originAtt.Email = attraction.Email;
+
+                    originAtt.Elong = attraction.Elong;
+                    originAtt.Nlat = attraction.Nlat;
+                    try
+                    {
+                        originAtt.Location = DbGeography.FromText($"POINT({attraction.Elong} {attraction.Nlat})");
+                    }
+                    catch
+                    {
+                        return BadRequest("經緯度有誤");
+                    }
+                    originAtt.OfficialSite = attraction.OfficialSite;
+                    originAtt.Facebook = attraction.Facebook;
+                    originAtt.OpenTime = attraction.OpenTime;
+
+
+
+                    //類別
+                    if (!attraction.Category.All(c => _db.Categories.Any(n => n.CategoryName == c)))
+                    {
+                        return BadRequest("類別名稱有誤");
+                    }
+
+                    //移除舊類別
+                    var ca = _db.CategoryAttractions.Where(c => c.AttractionId == attraction.AttractionId);
+                    _db.CategoryAttractions.RemoveRange(ca);
+
+                    //加入新類別
+                    _db.CategoryAttractions.AddRange(attraction.Category.Select(c => new CategoryAttraction
+                    {
+                        AttractionId = attraction.AttractionId,
+                        CategoryId = _db.Categories.FirstOrDefault(x => x.CategoryName == c).CategoryId
+                    }));
+
+
+
+                    //刪除原本的景點照片
+                    var originImages = _db.Images.Where(i => i.AttractionId == attraction.AttractionId);
+                    _db.Images.RemoveRange(originImages);
+
+                    //更新上傳的景點照片
+                    _db.Images.AddRange(attraction.ImageNames.Select(n => new Image
+                    {
+                        AttractionId = attraction.AttractionId,
+                        ImageName = n
+                    }));
+
+
+
+                    // 儲存景點照片檔案
+                    string imgPath = HttpContext.Current.Server.MapPath(@"~/Upload/AttractionImage");
+
+                    if (images.Any())
+                    {
+                        foreach (var image in images)
+                        {
+                            try
+                            {
+                                var imageBytes = await image.ReadAsByteArrayAsync();
+                                string fileName = image.Headers.ContentDisposition.FileName.Trim('"');
+                                var outputPath = Path.Combine(imgPath, fileName);
+                                using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+                                {
+                                    await output.WriteAsync(imageBytes, 0, imageBytes.Length);
+                                }
+                            }
+                            catch
+                            {
+                                return BadRequest("圖片上傳失敗");
+                            }
+                        }
+                    }
+                    _db.SaveChanges();
+
+                    return Ok("已儲存編輯內容");
+                }
+                catch (Exception e)
+                {
+
+                    return BadRequest(e.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("您沒有編輯權限");
             }
         }
     }

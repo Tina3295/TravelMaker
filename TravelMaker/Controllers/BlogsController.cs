@@ -274,7 +274,7 @@ namespace TravelMaker.Controllers
                         {
                             string fileName = image.Headers.ContentDisposition.FileName.Trim('"');
 
-                            if (!IsImage(fileName))
+                            if (!Tool.IsImage(fileName))
                             {
                                 return BadRequest("上傳的檔案必須為圖片檔");
                             }
@@ -376,11 +376,7 @@ namespace TravelMaker.Controllers
         }
 
 
-        private bool IsImage(string fileName) //檢查是否為圖片檔
-        {
-            string ext = Path.GetExtension(fileName).ToLower();
-            return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" || ext == ".bmp" || ext == ".webp" || ext == ".svg" || ext == ".ico";
-        }
+
 
 
 

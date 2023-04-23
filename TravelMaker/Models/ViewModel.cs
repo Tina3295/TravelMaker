@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -175,6 +176,112 @@ namespace TravelMaker.Models
         [Display(Name = "行程景點")]
         public int[] AttractionId { get; set; }
     }
+
+
+
+
+    /// <summary>
+    ///     編輯景點
+    /// </summary>
+    public class AttEditView
+    {
+        /// <summary>
+        ///     景點Id
+        /// </summary>
+        [Display(Name = "景點Id")]
+        public int AttractionId { get; set; }
+
+        /// <summary>
+        ///     景點名稱
+        /// </summary>
+        [Required(ErrorMessage = "{0}必填")]
+        [MaxLength(50)]
+        [Display(Name = "景點名稱")]
+        public string AttractionName { get; set; }
+
+        /// <summary>
+        ///     景點介紹
+        /// </summary>
+        [Display(Name = "景點介紹")]
+        public string Introduction { get; set; }
+
+        /// <summary>
+        ///     地區
+        /// </summary>
+        [Display(Name = "地區")]
+        public string District { get; set; }
+
+        /// <summary>
+        ///     地址
+        /// </summary>
+        [MaxLength(100)]
+        [Display(Name = "地址")]
+        public string Address { get; set; }
+
+        /// <summary>
+        ///     電話
+        /// </summary>
+        [MaxLength(20)]
+        [Display(Name = "電話")]
+        public string Tel { get; set; }
+
+        /// <summary>
+        ///     Email
+        /// </summary>
+        [EmailAddress(ErrorMessage = "Email格式不符")]
+        [MaxLength(100)]
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
+        /// <summary>
+        ///     經度
+        /// </summary>
+        [Required(ErrorMessage = "{0}必填")]
+        [Display(Name = "經度")]
+        public decimal Elong { get; set; }
+
+        /// <summary>
+        ///     緯度
+        /// </summary>
+        [Required(ErrorMessage = "{0}必填")]
+        [Display(Name = "緯度")]
+        public decimal Nlat { get; set; }
+
+        /// <summary>
+        ///     官網
+        /// </summary>
+        [MaxLength(300)]
+        [Display(Name = "官網")]
+        public string OfficialSite { get; set; }
+
+        /// <summary>
+        ///     Facebook
+        /// </summary>
+        [MaxLength(300)]
+        [Display(Name = "Facebook")]
+        public string Facebook { get; set; }
+
+        /// <summary>
+        ///     開放時間
+        /// </summary>
+        [MaxLength(150)]
+        [Display(Name = "開放時間")]
+        public string OpenTime { get; set; }
+
+        /// <summary>
+        ///     類別
+        /// </summary>
+        [Display(Name = "類別")]
+        public string[] Category { get; set; }
+
+        /// <summary>
+        ///     圖片
+        /// </summary>
+        [Display(Name = "圖片")]
+        public string[] ImageNames { get; set; }
+    }
+
 
 
 
@@ -566,6 +673,19 @@ namespace TravelMaker.Models
             {
                 return (int)timeSince.TotalDays / 365 + "年前";
             }
+        }
+
+
+
+        /// <summary>
+        ///     檢查是否為圖片檔
+        /// </summary>
+        /// <param name="fileName">檔案名稱</param>
+        /// <returns></returns>
+        public static bool IsImage(string fileName)
+        {
+            string ext = Path.GetExtension(fileName).ToLower();
+            return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" || ext == ".bmp" || ext == ".webp" || ext == ".svg" || ext == ".ico";
         }
     }
 

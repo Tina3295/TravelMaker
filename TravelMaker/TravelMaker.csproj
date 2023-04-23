@@ -410,6 +410,10 @@
     <Compile Include="Migrations\202304201807052_permissionBoolToInt.Designer.cs">
       <DependentUpon>202304201807052_permissionBoolToInt.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304231522419_DecimalSet.cs" />
+    <Compile Include="Migrations\202304231522419_DecimalSet.Designer.cs">
+      <DependentUpon>202304231522419_DecimalSet.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\AttractionCollection.cs" />
@@ -667,6 +671,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304201807052_permissionBoolToInt.resx">
       <DependentUpon>202304201807052_permissionBoolToInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304231522419_DecimalSet.resx">
+      <DependentUpon>202304231522419_DecimalSet.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
