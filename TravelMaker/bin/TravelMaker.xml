@@ -500,7 +500,7 @@
             <param name="attractionId">景點Id</param>
             <returns></returns>
         </member>
-        <member name="M:TravelMaker.Controllers.AttractionsController.AttractionsSearch(System.String,System.String,System.String,System.Int32)">
+        <member name="M:TravelMaker.Controllers.AttractionsController.AttractionsSearch(TravelMaker.Models.SearchViewModel)">
             <summary>
                 給參數搜尋景點(熱門話題取得所有景點)
             </summary>
@@ -601,7 +601,7 @@
                 取得更多遊記評論
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.BlogsController.BlogsSearch(System.String,System.String,System.String,System.Int32)">
+        <member name="M:TravelMaker.Controllers.BlogsController.BlogsSearch(TravelMaker.Models.SearchViewModel)">
             <summary>
                 給參數搜尋遊記(熱門話題取得所有遊記)
             </summary>
@@ -820,7 +820,7 @@
                 刪除自己的行程
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.ToursController.ToursSearch(System.String,System.String,System.String,System.Int32)">
+        <member name="M:TravelMaker.Controllers.ToursController.ToursSearch(TravelMaker.Models.SearchViewModel)">
             <summary>
                 給參數搜尋行程(熱門話題取得所有行程)
             </summary>
@@ -2135,6 +2135,31 @@
         <member name="P:TravelMaker.Models.EditBlogCommentRepliesView.Reply">
             <summary>
                 回覆內容
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.SearchViewModel">
+            <summary>
+                搜尋功能
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.SearchViewModel.Type">
+            <summary>
+                類別複選
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.SearchViewModel.District">
+            <summary>
+                地區複選
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.SearchViewModel.Keyword">
+            <summary>
+                關鍵字
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.SearchViewModel.Page">
+            <summary>
+                頁數
             </summary>
         </member>
         <member name="T:TravelMaker.Models.Tool">

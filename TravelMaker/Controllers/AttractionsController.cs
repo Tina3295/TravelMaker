@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -89,7 +88,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpGet]
         [Route("search")]
-        public IHttpActionResult AttractionsSearch(string type = "", string district = "", string keyword = "", int page = 1)
+        public IHttpActionResult AttractionsSearch([FromUri]SearchViewModel view)
         {
             int pageSize = 9;
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
@@ -105,19 +104,19 @@ namespace TravelMaker.Controllers
             //景點搜尋篩選
             var temp = _db.Attractions.Where(a => a.OpenStatus == true).AsQueryable();
 
-            if (!string.IsNullOrEmpty(district))
+            if (view.District != null)
             {
-                temp = temp.Where(a => a.District.DistrictName == district);
+                temp = temp.Where(a => view.District.Contains(a.District.DistrictName));
             }
 
-            if (!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(view.Keyword))
             {
-                temp = temp.Where(a => a.AttractionName.Contains(keyword) || a.Introduction.Contains(keyword) || a.Address.Contains(keyword));
+                temp = temp.Where(a => a.AttractionName.Contains(view.Keyword) || a.Introduction.Contains(view.Keyword) || a.Address.Contains(view.Keyword));
             }
 
-            if (!string.IsNullOrEmpty(type))
+            if (view.Type!= null)
             {
-                var attractions = _db.CategoryAttractions.Where(a => a.Category.CategoryName == type).Select(a => a.AttractionId).Distinct().ToList();
+                var attractions = _db.CategoryAttractions.Where(a => view.Type.Contains( a.Category.CategoryName )).Select(a => a.AttractionId).Distinct().ToList();
 
                 temp = temp.Where(a => attractions.Contains(a.AttractionId));
             }
@@ -140,7 +139,7 @@ namespace TravelMaker.Controllers
                     AverageScore = averageScoreRound
                 };
 
-            }).Distinct().OrderByDescending(a => a.AverageScore).Skip(pageSize * (page - 1)).Take(pageSize).ToDictionary(a=>a.AttractionId,a=>a.AverageScore);
+            }).Distinct().OrderByDescending(a => a.AverageScore).Skip(pageSize * (view.Page - 1)).Take(pageSize).ToDictionary(a=>a.AttractionId,a=>a.AverageScore);
 
             var result = _db.Attractions.Where(a => searchAttractions.Keys.Contains(a.AttractionId)).ToList().Select(a => new
             {
@@ -596,7 +595,7 @@ namespace TravelMaker.Controllers
                     originAtt.AttractionName = attraction.AttractionName;
                     originAtt.Introduction = attraction.Introduction;
 
-                    string [] cityDistrict = attraction.District.Split(' ');
+                    string [] cityDistrict = attraction.District.Replace("台","臺").Split(' ');
                     string city = cityDistrict[0];
                     string district = cityDistrict[1];
                     int districtId = _db.Districts.FirstOrDefault(d => d.DistrictName == district && d.City.CittyName == city).DistrictId;

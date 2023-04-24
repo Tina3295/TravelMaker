@@ -1032,7 +1032,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpGet]
         [Route("search")]
-        public IHttpActionResult ToursSearch(string type="", string district="", string keyword="", int page = 1)
+        public IHttpActionResult ToursSearch([FromUri] SearchViewModel view)
         {
             int pageSize = 9;
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
@@ -1048,19 +1048,19 @@ namespace TravelMaker.Controllers
             //行程搜尋篩選
             var temp = _db.TourAttractions.AsQueryable();
 
-            if (!string.IsNullOrEmpty(district))
+            if (view.District != null)
             {
-                temp = temp.Where(t => t.Attraction.District.DistrictName == district);
+                temp = temp.Where(t => view.District.Contains(t.Attraction.District.DistrictName));
             }
 
-            if (!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(view.Keyword))
             {
-                temp = temp.Where(t => t.Attraction.AttractionName.Contains(keyword) || t.Attraction.Introduction.Contains(keyword) || t.Attraction.Address.Contains(keyword) || t.Tour.TourName.Contains(keyword));
+                temp = temp.Where(t => t.Attraction.AttractionName.Contains(view.Keyword) || t.Attraction.Introduction.Contains(view.Keyword) || t.Attraction.Address.Contains(view.Keyword) || t.Tour.TourName.Contains(view.Keyword));
             }
 
-            if (!string.IsNullOrEmpty(type))
+            if (view.Type != null)
             {
-                var attractions = _db.CategoryAttractions.Where(a => a.Category.CategoryName == type).Select(a => a.AttractionId).Distinct().ToList();
+                var attractions = _db.CategoryAttractions.Where(a => view.Type.Contains(a.Category.CategoryName)).Select(a => a.AttractionId).Distinct().ToList();
 
                 temp = temp.Where(t => attractions.Contains(t.AttractionId));
             }
@@ -1074,7 +1074,7 @@ namespace TravelMaker.Controllers
             {
                 TourId = t.TourId,
                 Likes = _db.TourLikes.Count(l => l.TourId == t.TourId)
-            }).Distinct().OrderByDescending(t => t.Likes).Skip(pageSize * (page - 1)).Take(pageSize).ToDictionary(t => t.TourId, t => t.Likes);
+            }).Distinct().OrderByDescending(t => t.Likes).Skip(pageSize * (view.Page - 1)).Take(pageSize).ToDictionary(t => t.TourId, t => t.Likes);
 
             var result = _db.Tours.Where(a => searchTours.Keys.Contains(a.TourId)).ToList().Select(a => new
             {

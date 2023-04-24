@@ -617,7 +617,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpGet]
         [Route("search")]
-        public IHttpActionResult BlogsSearch(string type = "", string district = "", string keyword = "", int page = 1)
+        public IHttpActionResult BlogsSearch([FromUri] SearchViewModel view)
         {
             int pageSize = 9;
             string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
@@ -634,24 +634,24 @@ namespace TravelMaker.Controllers
             //遊記搜尋篩選
             var temp = _db.BlogAttractions.Where(b => b.Blog.Status == 1).AsQueryable();
 
-            if (!string.IsNullOrEmpty(district))
+            if (view.District!=null)
             {
-                var attractions = _db.Attractions.Where(a => a.District.DistrictName == district).Select(a => a.AttractionId).Distinct().ToList();
+                var attractions = _db.Attractions.Where(a => view.District.Contains(a.District.DistrictName)).Select(a => a.AttractionId).Distinct().ToList();
 
                 temp = temp.Where(t => attractions.Contains(t.AttractionId));
             }
 
-            if (!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(view.Keyword))
             {
-                var attractions = _db.Attractions.Where(a => a.AttractionName.Contains(keyword) || a.Introduction.Contains(keyword) || a.Address.Contains(keyword)).Select(a => a.AttractionId).Distinct().ToList();
+                var attractions = _db.Attractions.Where(a => a.AttractionName.Contains(view.Keyword) || a.Introduction.Contains(view.Keyword) || a.Address.Contains(view.Keyword)).Select(a => a.AttractionId).Distinct().ToList();
 
-                temp = temp.Where(t => attractions.Contains(t.AttractionId) || t.Blog.Title.Contains(keyword) || t.Description.Contains(keyword));
+                temp = temp.Where(t => attractions.Contains(t.AttractionId) || t.Blog.Title.Contains(view.Keyword) || t.Description.Contains(view.Keyword));
             }
 
-            if (!string.IsNullOrEmpty(type))
+            if (view.Type!=null)
             {
                 temp = temp.Where(t => t.Blog.Category != null);
-                temp = temp.ToList().Where(t => t.Blog.Category.Split(',').Contains(type)).AsQueryable();
+                temp = temp.ToList().Where(t => view.Type.Any(x => t.Blog.Category.Contains(x))).AsQueryable();
             }
 
             //符合搜尋結果的總項目
@@ -663,7 +663,7 @@ namespace TravelMaker.Controllers
             {
                 BlogGuid = t.Blog.BlogGuid,
                 Likes = _db.BlogLikes.Where(l => l.BlogId == t.BlogId).Count(),
-            }).Distinct().OrderByDescending(t => t.Likes).Skip(pageSize * (page - 1)).Take(pageSize).ToDictionary(t => t.BlogGuid, t => t.Likes);
+            }).Distinct().OrderByDescending(t => t.Likes).Skip(pageSize * (view.Page - 1)).Take(pageSize).ToDictionary(t => t.BlogGuid, t => t.Likes);
 
             var result = _db.Blogs.Where(b => searchBlogs.Keys.Contains(b.BlogGuid)).ToList().Select(b => new
             {

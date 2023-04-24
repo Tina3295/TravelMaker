@@ -630,6 +630,33 @@ namespace TravelMaker.Models
 
 
 
+    /// <summary>
+    ///     搜尋功能
+    /// </summary>
+    public class SearchViewModel
+    {
+        /// <summary>
+        ///     類別複選
+        /// </summary>
+        public List<string> Type { get; set; }
+        /// <summary>
+        ///     地區複選
+        /// </summary>
+        public List<string> District { get; set; }
+        /// <summary>
+        ///     關鍵字
+        /// </summary>
+        public string Keyword { get; set; }
+        /// <summary>
+        ///     頁數
+        /// </summary>
+        public int Page { get; set; }
+    }
+
+
+
+
+
 
     /// <summary>
     ///     funtion
