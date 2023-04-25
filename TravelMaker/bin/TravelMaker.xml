@@ -1972,21 +1972,6 @@
                 景點Id
             </summary>
         </member>
-        <member name="T:TravelMaker.Models.TourTryView">
-            <summary>
-                試玩行程
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.TourTryView.Category">
-            <summary>
-                類別
-            </summary>
-        </member>
-        <member name="P:TravelMaker.Models.TourTryView.AttractionData">
-            <summary>
-                四個景點
-            </summary>
-        </member>
         <member name="T:TravelMaker.Models.MoreCommentView">
             <summary>
                 取得更多景點評論

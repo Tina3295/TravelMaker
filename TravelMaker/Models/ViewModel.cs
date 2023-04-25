@@ -443,27 +443,6 @@ namespace TravelMaker.Models
     }
 
 
-
-    /// <summary>
-    ///     試玩行程
-    /// </summary>
-    public class TourTryView
-    {
-        /// <summary>
-        ///     類別
-        /// </summary>
-        public string Category { get; set; }
-
-        /// <summary>
-        ///     四個景點
-        /// </summary>
-        public List<object> AttractionData { get; set; }
-    }
-
-
-
-
-
     //-------------------景點View-------------------
  
 

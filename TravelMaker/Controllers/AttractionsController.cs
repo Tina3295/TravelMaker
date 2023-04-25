@@ -860,7 +860,6 @@ namespace TravelMaker.Controllers
                 }
                 catch (Exception e)
                 {
-
                     return BadRequest(e.Message);
                 }
             }

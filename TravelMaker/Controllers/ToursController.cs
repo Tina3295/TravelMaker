@@ -56,7 +56,7 @@ namespace TravelMaker.Controllers
 
             //景點距離長短設定
             int shortDistance, longDistance;
-            if (choose.Transports == "走路")
+            if (choose.Transports == "走路" || choose.Transports == "不限")
             {
                 shortDistance = 500;
                 longDistance = 1500;
@@ -1130,7 +1130,7 @@ namespace TravelMaker.Controllers
             //景點清單
             var attractions = _db.CategoryAttractions.Where(a => a.Attraction.OpenStatus == true
                                                              && types.Contains(a.CategoryId)
-                                                             /*&& a.Attraction.DistrictId == district*/)
+                                                             && a.Attraction.DistrictId == district)
                               .Select(a => new AttractionList
                               {
                                   AttractionId = a.Attraction.AttractionId,
@@ -1147,18 +1147,20 @@ namespace TravelMaker.Controllers
             }
 
 
-            TourTryView tourTry = new TourTryView();
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
 
-            tourTry.Category = _db.Categories.Where(c => c.CategoryId == categoryId).Select(c => c.CategoryName).FirstOrDefault();
-            tourTry.AttractionData = _db.Attractions.Where(a => fourAttractionIds.Contains(a.AttractionId)).Select(a => new
+            var result = new
             {
-                a.AttractionId,
-                a.AttractionName,
-                ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == a.AttractionId).Select(i => i.ImageName).FirstOrDefault()
-            }).ToList<object>();
+                Category = _db.Categories.Where(c => c.CategoryId == categoryId).Select(c => c.CategoryName).FirstOrDefault(),
+                AttractionData = _db.Attractions.Where(a => fourAttractionIds.Contains(a.AttractionId)).Select(a => new
+                {
+                    a.AttractionId,
+                    a.AttractionName,
+                    ImageUrl = imgPath + _db.Images.Where(i => i.AttractionId == a.AttractionId).Select(i => i.ImageName).FirstOrDefault()
+                }).ToList().OrderBy(a => fourAttractionIds.IndexOf(a.AttractionId))
+            };
 
-            return Ok(tourTry);
+            return Ok(result);
         }
 
 

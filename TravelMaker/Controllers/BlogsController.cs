@@ -504,6 +504,7 @@ namespace TravelMaker.Controllers
                 var result = new
                 {
                     IsCollect = _db.BlogCollections.FirstOrDefault(c => c.Blog.BlogGuid == blogGuid && c.UserId == myUserId) == null ? false : true,
+                    BlogGuid = blogGuid,
                     Cover = blog.Cover == null ? "" : blogPath + blog.Cover,
                     Title = blog.Title,
                     Category = blog.Category == null ? new string[0] : blog.Category.Split(','),
