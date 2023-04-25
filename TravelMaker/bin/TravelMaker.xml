@@ -546,6 +546,11 @@
                 【維護】修改景點資訊
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.AttractionsController.AttractionAdd">
+            <summary>
+                【維護】新增景點
+            </summary>
+        </member>
         <member name="T:TravelMaker.Controllers.BlogsController">
             <summary>
                 遊記相關
