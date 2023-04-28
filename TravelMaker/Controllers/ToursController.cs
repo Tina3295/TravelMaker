@@ -1302,8 +1302,8 @@ namespace TravelMaker.Controllers
         ///     取得熱門行程*3
         /// </summary>
         [HttpGet]
-        [Route("hot")]
-        public IHttpActionResult TourHot()
+        [Route("hot/{tourId}")]
+        public IHttpActionResult TourHot([FromUri]int tourId)
         {
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
             int myUserId = 0;
@@ -1315,14 +1315,14 @@ namespace TravelMaker.Controllers
             }
 
             //取得熱門行程*3 (三個景點以上、愛心數>100)
-            var hottours = _db.TourLikes.GroupBy(t => t.TourId).Where(t => _db.TourAttractions.Where(a => a.TourId == t.Key).Count() > 2 && t.Count() > 100).Select(t => new
+            var hottours = _db.TourLikes.Where(t => t.TourId != tourId).GroupBy(t => t.TourId).Where(t => _db.TourAttractions.Where(a => a.TourId == t.Key).Count() > 2 && t.Count() > 100).Select(t => new
             {
                 TourId = t.Key,
                 Likes = t.Count()
             }).OrderBy(x => Guid.NewGuid()).Take(3).ToDictionary(t => t.TourId, t => t.Likes);
 
 
-            var tours = _db.Tours.Where(t => hottours.Keys.Contains(t.TourId)).ToList().Select(t =>
+            var tours = _db.Tours.Where(t => hottours.Keys.Contains(t.TourId)).OrderBy(x => Guid.NewGuid()).ToList().Select(t =>
             {
                 var attractionIds = _db.TourAttractions.Where(x => x.TourId == t.TourId).Select(x => x.AttractionId).ToList();
 
