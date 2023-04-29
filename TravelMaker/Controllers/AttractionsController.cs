@@ -217,7 +217,6 @@ namespace TravelMaker.Controllers
                 var comments = _db.AttractionComments
                     .Where(c => c.AttractionId == attraction.AttractionId && c.Status == true)
                     .OrderByDescending(c => c.UserId == myUserId)
-                    .ThenByDescending(c => c.Score)
                     .ThenByDescending(c => c.InitDate).Take(10).ToList().Select(c => new
                     {
                         AttractionCommentId = c.AttractionCommentId,
@@ -285,27 +284,30 @@ namespace TravelMaker.Controllers
 
             if (allComments.Any())
             {
-                // 先依照分數高到低或低到高排序
-                if (view.Order == "higher")
-                {
-                    allComments = allComments.OrderByDescending(c => c.Score).ThenByDescending(c => c.InitDate).ToList();
-                }
-                else
-                {
-                    allComments = allComments.OrderBy(c => c.Score).ThenByDescending(c => c.InitDate).ToList();
-                }
-
                 //如果有登入，自己的評論會在最上面
                 if (Request.Headers.Authorization != null)
                 {
                     var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
                     string userGuid = (string)userToken["UserGuid"];
                     myUserId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
-
-                    var myComments = allComments.Where(c => c.UserId == myUserId).ToList();
-                    allComments = allComments.Except(myComments).ToList();
-                    allComments = myComments.Concat(allComments).ToList();
                 }
+
+
+                // 先依照分數高到低或低到高或時間排序
+                if (view.Order == "higher")
+                {
+                    allComments = allComments.OrderByDescending(c => c.UserId == myUserId).ThenByDescending(c => c.Score).ThenByDescending(c => c.InitDate).ToList();
+                }
+                else if (view.Order == "lower")
+                {
+                    allComments = allComments.OrderByDescending(c => c.UserId == myUserId).ThenBy(c => c.Score).ThenByDescending(c => c.InitDate).ToList();
+                }
+                else
+                {
+                    allComments = allComments.OrderByDescending(c => c.UserId == myUserId).ThenByDescending(c => c.InitDate).ToList();
+                }
+
+                
 
                 // 分頁
                 var result = allComments.Skip((view.Page - 1) * pagesize).Take(pagesize).ToList().Select(c => new
