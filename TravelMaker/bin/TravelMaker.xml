@@ -815,9 +815,14 @@
                 用戶複製行程
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.ToursController.TourModify(System.Int32,TravelMaker.Models.TourAddView)">
+        <member name="M:TravelMaker.Controllers.ToursController.TourModify(System.Int32,System.Int32[])">
             <summary>
                 用戶修改原本行程按儲存-覆蓋
+            </summary>
+        </member>
+        <member name="M:TravelMaker.Controllers.ToursController.TourRename(System.Int32,System.String)">
+            <summary>
+                更改行程名字
             </summary>
         </member>
         <member name="M:TravelMaker.Controllers.ToursController.TourDelete(System.Int32)">
@@ -1779,7 +1784,7 @@
         </member>
         <member name="T:TravelMaker.Models.TourAddView">
             <summary>
-                用戶修改原本行程按儲存-新建、覆蓋
+                用戶修改原本行程按儲存-新建
             </summary>
         </member>
         <member name="P:TravelMaker.Models.TourAddView.TourName">

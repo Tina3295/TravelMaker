@@ -929,7 +929,7 @@ namespace TravelMaker.Controllers
         [HttpPost]
         [JwtAuthFilter]
         [Route("{tourId}/modify")]
-        public IHttpActionResult TourModify([FromUri] int tourId, TourAddView tourView)
+        public IHttpActionResult TourModify([FromUri] int tourId,[FromBody] int[] AttractionId)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
@@ -939,39 +939,27 @@ namespace TravelMaker.Controllers
 
             if(tour.UserId== userId)
             {
-                //tour記錄-更改tour名字
-                tour.TourName = tourView.TourName;
+                //刪除原本的行程景點
+                _db.TourAttractions.RemoveRange(_db.TourAttractions.Where(t => t.TourId == tourId));
                 _db.SaveChanges();
 
-                //刪除原本的行程景點
-                var originAttractions = _db.TourAttractions.Where(t => t.TourId == tourId).ToList();
-                foreach (var originAttraction in originAttractions)
-                {
-                    _db.TourAttractions.Remove(originAttraction);
-                    _db.SaveChanges();
-                }
-
                 //寫入新景點
-                TourAttraction tourAttraction = new TourAttraction();
                 int i = 1;
-                foreach (int id in tourView.AttractionId)
+                foreach (int id in AttractionId)
                 {
-                    tourAttraction.TourId = tourId;
-                    tourAttraction.AttractionId = id;
-                    tourAttraction.OrderNum = i;
-                    i++;
-
+                    TourAttraction tourAttraction = new TourAttraction
+                    {
+                        TourId = tourId,
+                        AttractionId = id,
+                        OrderNum = i++
+                    };
                     _db.TourAttractions.Add(tourAttraction);
-                    _db.SaveChanges();
                 }
+                _db.SaveChanges();
 
                 //愛心數歸零
-                var likes = _db.TourLikes.Where(l => l.TourId == tourId).ToList();
-                foreach(var like in likes)
-                {
-                    _db.TourLikes.Remove(like);
-                    _db.SaveChanges();
-                }
+                _db.TourLikes.RemoveRange(_db.TourLikes.Where(l => l.TourId == tourId));
+                _db.SaveChanges();
 
                 return Ok(new { Message = "行程修改成功" });
             }
@@ -980,6 +968,35 @@ namespace TravelMaker.Controllers
                 return BadRequest("非該行程擁有者");
             }
 
+        }
+
+
+
+        /// <summary>
+        ///     更改行程名字
+        /// </summary>
+        [HttpPut]
+        [JwtAuthFilter]
+        [Route("{tourId}/rename")]
+        public IHttpActionResult TourRename([FromUri] int tourId, [FromBody] string tourName)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
+            //是否為該行程擁有者
+            var tour = _db.Tours.Where(t => t.TourId == tourId).FirstOrDefault();
+
+            if (tour.UserId == userId)
+            {
+                tour.TourName = tourName;
+                _db.SaveChanges();
+
+                return Ok(new { Message = "行程名稱修改成功" });
+            }
+            else
+            {
+                return BadRequest("非該行程擁有者");
+            }
         }
 
 

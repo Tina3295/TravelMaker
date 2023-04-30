@@ -160,7 +160,7 @@ namespace TravelMaker.Models
 
 
     /// <summary>
-    ///     用戶修改原本行程按儲存-新建、覆蓋
+    ///     用戶修改原本行程按儲存-新建
     /// </summary>
     public class TourAddView
     {
@@ -176,7 +176,6 @@ namespace TravelMaker.Models
         [Display(Name = "行程景點")]
         public int[] AttractionId { get; set; }
     }
-
 
 
 
