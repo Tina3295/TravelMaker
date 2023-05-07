@@ -30,7 +30,7 @@ namespace TravelMaker.Controllers
 
             if (choose.CategoryId.Contains(0)) //不限類型，隨機挑三個類別
             {
-                types = _db.Categories.Where(a => a.CategoryId!=8|| a.CategoryId != 9).Select(a=>a.CategoryId).Take(3).ToList();
+                types = _db.Categories.Where(a => a.CategoryId != 8 || a.CategoryId != 9).Select(a => a.CategoryId).Take(3).ToList();
             }
             else
             {
@@ -739,7 +739,7 @@ namespace TravelMaker.Controllers
             string userGuid = (string)userToken["UserGuid"];
             int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
-          
+
             //新增行程
             Tour newTour = new Tour();
 
@@ -761,7 +761,7 @@ namespace TravelMaker.Controllers
             TourAttraction tourAttraction = new TourAttraction();
             tourAttraction.TourId = _db.Tours.Where(t => t.TourId == newTour.TourId).Select(t => t.TourId).FirstOrDefault();
             int i = 1;
-            foreach(int id in tourAdd.AttractionId)
+            foreach (int id in tourAdd.AttractionId)
             {
                 tourAttraction.AttractionId = id;
                 tourAttraction.OrderNum = i;
@@ -788,9 +788,9 @@ namespace TravelMaker.Controllers
         public IHttpActionResult TourContent([FromUri] int tourId)
         {
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/attractionImage/";
-            var tour= _db.Tours.Where(a => a.TourId == tourId).FirstOrDefault();
+            var tour = _db.Tours.Where(a => a.TourId == tourId).FirstOrDefault();
 
-            if (tour!=null)
+            if (tour != null)
             {
                 var result = new
                 {
@@ -858,7 +858,7 @@ namespace TravelMaker.Controllers
                 }
             }
 
-            if(ok)
+            if (ok)
             {
                 return Ok(result);
             }
@@ -877,7 +877,7 @@ namespace TravelMaker.Controllers
         [HttpPost]
         [JwtAuthFilter]
         [Route("{tourId}/duplicate")]
-        public IHttpActionResult TourDuplicate([FromUri]int tourId,[FromBody]string TourName)
+        public IHttpActionResult TourDuplicate([FromUri] int tourId, [FromBody] string TourName)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
@@ -929,7 +929,7 @@ namespace TravelMaker.Controllers
         [HttpPost]
         [JwtAuthFilter]
         [Route("{tourId}/modify")]
-        public IHttpActionResult TourModify([FromUri] int tourId,[FromBody] int[] AttractionId)
+        public IHttpActionResult TourModify([FromUri] int tourId, TourAddView view)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
@@ -937,15 +937,19 @@ namespace TravelMaker.Controllers
             //是否為該行程擁有者
             var tour = _db.Tours.Where(t => t.TourId == tourId).FirstOrDefault();
 
-            if(tour.UserId== userId)
+            if (tour.UserId == userId)
             {
+                //tour記錄-更改tour名字
+                tour.TourName = view.TourName;
+                _db.SaveChanges();
+
                 //刪除原本的行程景點
                 _db.TourAttractions.RemoveRange(_db.TourAttractions.Where(t => t.TourId == tourId));
                 _db.SaveChanges();
 
                 //寫入新景點
                 int i = 1;
-                foreach (int id in AttractionId)
+                foreach (int id in view.AttractionId)
                 {
                     TourAttraction tourAttraction = new TourAttraction
                     {
@@ -1007,7 +1011,7 @@ namespace TravelMaker.Controllers
         [HttpDelete]
         [JwtAuthFilter]
         [Route("{tourId}")]
-        public IHttpActionResult TourDelete([FromUri]int tourId)
+        public IHttpActionResult TourDelete([FromUri] int tourId)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = userToken["UserGuid"].ToString();
@@ -1015,11 +1019,11 @@ namespace TravelMaker.Controllers
 
             //是否為該行程擁有者
             var tour = _db.Tours.Where(t => t.TourId == tourId).FirstOrDefault();
-            if (tour.UserId==userId)
+            if (tour.UserId == userId)
             {
                 //刪除行程景點
                 var attractions = _db.TourAttractions.Where(a => a.TourId == tourId).ToList();
-                foreach(var attraction in attractions)
+                foreach (var attraction in attractions)
                 {
                     _db.TourAttractions.Remove(attraction);
                 }
@@ -1131,7 +1135,7 @@ namespace TravelMaker.Controllers
             Random random = new Random();
             int categoryId = random.Next(1, 8);
             types.Add(categoryId);
-            
+
             if (!types.Contains(4))
             {
                 types.Add(8);
@@ -1192,7 +1196,7 @@ namespace TravelMaker.Controllers
         [HttpPost]
         [JwtAuthFilter]
         [Route("{tourId}/like")]
-        public IHttpActionResult TourLike([FromUri]int tourId)
+        public IHttpActionResult TourLike([FromUri] int tourId)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
@@ -1263,8 +1267,8 @@ namespace TravelMaker.Controllers
             var hottours = _db.TourLikes.GroupBy(t => t.TourId).Where(t => _db.TourAttractions.Where(a => a.TourId == t.Key).Count() == 4 && t.Count() > 100).Select(t => new
             {
                 TourId = t.Key,
-                Likes =t.Count()
-            }).OrderBy(x => Guid.NewGuid()).Take(4).ToDictionary(t=>t.TourId,t=>t.Likes);
+                Likes = t.Count()
+            }).OrderBy(x => Guid.NewGuid()).Take(4).ToDictionary(t => t.TourId, t => t.Likes);
 
 
             var tours = _db.Tours.Where(t => hottours.Keys.Contains(t.TourId)).ToList().Select(t =>
@@ -1320,7 +1324,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpGet]
         [Route("hot/{tourId}")]
-        public IHttpActionResult TourHot([FromUri]int tourId)
+        public IHttpActionResult TourHot([FromUri] int tourId)
         {
             string imgPath = "https://" + Request.RequestUri.Host + "/upload/AttractionImage/";
             int myUserId = 0;
@@ -1356,7 +1360,5 @@ namespace TravelMaker.Controllers
 
             return Ok(tours);
         }
-
-
     }
 }

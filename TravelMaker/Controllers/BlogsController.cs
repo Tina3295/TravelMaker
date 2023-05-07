@@ -421,7 +421,7 @@ namespace TravelMaker.Controllers
                     _db.BlogBrowses.Add(blogBrowse);
                     _db.SaveChanges();
                 }
-                
+
 
 
                 //一市多區
@@ -542,7 +542,7 @@ namespace TravelMaker.Controllers
         /// </summary>
         [HttpGet]
         [Route("{blogGuid}/comments/{page}")]
-        public IHttpActionResult MoreBlogComments([FromUri]string blogGuid,int page)
+        public IHttpActionResult MoreBlogComments([FromUri] string blogGuid, int page)
         {
             string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
             int pagesize = 10;
@@ -635,7 +635,7 @@ namespace TravelMaker.Controllers
             //遊記搜尋篩選
             var temp = _db.BlogAttractions.Where(b => b.Blog.Status == 1).AsQueryable();
 
-            if (view.District!=null)
+            if (view.District != null)
             {
                 var attractions = _db.Attractions.Where(a => view.District.Contains(a.District.DistrictName)).Select(a => a.AttractionId).Distinct().ToList();
 
@@ -649,7 +649,7 @@ namespace TravelMaker.Controllers
                 temp = temp.Where(t => attractions.Contains(t.AttractionId) || t.Blog.Title.Contains(view.Keyword) || t.Description.Contains(view.Keyword));
             }
 
-            if (view.Type!=null)
+            if (view.Type != null)
             {
                 temp = temp.Where(t => t.Blog.Category != null);
                 temp = temp.ToList().Where(t => view.Type.Any(x => t.Blog.Category.Contains(x))).AsQueryable();
@@ -934,7 +934,7 @@ namespace TravelMaker.Controllers
                         return BadRequest("留言不得空白或超過500字");
                     }
                     originComment.Comment = view.Comment;
-                    originComment.EditDate=DateTime.Now;
+                    originComment.EditDate = DateTime.Now;
                     _db.SaveChanges();
 
                     return Ok("留言已修改");
@@ -1004,7 +1004,7 @@ namespace TravelMaker.Controllers
             string userGuid = userToken["UserGuid"].ToString();
             int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
 
-            var blogComment = _db.BlogComments.FirstOrDefault(b => b.BlogCommentId==view.BlogCommentId && b.Status==true);
+            var blogComment = _db.BlogComments.FirstOrDefault(b => b.BlogCommentId == view.BlogCommentId && b.Status == true);
             if (blogComment != null)
             {
                 if (string.IsNullOrWhiteSpace(view.Reply) || view.Reply.Length > 500)
@@ -1052,11 +1052,11 @@ namespace TravelMaker.Controllers
             {
                 if (originReply.Status == true)
                 {
-                    if (string.IsNullOrWhiteSpace(view.Reply)||view.Reply.Length > 500)
+                    if (string.IsNullOrWhiteSpace(view.Reply) || view.Reply.Length > 500)
                     {
                         return BadRequest("回覆不得空白或超過500字");
                     }
-                    originReply.Reply=view.Reply;
+                    originReply.Reply = view.Reply;
                     originReply.EditDate = DateTime.Now;
                     _db.SaveChanges();
 
@@ -1262,22 +1262,22 @@ namespace TravelMaker.Controllers
                     ProfilePicture = blogger.ProfilePicture == null ? "" : profilePath + blogger.ProfilePicture,
                     BlogCounts = _db.Blogs.Where(b => b.UserId == blogger.UserId && b.Status == 1).Count(),
                     Fans = _db.BlogFollowers.Where(f => f.UserId == blogger.UserId).Count(),
-                    Followers = _db.BlogFollowers.Where(f => f.BlogFollowerId == blogger.UserId).Count(),
+                    Followers = _db.BlogFollowers.Where(f => f.FollowingUserId == blogger.UserId).Count(),
 
                     FanData = _db.BlogFollowers.Where(f => f.UserId == blogger.UserId).OrderByDescending(f => f.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(f =>
                     {
                         User user = _db.Users.FirstOrDefault(u => u.UserId == f.FollowingUserId);
                         return new
                         {
-                            UserGuid=user.UserGuid,
+                            UserGuid = user.UserGuid,
                             UserName = user.UserName,
-                            ProfilePicture=user.ProfilePicture==null?"":profilePath+user.ProfilePicture,
-                            IsFollow=_db.BlogFollowers.FirstOrDefault(x=>x.UserId==user.UserId&&x.FollowingUserId==myUserId)==null?false:true
+                            ProfilePicture = user.ProfilePicture == null ? "" : profilePath + user.ProfilePicture,
+                            IsFollow = _db.BlogFollowers.FirstOrDefault(x => x.UserId == user.UserId && x.FollowingUserId == myUserId) == null ? false : true
                         };
                     })
                 };
 
-                if(result.FanData.Any())
+                if (result.FanData.Any())
                 {
                     return Ok(result);
                 }
@@ -1325,11 +1325,11 @@ namespace TravelMaker.Controllers
                     ProfilePicture = blogger.ProfilePicture == null ? "" : profilePath + blogger.ProfilePicture,
                     BlogCounts = _db.Blogs.Where(b => b.UserId == blogger.UserId && b.Status == 1).Count(),
                     Fans = _db.BlogFollowers.Where(f => f.UserId == blogger.UserId).Count(),
-                    Followers = _db.BlogFollowers.Where(f => f.BlogFollowerId == blogger.UserId).Count(),
+                    Followers = _db.BlogFollowers.Where(f => f.FollowingUserId == blogger.UserId).Count(),
 
                     FollowData = _db.BlogFollowers.Where(f => f.FollowingUserId == blogger.UserId).OrderByDescending(f => f.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(f =>
                     {
-                        User user = _db.Users.FirstOrDefault(u => u.UserId == f.FollowingUserId);
+                        User user = _db.Users.FirstOrDefault(u => u.UserId == f.UserId);
                         return new
                         {
                             UserGuid = user.UserGuid,

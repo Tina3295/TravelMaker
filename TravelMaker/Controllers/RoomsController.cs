@@ -39,7 +39,7 @@ namespace TravelMaker.Controllers
             //新增房主身份
             RoomMember roomMember = new RoomMember();
             roomMember.UserId = userId;
-            roomMember.RoomId = _db.Rooms.Where(r => r.RoomGuid==room.RoomGuid).Select(r => r.RoomId).FirstOrDefault();
+            roomMember.RoomId = _db.Rooms.Where(r => r.RoomGuid == room.RoomGuid).Select(r => r.RoomId).FirstOrDefault();
             roomMember.Permission = 1;
             roomMember.InitDate = DateTime.Now;
             _db.RoomMembers.Add(roomMember);
@@ -52,7 +52,7 @@ namespace TravelMaker.Controllers
                 roomAttraction.RoomId = roomMember.RoomId;
                 roomAttraction.AttractionId = id;
                 roomAttraction.UserId = userId;
-                roomAttraction.AttrOrder=i;
+                roomAttraction.AttrOrder = i;
                 i++;
 
                 _db.RoomAttractions.Add(roomAttraction);
@@ -77,9 +77,9 @@ namespace TravelMaker.Controllers
         public IHttpActionResult RoomInfo([FromUri] string roomGuid)
         {
             var hadRoom = _db.Rooms.Where(r => r.RoomGuid == roomGuid).FirstOrDefault();
-            if(hadRoom!=null)
+            if (hadRoom != null)
             {
-                if(hadRoom.Status==true)
+                if (hadRoom.Status == true)
                 {
                     string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
                     string attrPath = "https://" + Request.RequestUri.Host + "/upload/attractionImage/";
@@ -187,11 +187,11 @@ namespace TravelMaker.Controllers
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
-            
-            //是否為該房間成員
-            var inRoom = _db.RoomMembers.Where(r => r.Room.RoomGuid== roomModify.RoomGuid && r.User.UserGuid == userGuid).FirstOrDefault();
 
-            if (inRoom!=null)
+            //是否為該房間成員
+            var inRoom = _db.RoomMembers.Where(r => r.Room.RoomGuid == roomModify.RoomGuid && r.User.UserGuid == userGuid).FirstOrDefault();
+
+            if (inRoom != null)
             {
                 //刪掉原本的景點
                 var originAtts = _db.RoomAttractions.Where(r => r.Room.RoomGuid == roomModify.RoomGuid);
@@ -247,7 +247,7 @@ namespace TravelMaker.Controllers
             int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
             //是房間成員才可以新增
-            var inRoom = _db.RoomMembers.Where(r => r.Room.RoomGuid==dateView.RoomGuid && r.UserId==userId).FirstOrDefault();
+            var inRoom = _db.RoomMembers.Where(r => r.Room.RoomGuid == dateView.RoomGuid && r.UserId == userId).FirstOrDefault();
 
             if (inRoom != null)
             {
@@ -257,7 +257,7 @@ namespace TravelMaker.Controllers
 
                 //日期有無重複
                 var hadDate = _db.VoteDates.Where(d => d.Room.RoomGuid == dateView.RoomGuid && d.Date == date).FirstOrDefault();
-                if(hadDate==null)
+                if (hadDate == null)
                 {
                     VoteDate voteDate = new VoteDate();
                     voteDate.RoomId = _db.Rooms.Where(r => r.RoomGuid == dateView.RoomGuid).Select(r => r.RoomId).FirstOrDefault();
@@ -290,19 +290,19 @@ namespace TravelMaker.Controllers
         [HttpDelete]
         [JwtAuthFilter]
         [Route("dates/{voteDateId}")]
-        public IHttpActionResult VoteDateDelete([FromUri]int voteDateId)
+        public IHttpActionResult VoteDateDelete([FromUri] int voteDateId)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
             int userId = _db.Users.Where(u => u.UserGuid == userGuid).Select(u => u.UserId).FirstOrDefault();
 
             var voteDateDetail = _db.VoteDates.Where(v => v.VoteDateId == voteDateId).FirstOrDefault();
-            var inRoom = _db.RoomMembers.Where(r => r.RoomId==voteDateDetail.RoomId && r.UserId == userId).FirstOrDefault();
+            var inRoom = _db.RoomMembers.Where(r => r.RoomId == voteDateDetail.RoomId && r.UserId == userId).FirstOrDefault();
 
             //是房間成員，且主揪或提出該日期的被揪可以刪除
             if (inRoom != null)
             {
-                if(inRoom.Permission == 1 || voteDateDetail.UserId == userId)
+                if (inRoom.Permission == 1 || voteDateDetail.UserId == userId)
                 {
                     //先刪投票的人，再刪日期
                     var votes = _db.Votes.Where(v => v.VoteDateId == voteDateId).ToList();
@@ -345,7 +345,7 @@ namespace TravelMaker.Controllers
             var voteDateDetail = _db.VoteDates.Where(v => v.VoteDateId == voteDateId).FirstOrDefault();
             var inRoom = _db.RoomMembers.Where(r => r.RoomId == voteDateDetail.RoomId && r.UserId == userId).FirstOrDefault();
 
-            if(inRoom!=null)
+            if (inRoom != null)
             {
                 Vote vote = new Vote();
                 vote.UserId = userId;
@@ -382,7 +382,7 @@ namespace TravelMaker.Controllers
             if (inRoom != null)
             {
                 var vote = _db.Votes.Where(v => v.VoteDateId == voteDateId && v.UserId == userId).FirstOrDefault();
-                
+
                 _db.Votes.Remove(vote);
                 _db.SaveChanges();
 
@@ -405,54 +405,54 @@ namespace TravelMaker.Controllers
         [Route("members")]
         public IHttpActionResult RoomMemberAdd(RoomMemberAddView memberView)
         {
-            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            string userGuid = (string)userToken["UserGuid"];
+            //var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            //string userGuid = (string)userToken["UserGuid"];
 
-            //房間內的用戶才有權限新增被揪
-            var roomOwner = _db.RoomMembers.Where(r => r.User.UserGuid == userGuid && r.Room.RoomGuid == memberView.RoomGuid).FirstOrDefault();
+            ////房間內的用戶才有權限新增被揪
+            //var roomOwner = _db.RoomMembers.Where(r => r.User.UserGuid == userGuid && r.Room.RoomGuid == memberView.RoomGuid).FirstOrDefault();
 
-            if(roomOwner!=null)
+            //if(roomOwner!=null)
+            //{
+            //被揪Email是否為平台用戶
+            var memberAdd = _db.Users.Where(u => u.Account == memberView.UserEmail).FirstOrDefault();
+            if (memberAdd != null)
             {
-                //被揪Email是否為平台用戶
-                var memberAdd = _db.Users.Where(u => u.Account == memberView.UserEmail).FirstOrDefault();
-                if (memberAdd != null)
+                //被揪是否已在房間內
+                var inRoom = _db.RoomMembers.FirstOrDefault(r => r.Room.RoomGuid == memberView.RoomGuid && r.UserId == memberAdd.UserId);
+                if (inRoom == null)
                 {
-                    //被揪是否已在房間內
-                    var inRoom = _db.RoomMembers.Where(r => r.Room.RoomGuid == memberView.RoomGuid && r.UserId == memberAdd.UserId).FirstOrDefault();
-                    if(inRoom==null)
+                    RoomMember roomMember = new RoomMember();
+                    roomMember.UserId = memberAdd.UserId;
+                    roomMember.RoomId = _db.Rooms.Where(r => r.RoomGuid == memberView.RoomGuid).Select(r => r.RoomId).FirstOrDefault();
+                    roomMember.Permission = 2;
+                    roomMember.InitDate = DateTime.Now;
+
+                    _db.RoomMembers.Add(roomMember);
+                    _db.SaveChanges();
+
+                    var result = new
                     {
-                        RoomMember roomMember = new RoomMember();
-                        roomMember.UserId = memberAdd.UserId;
-                        roomMember.RoomId = _db.Rooms.Where(r => r.RoomGuid == memberView.RoomGuid).Select(r => r.RoomId).FirstOrDefault();
-                        roomMember.Permission = 2;
-                        roomMember.InitDate = DateTime.Now;
+                        UserGuid = memberAdd.UserGuid,
+                        UserName = memberAdd.UserName,
+                        ProfilePicture = memberAdd.ProfilePicture == null ? "" : "https://" + Request.RequestUri.Host + "/upload/profile/" + memberAdd.ProfilePicture
+                    };
 
-                        _db.RoomMembers.Add(roomMember);
-                        _db.SaveChanges();
-
-                        var result = new
-                        {
-                            UserGuid = memberAdd.UserGuid,
-                            UserName = memberAdd.UserName,
-                            ProfilePicture = memberAdd.ProfilePicture == null ? "" : "https://" + Request.RequestUri.Host + "/upload/profile/" + memberAdd.ProfilePicture
-                        };
-
-                        return Ok(result);
-                    }
-                    else
-                    {
-                        return BadRequest("被揪已在房間內");
-                    }
+                    return Ok(result);
                 }
                 else
                 {
-                    return BadRequest("此帳號尚未註冊為平台會員");
+                    return BadRequest("被揪已在房間內");
                 }
             }
             else
             {
-                return BadRequest("您不在此房間內，無法新增被揪");
+                return BadRequest("此帳號尚未註冊為平台會員");
             }
+            //}
+            //else
+            //{
+            //    return BadRequest("您不在此房間內，無法新增被揪");
+            //}
         }
 
 
@@ -479,7 +479,7 @@ namespace TravelMaker.Controllers
                 {
                     //刪投票紀錄
                     var votes = _db.Votes.Where(v => v.VoteDate.Room.RoomGuid == memberView.RoomGuid && v.UserId == memberDel.UserId).ToList();
-                    foreach(var vote in votes)
+                    foreach (var vote in votes)
                     {
                         _db.Votes.Remove(vote);
                     }
@@ -540,7 +540,7 @@ namespace TravelMaker.Controllers
         [HttpGet]
         [JwtAuthFilter]
         [Route("getRooms/{attractionId}")]
-        public IHttpActionResult GetRooms([FromUri]int attractionId)
+        public IHttpActionResult GetRooms([FromUri] int attractionId)
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
@@ -580,11 +580,11 @@ namespace TravelMaker.Controllers
 
             var inRoom = _db.RoomMembers.Where(r => r.Room.RoomGuid == addView.RoomGuid && r.User.UserGuid == userGuid).FirstOrDefault();
 
-            if(inRoom!=null)
+            if (inRoom != null)
             {
                 var hadAttraction = _db.RoomAttractions.Where(a => a.Room.RoomGuid == addView.RoomGuid && a.AttractionId == addView.AttractionId).FirstOrDefault();
 
-                if(hadAttraction==null)
+                if (hadAttraction == null)
                 {
                     RoomAttraction roomAttraction = new RoomAttraction();
                     roomAttraction.RoomId = _db.Rooms.Where(r => r.RoomGuid == addView.RoomGuid).Select(r => r.RoomId).FirstOrDefault();
@@ -613,6 +613,5 @@ namespace TravelMaker.Controllers
                 return BadRequest("非該房間成員");
             }
         }
-
     }
 }
