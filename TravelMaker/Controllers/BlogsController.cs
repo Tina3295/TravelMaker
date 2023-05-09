@@ -794,6 +794,7 @@ namespace TravelMaker.Controllers
                     Follows = _db.BlogFollowers.Where(f => f.FollowingUserId == blogger.UserId).Count(),
                     BlogData = _db.Blogs.Where(b => b.User.UserGuid == userGuid && b.Status == 1).OrderByDescending(b => b.InitDate).Take(pageSize).ToList().Select(b => new
                     {
+                        BlogGuid = b.BlogGuid,
                         IsCollect = _db.BlogCollections.FirstOrDefault(c => c.BlogId == b.BlogId && c.UserId == myUserId) == null ? false : true,
                         Cover = b.Cover == null ? "" : blogPath + b.Cover,
                         Title = b.Title,
@@ -840,6 +841,7 @@ namespace TravelMaker.Controllers
             {
                 var result = _db.Blogs.Where(b => b.User.UserGuid == userGuid && b.Status == 1).OrderByDescending(b => b.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(b => new
                 {
+                    BlogGuid = b.BlogGuid,
                     IsCollect = _db.BlogCollections.FirstOrDefault(c => c.BlogId == b.BlogId && c.UserId == myUserId) == null ? false : true,
                     Cover = b.Cover == null ? "" : blogPath + b.Cover,
                     Title = b.Title,
@@ -881,7 +883,7 @@ namespace TravelMaker.Controllers
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = userToken["UserGuid"].ToString();
-            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+            User user = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid);
 
             var blog = _db.Blogs.FirstOrDefault(b => b.BlogGuid == view.BlogGuid && b.Status == 1);
             if (blog != null)
@@ -893,14 +895,26 @@ namespace TravelMaker.Controllers
 
                 BlogComment blogComment = new BlogComment();
                 blogComment.BlogId = blog.BlogId;
-                blogComment.UserId = userId;
+                blogComment.UserId = user.UserId;
                 blogComment.Comment = view.Comment;
                 blogComment.Status = true;
                 blogComment.InitDate = DateTime.Now;
                 _db.BlogComments.Add(blogComment);
                 _db.SaveChanges();
 
-                return Ok(new { BlogCommentId = blogComment.BlogCommentId });
+                string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
+                var result = new
+                {
+                    IsMyComment = true,
+                    BlogCommentId = blogComment.BlogCommentId,
+                    UserGuid = userGuid,
+                    UserName = user.UserName,
+                    InitDate = "剛剛",
+                    ProfilePicture = user.ProfilePicture != null ? profilePath + user.ProfilePicture : "",
+                    Comment= view.Comment
+                };
+
+                return Ok(result);
             }
             else
             {

@@ -815,7 +815,7 @@
                 用戶複製行程
             </summary>
         </member>
-        <member name="M:TravelMaker.Controllers.ToursController.TourModify(System.Int32,System.Int32[])">
+        <member name="M:TravelMaker.Controllers.ToursController.TourModify(System.Int32,TravelMaker.Models.TourAddView)">
             <summary>
                 用戶修改原本行程按儲存-覆蓋
             </summary>
