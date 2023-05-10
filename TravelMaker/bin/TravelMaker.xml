@@ -1482,6 +1482,86 @@
                 圖片名稱
             </summary>
         </member>
+        <member name="T:TravelMaker.Models.Notification">
+            <summary>
+                通知
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Notification.NotificationId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Notification.Status">
+            <summary>
+                狀態
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Notification.IsRead">
+            <summary>
+                是否已讀
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Notification.Sender">
+            <summary>
+                發通知的用戶ID
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Notification.Receiver">
+            <summary>
+                收通知的用戶ID
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Notification.NotificationTypeId">
+            <summary>
+                對應通知類型
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Notification.InitDate">
+            <summary>
+                通知日期
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Notification.RoomGuid">
+            <summary>
+                房間Guid
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Notification.OldRoomName">
+            <summary>
+                舊房間名稱
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Notification.NewRoomName">
+            <summary>
+                新房間名稱
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Notification.AddVoteDate">
+            <summary>
+                新增的投票日期
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.Notification.BlogGuid">
+            <summary>
+                遊記Guid
+            </summary>
+        </member>
+        <member name="T:TravelMaker.Models.NotificationType">
+            <summary>
+                通知類型
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.NotificationType.NotificationTypeId">
+            <summary>
+                編號
+            </summary>
+        </member>
+        <member name="P:TravelMaker.Models.NotificationType.Type">
+            <summary>
+                類型
+            </summary>
+        </member>
         <member name="T:TravelMaker.Models.Room">
             <summary>
                 房間

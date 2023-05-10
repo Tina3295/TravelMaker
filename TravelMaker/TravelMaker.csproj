@@ -243,6 +243,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AttractionsController.cs" />
     <Compile Include="Controllers\BlogsController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\RoomsController.cs" />
     <Compile Include="Controllers\ToursController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -414,6 +415,10 @@
     <Compile Include="Migrations\202304231522419_DecimalSet.Designer.cs">
       <DependentUpon>202304231522419_DecimalSet.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202305100348196_addNotificationAndTypeTable.cs" />
+    <Compile Include="Migrations\202305100348196_addNotificationAndTypeTable.Designer.cs">
+      <DependentUpon>202305100348196_addNotificationAndTypeTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\AttractionCollection.cs" />
@@ -432,6 +437,8 @@
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\District.cs" />
     <Compile Include="Models\Image.cs" />
+    <Compile Include="Models\Notification.cs" />
+    <Compile Include="Models\NotificationType.cs" />
     <Compile Include="Models\Room.cs" />
     <Compile Include="Models\RoomAttraction.cs" />
     <Compile Include="Models\RoomMember.cs" />
@@ -674,6 +681,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304231522419_DecimalSet.resx">
       <DependentUpon>202304231522419_DecimalSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305100348196_addNotificationAndTypeTable.resx">
+      <DependentUpon>202305100348196_addNotificationAndTypeTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

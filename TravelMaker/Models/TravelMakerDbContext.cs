@@ -51,6 +51,8 @@ namespace TravelMaker.Models
         public virtual DbSet<BlogReply> BlogReplies { get; set; }
         public virtual DbSet<BlogFollower> BlogFollowers { get; set; }
         public virtual DbSet<BlogBrowse> BlogBrowses { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<NotificationType> NotificationTypes { get; set; }
     }
 
     //public class MyEntity
