@@ -689,6 +689,31 @@ namespace TravelMaker.Controllers
 
 
 
+        /// <summary>
+        ///     將訊息數歸0(status1→0)
+        /// </summary>
+        [HttpPut]
+        [Route("notifications/reset")]
+        [JwtAuthFilter]
+        public IHttpActionResult NotificationsReset()
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string myGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == myGuid).UserId;
+
+            var notifications = _db.Notifications.Where(n => n.Receiver == userId && n.Status == true);
+
+            foreach (var notification in notifications)
+            {
+                notification.Status = false;
+            }
+            _db.SaveChanges();
+
+            return Ok();
+        }
+
+
+
 
         /// <summary>
         ///     【維護】變更管理權限
