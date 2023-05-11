@@ -1211,6 +1211,24 @@ namespace TravelMaker.Controllers
                 tourLike.InitDate = DateTime.Now;
                 _db.TourLikes.Add(tourLike);
                 _db.SaveChanges();
+
+                //發通知給行程擁有者
+                int typeId = _db.NotificationTypes.FirstOrDefault(n => n.Type == "行程喜歡").NotificationTypeId;
+
+                var notification = new Notification
+                {
+                    Status = true,
+                    IsRead = false,
+                    Sender = userId,
+                    Receiver = _db.Tours.FirstOrDefault(t => t.TourId == tourId).UserId,
+                    NotificationTypeId = typeId,
+                    InitDate = DateTime.Now,
+                    TourId = tourId
+                };
+
+                _db.Notifications.Add(notification);
+                _db.SaveChanges();
+
                 return Ok();
             }
             else

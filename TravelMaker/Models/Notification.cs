@@ -110,5 +110,12 @@ namespace TravelMaker.Models
         /// </summary>
         [Display(Name = "遊記Guid")]
         public string BlogGuid { get; set; }
+
+
+        /// <summary>
+        ///     行程Id
+        /// </summary>
+        [Display(Name = "行程Id")]
+        public int TourId { get; set; }
     }
 }

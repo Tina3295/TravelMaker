@@ -1547,6 +1547,11 @@
                 遊記Guid
             </summary>
         </member>
+        <member name="P:TravelMaker.Models.Notification.TourId">
+            <summary>
+                行程Id
+            </summary>
+        </member>
         <member name="T:TravelMaker.Models.NotificationType">
             <summary>
                 通知類型

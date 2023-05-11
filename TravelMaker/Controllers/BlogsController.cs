@@ -180,8 +180,28 @@ namespace TravelMaker.Controllers
                     isMyDraftBlog.Status = 1;
                     isMyDraftBlog.InitDate = DateTime.Now;
                     isMyDraftBlog.EditDate = null;
-
                     _db.SaveChanges();
+
+                    //發通知給粉絲
+                    var fans = _db.BlogFollowers.Where(f => f.User.UserGuid == userGuid).ToList();
+
+                    int senderId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+                    int typeId = _db.NotificationTypes.FirstOrDefault(n => n.Type == "遊記新增").NotificationTypeId;
+
+                    var notifications = fans.Select(fan => new Notification
+                    {
+                        Status = true,
+                        IsRead = false,
+                        Sender = senderId,
+                        Receiver = fan.FollowingUserId,
+                        NotificationTypeId = typeId,
+                        InitDate = DateTime.Now,
+                        BlogGuid = blogGuid
+                    });
+
+                    _db.Notifications.AddRange(notifications);
+                    _db.SaveChanges();
+
                     return Ok("成功發佈");
                 }
                 else if (isMyDraftBlog.Status == 1)
@@ -721,6 +741,22 @@ namespace TravelMaker.Controllers
                 _db.BlogFollowers.Add(blogFollower);
                 _db.SaveChanges();
 
+                //發通知給被追蹤者
+                int typeId = _db.NotificationTypes.FirstOrDefault(n => n.Type == "社群追蹤").NotificationTypeId;
+
+                var notification = new Notification
+                {
+                    Status = true,
+                    IsRead = false,
+                    Sender = myId,
+                    Receiver = followedUserId,
+                    NotificationTypeId = typeId,
+                    InitDate = DateTime.Now
+                };
+
+                _db.Notifications.Add(notification);
+                _db.SaveChanges();
+
                 return Ok("追蹤成功");
             }
             else
@@ -902,6 +938,28 @@ namespace TravelMaker.Controllers
                 _db.BlogComments.Add(blogComment);
                 _db.SaveChanges();
 
+
+                //發通知給遊記作者(留言自己遊記不通知)
+                if (user.UserId != blog.UserId)
+                {
+                    int typeId = _db.NotificationTypes.FirstOrDefault(n => n.Type == "遊記留言").NotificationTypeId;
+
+                    var notification = new Notification
+                    {
+                        Status = true,
+                        IsRead = false,
+                        Sender = user.UserId,
+                        Receiver = blog.UserId,
+                        NotificationTypeId = typeId,
+                        InitDate = DateTime.Now,
+                        BlogGuid = view.BlogGuid
+                    };
+
+                    _db.Notifications.Add(notification);
+                    _db.SaveChanges();
+                }
+                
+
                 string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
                 var result = new
                 {
@@ -1036,6 +1094,27 @@ namespace TravelMaker.Controllers
                 _db.BlogReplies.Add(blogReply);
                 _db.SaveChanges();
 
+
+                //發通知給該則留言者(回覆自己留言不通知)
+                if (userId != blogComment.UserId)
+                {
+                    int typeId = _db.NotificationTypes.FirstOrDefault(n => n.Type == "留言回覆").NotificationTypeId;
+
+                    var notification = new Notification
+                    {
+                        Status = true,
+                        IsRead = false,
+                        Sender = userId,
+                        Receiver = blogComment.UserId,
+                        NotificationTypeId = typeId,
+                        InitDate = DateTime.Now,
+                        BlogGuid = blogComment.Blog.BlogGuid
+                    };
+
+                    _db.Notifications.Add(notification);
+                    _db.SaveChanges();
+                }
+                
                 return Ok(new { BlogReplyId = blogReply.BlogReplyId });
             }
             else
@@ -1207,6 +1286,23 @@ namespace TravelMaker.Controllers
                 blogLike.BlogId = blog.BlogId;
                 blogLike.UserId = userId;
                 _db.BlogLikes.Add(blogLike);
+                _db.SaveChanges();
+
+                //發通知給遊記作者
+                int typeId = _db.NotificationTypes.FirstOrDefault(n => n.Type == "遊記喜歡").NotificationTypeId;
+
+                var notification = new Notification
+                {
+                    Status = true,
+                    IsRead = false,
+                    Sender = userId,
+                    Receiver = blog.UserId,
+                    NotificationTypeId = typeId,
+                    InitDate = DateTime.Now,
+                    BlogGuid = blogGuid
+                };
+
+                _db.Notifications.Add(notification);
                 _db.SaveChanges();
 
                 return Ok(new { Message = "按喜歡成功" });

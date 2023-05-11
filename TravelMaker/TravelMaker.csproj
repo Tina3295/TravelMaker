@@ -419,6 +419,10 @@
     <Compile Include="Migrations\202305100348196_addNotificationAndTypeTable.Designer.cs">
       <DependentUpon>202305100348196_addNotificationAndTypeTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202305110509324_notificationAddTourId.cs" />
+    <Compile Include="Migrations\202305110509324_notificationAddTourId.Designer.cs">
+      <DependentUpon>202305110509324_notificationAddTourId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\AttractionCollection.cs" />
@@ -684,6 +688,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202305100348196_addNotificationAndTypeTable.resx">
       <DependentUpon>202305100348196_addNotificationAndTypeTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305110509324_notificationAddTourId.resx">
+      <DependentUpon>202305110509324_notificationAddTourId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -157,6 +157,30 @@ namespace TravelMaker.Controllers
             if (inRoom != null)
             {
                 var room = _db.Rooms.FirstOrDefault(r => r.RoomGuid == roomNameView.RoomGuid);
+
+                //先發通知
+                var roomMembers = _db.RoomMembers.Where(r => r.Room.RoomGuid == roomNameView.RoomGuid && r.User.UserGuid != userGuid).ToList();
+
+                int senderId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+                int typeId = _db.NotificationTypes.FirstOrDefault(n => n.Type == "房間名稱").NotificationTypeId;
+
+                var notifications = roomMembers.Select(roomMember => new Notification
+                {
+                    Status = true,
+                    IsRead = false,
+                    Sender = senderId,
+                    Receiver = roomMember.UserId,
+                    NotificationTypeId = typeId,
+                    InitDate = DateTime.Now,
+                    RoomGuid = roomNameView.RoomGuid,
+                    OldRoomName = room.RoomName,
+                    NewRoomName = roomNameView.RoomName,
+                });
+
+                _db.Notifications.AddRange(notifications);
+                _db.SaveChanges();
+
+                //再修改房間名稱
                 room.RoomName = roomNameView.RoomName;
                 _db.SaveChanges();
 
@@ -220,6 +244,26 @@ namespace TravelMaker.Controllers
                 }
                 _db.SaveChanges();
 
+                //通知房間成員
+                var roomMembers = _db.RoomMembers.Where(r => r.Room.RoomGuid == roomModify.RoomGuid && r.User.UserGuid != userGuid).ToList();
+
+                int senderId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+                int typeId = _db.NotificationTypes.FirstOrDefault(n => n.Type == "房間編輯").NotificationTypeId;
+
+                var notifications = roomMembers.Select(roomMember => new Notification
+                {
+                    Status = true,
+                    IsRead = false,
+                    Sender = senderId,
+                    Receiver = roomMember.UserId,
+                    NotificationTypeId = typeId,
+                    InitDate = DateTime.Now,
+                    RoomGuid = roomModify.RoomGuid
+                });
+
+                _db.Notifications.AddRange(notifications);
+                _db.SaveChanges();
+
                 return Ok(new { Message = "房間景點修改成功" });
             }
             else
@@ -264,6 +308,26 @@ namespace TravelMaker.Controllers
                     voteDate.Date = date;
                     voteDate.UserId = userId;
                     _db.VoteDates.Add(voteDate);
+                    _db.SaveChanges();
+
+                    //通知房間成員
+                    var roomMembers = _db.RoomMembers.Where(r => r.Room.RoomGuid == dateView.RoomGuid && r.User.UserGuid != userGuid).ToList();
+
+                    int typeId = _db.NotificationTypes.FirstOrDefault(n => n.Type == "日期新增").NotificationTypeId;
+
+                    var notifications = roomMembers.Select(roomMember => new Notification
+                    {
+                        Status = true,
+                        IsRead = false,
+                        Sender = userId,
+                        Receiver = roomMember.UserId,
+                        NotificationTypeId = typeId,
+                        InitDate = DateTime.Now,
+                        RoomGuid = dateView.RoomGuid,
+                        AddVoteDate = $"{tempDate[0]}/{tempDate[1]}/{tempDate[2]}"
+                    });
+
+                    _db.Notifications.AddRange(notifications);
                     _db.SaveChanges();
 
                     return Ok(new
@@ -405,16 +469,12 @@ namespace TravelMaker.Controllers
         [Route("members")]
         public IHttpActionResult RoomMemberAdd(RoomMemberAddView memberView)
         {
-            //var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
-            //string userGuid = (string)userToken["UserGuid"];
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string userGuid = (string)userToken["UserGuid"];
+            User user = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid);
 
-            ////房間內的用戶才有權限新增被揪
-            //var roomOwner = _db.RoomMembers.Where(r => r.User.UserGuid == userGuid && r.Room.RoomGuid == memberView.RoomGuid).FirstOrDefault();
-
-            //if(roomOwner!=null)
-            //{
             //被揪Email是否為平台用戶
-            var memberAdd = _db.Users.Where(u => u.Account == memberView.UserEmail).FirstOrDefault();
+            var memberAdd = _db.Users.FirstOrDefault(u => u.Account == memberView.UserEmail);
             if (memberAdd != null)
             {
                 //被揪是否已在房間內
@@ -429,6 +489,26 @@ namespace TravelMaker.Controllers
 
                     _db.RoomMembers.Add(roomMember);
                     _db.SaveChanges();
+
+                    //發通知給被揪(別人加自己時)
+                    if (user.Account != memberView.UserEmail)
+                    {
+                        int typeId = _db.NotificationTypes.FirstOrDefault(n => n.Type == "房間邀請").NotificationTypeId;
+
+                        var notification = new Notification
+                        {
+                            Status = true,
+                            IsRead = false,
+                            Sender = user.UserId,
+                            Receiver = roomMember.UserId,
+                            NotificationTypeId = typeId,
+                            InitDate = DateTime.Now,
+                            RoomGuid = memberView.RoomGuid
+                        };
+
+                        _db.Notifications.Add(notification);
+                        _db.SaveChanges();
+                    }
 
                     var result = new
                     {
@@ -448,11 +528,6 @@ namespace TravelMaker.Controllers
             {
                 return BadRequest("此帳號尚未註冊為平台會員");
             }
-            //}
-            //else
-            //{
-            //    return BadRequest("您不在此房間內，無法新增被揪");
-            //}
         }
 
 
@@ -467,9 +542,10 @@ namespace TravelMaker.Controllers
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = (string)userToken["UserGuid"];
+            User user = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid);
 
-            //房主或被揪自己才有權限刪除
-            var inRoom = _db.RoomMembers.Where(r => r.User.UserGuid == userGuid && r.Room.RoomGuid == memberView.RoomGuid).FirstOrDefault();
+            //主揪或被揪自己才有權限刪除
+            var inRoom = _db.RoomMembers.FirstOrDefault(r => r.User.UserGuid == userGuid && r.Room.RoomGuid == memberView.RoomGuid);
 
             if (inRoom != null)
             {
@@ -486,6 +562,27 @@ namespace TravelMaker.Controllers
                     //刪被揪
                     _db.RoomMembers.Remove(memberDel);
                     _db.SaveChanges();
+
+
+                    //發通知給被揪(主揪刪被揪時)
+                    if (userGuid != memberView.UserGuid)
+                    {
+                        int typeId = _db.NotificationTypes.FirstOrDefault(n => n.Type == "房間退出").NotificationTypeId;
+
+                        var notification = new Notification
+                        {
+                            Status = true,
+                            IsRead = false,
+                            Sender = user.UserId,
+                            Receiver = memberDel.UserId,
+                            NotificationTypeId = typeId,
+                            InitDate = DateTime.Now,
+                            RoomGuid = memberView.RoomGuid
+                        };
+
+                        _db.Notifications.Add(notification);
+                        _db.SaveChanges();
+                    }
 
                     return Ok(new { message = "刪除成功" });
                 }
