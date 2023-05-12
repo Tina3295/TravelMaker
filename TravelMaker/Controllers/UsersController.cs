@@ -804,6 +804,11 @@ namespace TravelMaker.Controllers
             Notification notification = _db.Notifications.FirstOrDefault(n => n.NotificationId == notificationId);
             if (notification != null)
             {
+                if (notification.Receiver != userId)
+                {
+                    return BadRequest("非此通知接收者");
+                }
+
                 notification.IsRead = true;
                 _db.SaveChanges();
 
