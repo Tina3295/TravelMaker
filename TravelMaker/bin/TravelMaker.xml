@@ -949,6 +949,13 @@
                 將訊息數歸0(status1→0)
             </summary>
         </member>
+        <member name="M:TravelMaker.Controllers.UsersController.GetNotifications(System.Int32)">
+            <summary>
+                取得(更多)通知
+            </summary>
+            <param name="page">頁數</param>
+            <returns></returns>
+        </member>
         <member name="M:TravelMaker.Controllers.UsersController.ChangePermission(System.String)">
             <summary>
                 【維護】變更管理權限

@@ -423,6 +423,10 @@
     <Compile Include="Migrations\202305110509324_notificationAddTourId.Designer.cs">
       <DependentUpon>202305110509324_notificationAddTourId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202305110949345_correctNotificationInitDateRequired.cs" />
+    <Compile Include="Migrations\202305110949345_correctNotificationInitDateRequired.Designer.cs">
+      <DependentUpon>202305110949345_correctNotificationInitDateRequired.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\AttractionCollection.cs" />
@@ -691,6 +695,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202305110509324_notificationAddTourId.resx">
       <DependentUpon>202305110509324_notificationAddTourId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305110949345_correctNotificationInitDateRequired.resx">
+      <DependentUpon>202305110949345_correctNotificationInitDateRequired.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

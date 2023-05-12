@@ -195,3 +195,4 @@ C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrat
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.DecimalSet.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.addNotificationAndTypeTable.resources
 C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.notificationAddTourId.resources
+C:\Users\swps4\source\repos\TravelMaker\TravelMaker\obj\Debug\TravelMaker.Migrations.correctNotificationInitDateRequired.resources

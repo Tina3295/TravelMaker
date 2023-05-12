@@ -5,6 +5,7 @@ using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -712,6 +713,77 @@ namespace TravelMaker.Controllers
             return Ok();
         }
 
+
+
+        /// <summary>
+        ///     取得(更多)通知
+        /// </summary>
+        /// <param name="page">頁數</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("notifications/{page}")]
+        [JwtAuthFilter]
+        public IHttpActionResult GetNotifications([FromUri]int page)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string myGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == myGuid).UserId;
+            int pageSize = 13;
+            string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
+
+            int newNotificationCounts = _db.Notifications.Where(n => n.Receiver == userId && n.Status == true).Count();
+            DateTime now = DateTime.Now;
+
+            var notifications = _db.Notifications.Where(n => n.Receiver == userId).OrderByDescending( n => !n.IsRead && DbFunctions.DiffDays(n.InitDate, DateTime.UtcNow) <= 14).ThenByDescending(n => n.InitDate).Skip(pageSize * (page - 1)).Take(pageSize).ToList().Select(n =>
+            {
+                User user = _db.Users.FirstOrDefault(u => u.UserId == n.Sender);
+
+                return new
+                {
+                    //新消息定義if(>2週or已讀過)=false
+                    IsNew = !n.IsRead && (now - n.InitDate).TotalDays <= 14,
+                    IsRead = n.IsRead,
+                    Type = n.NotificationType.Type,
+                    NotificationId = n.NotificationId,
+                    UserGuid = user.UserGuid,
+                    UserName = user.UserName,
+                    ProfilePicture = user.ProfilePicture == null ? null : profilePath + user.ProfilePicture,
+                    InitDate = Tool.CommentTime(n.InitDate),
+
+                    //房間相關
+                    RoomGuid = n.RoomGuid,
+                    RoomName = n.RoomGuid == null ? null : _db.Rooms.FirstOrDefault(r => r.RoomGuid == n.RoomGuid).RoomName,
+                    OldRoomName = n.OldRoomName,
+                    NewRoomName = n.NewRoomName,
+                    AddVoteDate = n.AddVoteDate,
+
+                    //遊記相關
+                    BlogGuid = n.BlogGuid,
+                    Title = n.BlogGuid == null ? null : _db.Blogs.FirstOrDefault(b => b.BlogGuid == n.BlogGuid).Title,
+
+                    //行程相關
+                    TourId = n.TourId,
+                    TourName = n.TourId == 0 ? null : _db.Tours.FirstOrDefault(t => t.TourId == n.TourId).TourName
+                };
+            });
+
+            var result = new
+            {
+                Status = newNotificationCounts != 0 ? true : false,
+                Counts = newNotificationCounts,
+                NotificationData = notifications
+            };
+
+
+            if (notifications.Any())
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("已無更多通知");
+            }
+        }
 
 
 

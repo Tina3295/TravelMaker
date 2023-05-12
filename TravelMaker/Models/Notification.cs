@@ -72,7 +72,7 @@ namespace TravelMaker.Models
         [Display(Name = "通知日期")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
         [DataType(DataType.DateTime)]
-        public DateTime? InitDate { get; set; }
+        public DateTime InitDate { get; set; }
 
 
 
