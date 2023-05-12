@@ -788,6 +788,36 @@ namespace TravelMaker.Controllers
 
 
         /// <summary>
+        ///     通知未讀→已讀
+        /// </summary>
+        /// <param name="notificationId">通知Id</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("notifications/{notificationId}")]
+        [JwtAuthFilter]
+        public IHttpActionResult IsRead([FromUri] int notificationId)
+        {
+            var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
+            string myGuid = (string)userToken["UserGuid"];
+            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == myGuid).UserId;
+
+            Notification notification = _db.Notifications.FirstOrDefault(n => n.NotificationId == notificationId);
+            if (notification != null)
+            {
+                notification.IsRead = true;
+                _db.SaveChanges();
+
+                return Ok("通知已讀");
+            }
+            else
+            {
+                return BadRequest("查無此通知");
+            }
+        }
+
+
+
+        /// <summary>
         ///     【維護】變更管理權限
         /// </summary>
         /// <param name="userGuid">userGuid</param>
