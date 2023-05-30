@@ -1074,7 +1074,8 @@ namespace TravelMaker.Controllers
         {
             var userToken = JwtAuthFilter.GetToken(Request.Headers.Authorization.Parameter);
             string userGuid = userToken["UserGuid"].ToString();
-            int userId = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid).UserId;
+            User user = _db.Users.FirstOrDefault(u => u.UserGuid == userGuid);
+            string profilePath = "https://" + Request.RequestUri.Host + "/upload/profile/";
 
             var blogComment = _db.BlogComments.FirstOrDefault(b => b.BlogCommentId == view.BlogCommentId && b.Status == true);
             if (blogComment != null)
@@ -1086,7 +1087,7 @@ namespace TravelMaker.Controllers
 
                 BlogReply blogReply = new BlogReply();
                 blogReply.BlogCommentId = view.BlogCommentId;
-                blogReply.UserId = userId;
+                blogReply.UserId = user.UserId;
                 blogReply.Reply = view.Reply;
                 blogReply.Status = true;
                 blogReply.InitDate = DateTime.Now;
@@ -1094,9 +1095,20 @@ namespace TravelMaker.Controllers
                 _db.BlogReplies.Add(blogReply);
                 _db.SaveChanges();
 
+                var result = new
+                {
+                    IsMyComment = true,
+                    BlogReplyId = blogReply.BlogReplyId,
+                    UserGuid = userGuid,
+                    UserName = user.UserName,
+                    InitDate = "剛剛",
+                    ProfilePicture = user.ProfilePicture == null ? "" : profilePath + user.ProfilePicture,
+                    Reply = view.Reply
+                };
+
 
                 //發通知給該則留言者(回覆自己留言不通知)
-                if (userId != blogComment.UserId)
+                if (user.UserId != blogComment.UserId)
                 {
                     int typeId = _db.NotificationTypes.FirstOrDefault(n => n.Type == "留言回覆").NotificationTypeId;
 
@@ -1104,7 +1116,7 @@ namespace TravelMaker.Controllers
                     {
                         Status = true,
                         IsRead = false,
-                        Sender = userId,
+                        Sender = user.UserId,
                         Receiver = blogComment.UserId,
                         NotificationTypeId = typeId,
                         InitDate = DateTime.Now,
@@ -1114,8 +1126,8 @@ namespace TravelMaker.Controllers
                     _db.Notifications.Add(notification);
                     _db.SaveChanges();
                 }
-                
-                return Ok(new { BlogReplyId = blogReply.BlogReplyId });
+
+                return Ok(result);
             }
             else
             {
