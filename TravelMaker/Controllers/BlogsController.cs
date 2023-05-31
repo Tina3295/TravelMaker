@@ -523,6 +523,7 @@ namespace TravelMaker.Controllers
 
                 var result = new
                 {
+                    IsLike = _db.BlogLikes.FirstOrDefault(l => l.Blog.BlogGuid == blogGuid && l.UserId == myUserId) == null ? false : true,
                     IsCollect = _db.BlogCollections.FirstOrDefault(c => c.Blog.BlogGuid == blogGuid && c.UserId == myUserId) == null ? false : true,
                     BlogGuid = blogGuid,
                     Cover = blog.Cover == null ? "" : blogPath + blog.Cover,
