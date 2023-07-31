@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -11,7 +12,7 @@ namespace TravelMaker.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            return Redirect("~/_next/server/pages/index.html");
+            return View();
         }
     }
 }
